@@ -1,4 +1,5 @@
 import { IconType } from "react-icons";
+import { createElement } from "react";
 
 import {
   HiArrowUpRight,
@@ -12,6 +13,7 @@ import {
   HiOutlineDocument,
   HiOutlineGlobeAsiaAustralia,
   HiOutlineRocketLaunch,
+  HiOutlineLightBulb,
 } from "react-icons/hi2";
 
 import {
@@ -29,7 +31,19 @@ import {
   SiSupabase,
 } from "react-icons/si";
 
-import { FaDiscord, FaGithub, FaLinkedin, FaX, FaThreads, FaInstagram, FaXTwitter, FaFacebook, FaPinterest, FaWhatsapp, FaReddit, FaTelegram, } from "react-icons/fa6";
+import { FaDiscord, FaGithub, FaLinkedin, FaX, FaThreads, FaInstagram, FaXTwitter, FaFacebook, FaPinterest, FaWhatsapp, FaReddit, FaTelegram, FaWeixin, } from "react-icons/fa6";
+
+// Custom brand icon: Bonjour logo (served from /public/images/bonjour.svg)
+const BonjourLogo: IconType = (props) =>
+  createElement("img", {
+    src: "/images/bonjour.svg",
+    alt: "Bonjour",
+    style: {
+      height: props.size ?? "1em",
+      width: "auto",
+      display: "block",
+    },
+  });
 
 export const iconLibrary: Record<string, IconType> = {
   arrowUpRight: HiArrowUpRight,
@@ -64,6 +78,9 @@ export const iconLibrary: Record<string, IconType> = {
   reddit: FaReddit,
   telegram: FaTelegram,
   instagram: FaInstagram,
+  wechat: FaWeixin,
+  lightbulb: HiOutlineLightBulb,
+  bonjour: BonjourLogo,
 };
 
 export type IconLibrary = typeof iconLibrary;

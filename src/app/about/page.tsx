@@ -14,6 +14,7 @@ import {
 } from "@once-ui-system/core";
 import { baseURL, about, person, social } from "@/resources";
 import TableOfContents from "@/components/about/TableOfContents";
+import { WeChatQRCard } from "@/components/WeChatQRCard";
 import styles from "@/components/about/about.module.scss";
 import React from "react";
 
@@ -96,7 +97,7 @@ export default function About() {
             <Avatar src={person.avatar} size="xl" />
             <Row gap="8" vertical="center">
               <Icon onBackground="accent-weak" name="globe" />
-              {person.location}
+              杭州, China
             </Row>
             {person.languages && person.languages.length > 0 && (
               <Row wrap gap="8">
@@ -170,15 +171,28 @@ export default function About() {
                     item.link && (
                       <React.Fragment key={item.name}>
                         <Row s={{ hide: true }}>
-                          <Button
-                            key={item.name}
-                            href={item.link}
-                            prefixIcon={item.icon}
-                            label={item.name}
-                            size="s"
-                            weight="default"
-                            variant="secondary"
-                          />
+                          {item.name === "WeChat" ? (
+                            <WeChatQRCard>
+                              <Button
+                                href={item.link}
+                                prefixIcon={item.icon}
+                                label={item.name}
+                                size="s"
+                                weight="default"
+                                variant="secondary"
+                              />
+                            </WeChatQRCard>
+                          ) : (
+                            <Button
+                              key={item.name}
+                              href={item.link}
+                              prefixIcon={item.icon}
+                              label={item.name}
+                              size="s"
+                              weight="default"
+                              variant="secondary"
+                            />
+                          )}
                         </Row>
                         <Row hide s={{ hide: false }}>
                           <IconButton

@@ -14,14 +14,16 @@ import {
 import { home, person, social } from "./content";
 
 // IMPORTANT: Replace with your own domain address - it's used for SEO in meta tags and schema
-const baseURL: string = "https://demo.magic-portfolio.com";
+const baseURL: string = "https://toolsfox.top";
 
 const routes: RoutesConfig = {
   "/": true,
   "/about": true,
   "/work": true,
   "/blog": true,
-  "/gallery": true,
+  "/ideas": true,
+  "/chat": true,
+  "/gallery": false,
 };
 
 const display: DisplayConfig = {
@@ -32,9 +34,7 @@ const display: DisplayConfig = {
 
 // Enable password protection on selected routes
 // Set password in the .env file, refer to .env.example
-const protectedRoutes: ProtectedRoutesConfig = {
-  "/work/automate-design-handovers-with-a-figma-to-code-pipeline": true,
-};
+const protectedRoutes: ProtectedRoutesConfig = {};
 
 // Import and set font for each variant
 import { Geist } from "next/font/google";

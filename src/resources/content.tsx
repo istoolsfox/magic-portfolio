@@ -2,21 +2,21 @@ import { About, Blog, Gallery, Home, Newsletter, Person, Social, Work } from "@/
 import { Line, Row, Text } from "@once-ui-system/core";
 
 const person: Person = {
-  firstName: "Selene",
-  lastName: "Yu",
-  name: `Selene Yu`,
-  role: "Design Engineer",
-  avatar: "/images/avatar.jpg",
-  email: "example@gmail.com",
-  location: "Asia/Jakarta", // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
-  languages: ["English", "Bahasa"], // optional: Leave the array empty if you don't want to display languages
-  locale: "en", // BCP 47 language tag for the HTML lang attribute, e.g., 'en', 'ja', 'zh-TW'
+  firstName: "ToolsFox",
+  lastName: "",
+  name: `ToolsFox`,
+  role: "AI Application Engineer",
+  avatar: "/images/avatar.png",
+  email: "toolsfox@qq.com",
+  location: "Asia/Shanghai", // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
+  languages: ["中文", "English"], // optional: Leave the array empty if you don't want to display languages
+  locale: "zh", // BCP 47 language tag for the HTML lang attribute, e.g., 'en', 'ja', 'zh-TW'
 };
 
 const newsletter: Newsletter = {
-  display: true,
+  display: false,
   title: <>Subscribe to {person.firstName}'s Newsletter</>,
-  description: <>My weekly newsletter about creativity and engineering</>,
+  description: <>关于 AI 应用与自动化的实践笔记</>,
 };
 
 const social: Social = [
@@ -24,27 +24,15 @@ const social: Social = [
   // Import new icons in /once-ui/icons.ts
   // Set essentials: true for links you want to show on the about page
   {
-    name: "GitHub",
-    icon: "github",
-    link: "https://github.com/once-ui-system",
+    name: "WeChat",
+    icon: "wechat",
+    link: "/images/wechat-qr.jpg",
     essential: true,
   },
   {
-    name: "LinkedIn",
-    icon: "linkedin",
-    link: "https://www.linkedin.com/company/once-ui/",
-    essential: true,
-  },
-  {
-    name: "Instagram",
-    icon: "instagram",
-    link: "https://www.instagram.com/once_ui/",
-    essential: false,
-  },
-  {
-    name: "Threads",
-    icon: "threads",
-    link: "https://www.threads.com/@once_ui",
+    name: "Bonjour",
+    icon: "bonjour",
+    link: "https://bonjour.bio/toolsfox",
     essential: true,
   },
   {
@@ -59,26 +47,27 @@ const home: Home = {
   path: "/",
   image: "/images/og/home.jpg",
   label: "Home",
-  title: `${person.name}'s Portfolio`,
-  description: `Portfolio website showcasing my work as a ${person.role}`,
-  headline: <>Building bridges between design and code</>,
+  title: `ToolsFox – AI Application Engineer`,
+  description: `专注于 AI Agent、企业自动化、LLM 应用落地`,
+  headline: <>Building AI agents, automation workflows, and intelligent business systems.</>,
   featured: {
     display: true,
     title: (
       <Row gap="12" vertical="center">
-        <strong className="ml-4">Once UI</strong>{" "}
+        <strong className="ml-4">跨境电商全链路自动化</strong>{" "}
         <Line background="brand-alpha-strong" vert height="20" />
         <Text marginRight="4" onBackground="brand-medium">
-          Featured work
+          精选项目
         </Text>
       </Row>
     ),
-    href: "/work/building-once-ui-a-customizable-design-system",
+    href: "/work/ecommerce-automation-system",
   },
   subline: (
     <>
-      I'm {person.firstName}, a {person.role.toLowerCase()} at{" "}
-      <Text as="span" size="xl" weight="strong">ONCE UI</Text>, where I craft intuitive <br /> user experiences. After hours, I build my own projects.
+      我是 ToolsFox，一名 AI 应用工程师，专注于把大语言模型转化为实际生产力。
+      <br />
+      Focus: LLM Applications · AI Agent · Workflow Automation · E-commerce AI · Local Model Deployment
     </>
   ),
 };
@@ -87,7 +76,7 @@ const about: About = {
   path: "/about",
   label: "About",
   title: `About – ${person.name}`,
-  description: `Meet ${person.name}, ${person.role} from ${person.location}`,
+  description: `${person.name}，${person.role}，专注 AI 应用落地`,
   tableOfContent: {
     display: true,
     subItems: false,
@@ -96,60 +85,74 @@ const about: About = {
     display: true,
   },
   calendar: {
-    display: true,
+    display: false,
     link: "https://cal.com",
   },
   intro: {
     display: true,
-    title: "Introduction",
+    title: "我的方向",
     description: (
       <>
-        {person.firstName} is a {person.location.split("/")[1]?.replace("_", " ")}-based {person.role.toLowerCase()} with a passion for transforming complex challenges
-        into simple, elegant design solutions. Their work spans digital interfaces, interactive
-        experiences, and the convergence of design and technology.
+        我关注如何将大语言模型转化为实际生产力。从企业业务流程自动化，到智能
+        Agent，再到本地模型部署，我喜欢探索 AI 从模型能力到业务价值之间的连接。
+        <br />
+        <br />
+        我认为 AI 的本质价值之一，是帮人过滤掉无用嘈杂的信息——就像滤除数据中的噪声，
+        让沟通与决策更精简、更迅速。我的日常工作就是穿梭在各个业务部门之间：
+        理解他们的业务流程与工作内容，设计自动化的 AI 工作流。传统模式下业务扩大意味着人员同步扩大，
+        而现在 AI 可以过滤信息、自动产出方案与设计，人只需要做决策。
+        <br />
+        <br />
+        我理解 Transformer、RAG 与 Agent 编排的底层原理，也是一名全栈开发者——前端、后端、
+        服务器、数据库、网络、计算机硬件都在我的能力范围内。技术栈的宽度，是为了让 AI
+        方案能真正端到端落地。
       </>
     ),
   },
   work: {
     display: true, // set to false to hide this section
-    title: "Work Experience",
+    title: "工作经历",
     experiences: [
       {
-        company: "FLY",
-        timeframe: "2022 - Present",
-        role: "Senior Design Engineer",
+        company: "金豚达（杭州）数字",
+        timeframe: "2026.06 – 至今",
+        role: "AI 技术应用专家（电商）",
         achievements: [
-          <>
-            Redesigned the UI/UX for the FLY platform, resulting in a 20% increase in user
-            engagement and 30% faster load times.
-          </>,
-          <>
-            Spearheaded the integration of AI tools into design workflows, enabling designers to
-            iterate 50% faster.
-          </>,
+          <>负责电商业务 AI 应用探索与落地，结合运营需求设计智能化解决方案。</>,
+          <>主导企业内部 AI 平台建设，完成 OpenClaw 部署与推广应用，提升团队整体 AI 使用能力。</>,
+          <>设计并落地智能运营助手、办公助手、知识问答助手、选品助手等多个 AI Agent 应用场景。</>,
+          <>构建 AI 生图 / 生视频工作流，为电商内容生产提供自动化支撑。</>,
         ],
-        images: [
-          // optional: leave the array empty if you don't want to display images
-          {
-            src: "/images/projects/project-01/cover-01.jpg",
-            alt: "Once UI Project",
-            width: 16,
-            height: 9,
-          },
-        ],
+        images: [],
       },
       {
-        company: "Creativ3",
-        timeframe: "2018 - 2022",
-        role: "Lead Designer",
+        company: "杭州澜裳瀚壹电子商务有限公司",
+        timeframe: "2025.12 – 2026.04",
+        role: "AI Automation Developer（跨境电商 · 高端服饰）",
         achievements: [
           <>
-            Developed a design system that unified the brand across multiple platforms, improving
-            design consistency by 40%.
+            基于 n8n 搭建 ERP（聚水潭）自动化体系：订单清洗与追踪、进销存管理、商品管理、
+            采购单管理与追踪——按需求与销量驱动原料采购与消耗，减少原料堆积、进一步压缩成本。
           </>,
           <>
-            Led a cross-functional team to launch a new product line, contributing to a 15% increase
-            in overall company revenue.
+            打通 Shopify 运营链路：商品一键上架与管理、客户信息管理、客户旅程追踪、
+            画像分析与归因分析，让运营决策有数据可依。
+          </>,
+          <>
+            实现 4PX 物流追踪与管理，及时跟进问题物流；运费管理与追踪，异常场景实时监控与通知。
+          </>,
+          <>
+            Meta 广告数据分析，并整合加购、销量、广告等多维数据做统计与转化率分析，
+            为投放与运营策略提供支撑。
+          </>,
+          <>
+            搭建 PR 自动化：自动搜寻并追踪博主，跟进博主状态与发帖动态，实现友好互动与合作转化。
+          </>,
+          <>
+            金蝶财务数据分析与自动化：实现一键报销、财务金额管理与支配。
+          </>,
+          <>
+            开发 OpenClaw 企业 AI Agent：自动找博主、广告设计、开款头脑风暴，以及多个企业知识库的沉淀。
           </>,
         ],
         images: [],
@@ -158,77 +161,72 @@ const about: About = {
   },
   studies: {
     display: true, // set to false to hide this section
-    title: "Studies",
+    title: "教育经历",
     institutions: [
       {
-        name: "University of Jakarta",
-        description: <>Studied software engineering.</>,
-      },
-      {
-        name: "Build the Future",
-        description: <>Studied online marketing and personal branding.</>,
+        name: "浙江金融职业学院",
+        description: (
+          <>人工智能技术应用专业。主修 Java 开发、软件测试、接口测试、SQL、HTML、鸿蒙开发等课程。</>
+        ),
       },
     ],
   },
   technical: {
     display: true, // set to false to hide this section
-    title: "Technical skills",
+    title: "能力地图",
     skills: [
       {
-        title: "Figma",
+        title: "AI Application",
         description: (
-          <>Able to prototype in Figma with Once UI with unnatural speed.</>
+          <>
+            AI Agent 设计与编排 · RAG · Tool Calling · MCP · Prompt Engineering，理解
+            Transformer 与 AI 运作的底层逻辑。深度使用 ChatGPT、Claude、Gemini、DeepSeek、
+            Kimi、Qwen、Seed 系列等模型，在实际业务中深刻理解不同模型的差距与优劣。
+          </>
         ),
         tags: [
-          {
-            name: "Figma",
-            icon: "figma",
-          },
+          { name: "Agent", icon: "rocket" },
+          { name: "RAG", icon: "book" },
+          { name: "MCP", icon: "grid" },
+          { name: "OpenClaw", icon: "rocket" },
         ],
-        // optional: leave the array empty if you don't want to display images
-        images: [
-          {
-            src: "/images/projects/project-01/cover-02.jpg",
-            alt: "Project image",
-            width: 16,
-            height: 9,
-          },
-          {
-            src: "/images/projects/project-01/cover-03.jpg",
-            alt: "Project image",
-            width: 16,
-            height: 9,
-          },
-        ],
+        images: [],
       },
       {
-        title: "Next.js",
+        title: "Automation",
         description: (
-          <>Building next gen apps with Next.js + Once UI + Supabase.</>
+          <>n8n 工作流设计与运维 · Python 自动化 · AI 生图/生视频工作流 · 跨系统 API 集成。把重复性人工操作转化为稳定运行的自动化系统。</>
         ),
         tags: [
-          {
-            name: "JavaScript",
-            icon: "javascript",
-          },
-          {
-            name: "Next.js",
-            icon: "nextjs",
-          },
-          {
-            name: "Supabase",
-            icon: "supabase",
-          },
+          { name: "n8n", icon: "rocket" },
+          { name: "Python", icon: "document" },
         ],
-        // optional: leave the array empty if you don't want to display images
-        images: [
-          {
-            src: "/images/projects/project-01/cover-04.jpg",
-            alt: "Project image",
-            width: 16,
-            height: 9,
-          },
+        images: [],
+      },
+      {
+        title: "Full-Stack & Infrastructure",
+        description: (
+          <>前端 / 后端 / 数据库（PostgreSQL）全栈开发 · Docker 容器化 · Linux / 阿里云 ECS 服务器运维 · 本地 LLM 部署（Ollama）· 网络与计算机硬件。从开发到部署的全链路自持。</>
+        ),
+        tags: [
+          { name: "Docker", icon: "grid" },
+          { name: "Linux", icon: "globe" },
+          { name: "PostgreSQL", icon: "grid" },
+          { name: "Ollama", icon: "rocket" },
         ],
+        images: [],
+      },
+      {
+        title: "Business",
+        description: (
+          <>跨境电商业务全流程 · Shopify · 聚水潭 ERP · 金蝶财务 · 4PX 物流 · Meta 广告。理解业务是 AI 落地的前提——技术方案始终服务于业务价值。</>
+        ),
+        tags: [
+          { name: "Shopify", icon: "globe" },
+          { name: "ERP", icon: "grid" },
+          { name: "Meta Ads", icon: "grid" },
+        ],
+        images: [],
       },
     ],
   },
@@ -237,17 +235,17 @@ const about: About = {
 const blog: Blog = {
   path: "/blog",
   label: "Blog",
-  title: "Writing about design and tech...",
-  description: `Read what ${person.name} has been up to recently`,
+  title: "实战复盘与 AI 实验室",
+  description: `${person.name} 的 AI 应用实践笔记`,
   // Create new blog posts by adding a new .mdx file to app/blog/posts
   // All posts will be listed on the /blog route
 };
 
 const work: Work = {
   path: "/work",
-  label: "Work",
+  label: "Projects",
   title: `Projects – ${person.name}`,
-  description: `Design and dev projects by ${person.name}`,
+  description: `AI 应用与自动化项目`,
   // Create new project pages by adding a new .mdx file to app/blog/posts
   // All projects will be listed on the /home and /work routes
 };
@@ -259,48 +257,7 @@ const gallery: Gallery = {
   description: `A photo collection by ${person.name}`,
   // Images by https://lorant.one
   // These are placeholder images, replace with your own
-  images: [
-    {
-      src: "/images/gallery/horizontal-1.jpg",
-      alt: "image",
-      orientation: "horizontal",
-    },
-    {
-      src: "/images/gallery/vertical-4.jpg",
-      alt: "image",
-      orientation: "vertical",
-    },
-    {
-      src: "/images/gallery/horizontal-3.jpg",
-      alt: "image",
-      orientation: "horizontal",
-    },
-    {
-      src: "/images/gallery/vertical-1.jpg",
-      alt: "image",
-      orientation: "vertical",
-    },
-    {
-      src: "/images/gallery/vertical-2.jpg",
-      alt: "image",
-      orientation: "vertical",
-    },
-    {
-      src: "/images/gallery/horizontal-2.jpg",
-      alt: "image",
-      orientation: "horizontal",
-    },
-    {
-      src: "/images/gallery/horizontal-4.jpg",
-      alt: "image",
-      orientation: "horizontal",
-    },
-    {
-      src: "/images/gallery/vertical-3.jpg",
-      alt: "image",
-      orientation: "vertical",
-    },
-  ],
+  images: [],
 };
 
 export { person, social, newsletter, home, about, blog, work, gallery };

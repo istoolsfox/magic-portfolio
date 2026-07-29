@@ -1,0 +1,45 @@
+---
+title: "让 AI Agent 通过 SSH 管理服务器：一次真实的生产事故排查"
+subtitle: "MCP / Agent 工具调用实践复盘"
+summary: "给 AI Agent 配置 SSH 能力后，它独立完成了一次真实事故的全流程处置：发现 Docker 假死容器、定位 OOM 根因、恢复服务、加固资源限制。这篇复盘记录完整过程与思考。"
+publishedAt: "2026-07-28"
+tag: "Agent Lab"
+---
+
+## 背景
+
+我给 AI Agent 配置了免密 SSH 能力（`~/.ssh/config` + 密钥认证），让它可以直接操作我的云服务器。
+本以为只是跑跑 `df -h` 的便利工具，结果它完成了一次教科书级的生产事故处置。
+
+## 事故现场
+
+让 Agent 看一眼 Docker 里的 n8n，它发现了诡异的矛盾：
+
+```text
+docker ps        → Up 12 days（看起来正常）
+docker exec      → cannot exec in a stopped state（？？）
+docker stats     → MEM 0B（进程根本不存在）
+公网访问          → 502 Bad Gateway
+```
+
+## 根因定位
+
+Agent 的排查链路：
+
+1. `docker inspect` 取出容器记录的 PID
+2. `ps -p <PID>` 验证 → **进程不存在，容器实际已死**
+3. `dmesg | grep -i oom` → 找到三天前的 OOM Killer 记录：内核杀掉了容器主进程，但 dockerd 状态未同步
+
+**结论：Docker 显示 running 不代表进程活着。PID 验证 + dmesg 是假死诊断的黄金组合。**
+
+## 恢复与加固
+
+- `docker restart` 恢复服务（数据在 volume 中，无损失）
+- `docker update --memory 1g --memory-swap 2g` 给容器加内存硬上限
+- 效果：以后即使内存泄漏，cgroup OOM 只会重启容器，不会拖垮整台服务器
+
+## 关于 Agent 运维的思考
+
+- **只读操作放开，写操作确认**——Agent 的排查效率远超人工翻文档，但破坏性命令必须有确认环节
+- **非交互是前提**——密钥免密、`sudo -n`、`BatchMode=yes`，Agent 无法输入密码
+- **让 Agent 复述证据链**——每个结论都要求给出命令输出佐证，避免"看起来对"的幻觉判断

@@ -73,7 +73,7 @@ export const Header = () => {
         }}
       >
         <Row paddingLeft="12" fillWidth vertical="center" textVariant="body-default-s">
-          {display.location && <Row s={{ hide: true }}>{person.location}</Row>}
+          {display.location && <Row s={{ hide: true }}>杭州, China</Row>}
         </Row>
         <Row fillWidth horizontal="center">
           <Row
@@ -143,6 +143,44 @@ export const Header = () => {
                       prefixIcon="book"
                       href="/blog"
                       selected={pathname.startsWith("/blog")}
+                    />
+                  </Row>
+                </>
+              )}
+              {routes["/ideas"] && (
+                <>
+                  <Row s={{ hide: true }}>
+                    <ToggleButton
+                      prefixIcon="lightbulb"
+                      href="/ideas"
+                      label="Ideas"
+                      selected={pathname.startsWith("/ideas")}
+                    />
+                  </Row>
+                  <Row hide s={{ hide: false }}>
+                    <ToggleButton
+                      prefixIcon="lightbulb"
+                      href="/ideas"
+                      selected={pathname.startsWith("/ideas")}
+                    />
+                  </Row>
+                </>
+              )}
+              {routes["/chat"] && (
+                <>
+                  <Row s={{ hide: true }}>
+                    <ToggleButton
+                      prefixIcon="email"
+                      href="/chat"
+                      label="Chat"
+                      selected={pathname.startsWith("/chat")}
+                    />
+                  </Row>
+                  <Row hide s={{ hide: false }}>
+                    <ToggleButton
+                      prefixIcon="email"
+                      href="/chat"
+                      selected={pathname.startsWith("/chat")}
                     />
                   </Row>
                 </>

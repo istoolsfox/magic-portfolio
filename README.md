@@ -10,7 +10,6 @@ AI 应用工程师 / 全栈开发者。这里记录我在 AI Agent、工作流�
 - **[Work](https://toolsfox.top/work)** —— 项目作品集：电商自动化系统、企业级 AI Agent、AI 运维工作流等
 - **[About](https://toolsfox.top/about)** —— 关于我
 - **[Chat to Me](https://toolsfox.top/chat)** —— 在线联系表单
-- **[Gallery](https://toolsfox.top/gallery)** —— 相册
 
 ## 技术栈
 

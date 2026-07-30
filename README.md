@@ -1,91 +1,44 @@
-# Magic Portfolio
+# ToolsFox Portfolio
 
-Magic Portfolio is a simple, clean, beginner-friendly portfolio template. It supports an MDX-based content system for projects and blog posts, an about / CV page and a gallery.
+我的个人网站与技术博客：**[toolsfox.top](https://toolsfox.top)**
 
-View the demo [here](https://demo.magic-portfolio.com).
+AI 应用工程师 / 全栈开发者。这里记录我在 AI Agent、工作流自动化（n8n）、本地大模型等方向的实战复盘。
 
-![Magic Portfolio](public/images/og/home.jpg)
+## 网站内容
 
-## Getting started
+- **[Blog](https://toolsfox.top/blog)** —— 实战复盘型技术博客（背景 → 方案 → 踩坑 → 效果 → 总结）
+- **[Work](https://toolsfox.top/work)** —— 项目作品集：电商自动化系统、企业级 AI Agent、AI 运维工作流等
+- **[About](https://toolsfox.top/about)** —— 关于我
+- **[Chat to Me](https://toolsfox.top/chat)** —— 在线联系表单
+- **[Gallery](https://toolsfox.top/gallery)** —— 相册
 
-**1. Clone the repository**
-```
-git clone https://github.com/once-ui-system/magic-portfolio.git
-```
+## 技术栈
 
-**2. Install dependencies**
-```
+- Next.js 16（App Router）+ MDX 内容系统
+- Once UI 组件库
+- 部署：本地构建 → rsync → PM2（阿里云 ECS + Nginx）
+
+## 本地开发
+
+```bash
 npm install
+npm run dev        # http://localhost:3000
 ```
 
-**3. Run dev server**
-```
-npm run dev
-```
+## 新增博客文章
 
-**4. Edit config**
-```
-src/resources/once-ui.config.js
-```
+在 `src/app/blog/posts/` 下新建 `<slug>.mdx` 即可，无需注册路由。
+完整规范见 [docs/BLOG_SOP.md](docs/BLOG_SOP.md)。
 
-**5. Edit content**
-```
-src/resources/content.js
+## 部署
+
+```bash
+./deploy.sh
 ```
 
-**6. Create blog posts / projects**
-```
-Add a new .mdx file to src/app/blog/posts or src/app/work/projects
-```
+一键完成：git 提交备份 → 本地构建 → 推送 GitHub → rsync 同步服务器 → PM2 重启 → 探活验证。
+（注意：严禁在服务器上执行构建，详见 deploy.sh 注释。）
 
-Magic Portfolio was built with [Once UI](https://once-ui.com) for [Next.js](https://nextjs.org). It requires Node.js v18.17+.
+---
 
-## Documentation
-
-Docs available at: [docs.once-ui.com](https://docs.once-ui.com/docs/magic-portfolio/quick-start)
-
-## Features
-
-### Once UI
-- All tokens, components & features of [Once UI](https://once-ui.com)
-
-### SEO
-- Automatic open-graph and X image generation with next/og
-- Automatic schema and metadata generation based on the content file
-
-### Design
-- Responsive layout optimized for all screen sizes
-- Timeless design without heavy animations and motion
-- Endless customization options through [data attributes](https://once-ui.com/docs/theming)
-
-### Content
-- Render sections conditionally based on the content file
-- Enable or disable pages for blog, work, gallery and about / CV
-- Generate and display social links automatically
-- Set up password protection for URLs
-
-### Localization
-- A localized, earlier version of Magic Portfolio is available with the next-intl library
-- To use localization, switch to the 'i18n' branch
-
-## Creators
-
-Lorant One: [Threads](https://www.threads.net/@lorant.one) / [LinkedIn](https://www.linkedin.com/in/lorant-one/)
-
-## Get involved
-
-- Join the Design Engineers Club on [Discord](https://discord.com/invite/5EyAQ4eNdS) and share your project with us!
-- Deployed your docs? Share it on the [Once UI Hub](https://once-ui.com/hub) too! We feature our favorite apps on our landing page.
-
-## License
-
-Distributed under the CC BY-NC 4.0 License.
-- Attribution is required.
-- Commercial usage is not allowed.
-- You can extend the license to [Dopler CC](https://dopler.app/license) by purchasing a [Once UI Pro](https://once-ui.com/pricing) license.
-
-See `LICENSE.txt` for more information.
-
-## Deploy with Vercel
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fonce-ui-system%2Fmagic-portfolio&project-name=portfolio&repository-name=portfolio&redirect-url=https%3A%2F%2Fgithub.com%2Fonce-ui-system%2Fmagic-portfolio&demo-title=Magic%20Portfolio&demo-description=Showcase%20your%20designers%20or%20developer%20portfolio&demo-url=https%3A%2F%2Fdemo.magic-portfolio.com&demo-image=%2F%2Fraw.githubusercontent.com%2Fonce-ui-system%2Fmagic-portfolio%2Fmain%2Fpublic%2Fimages%2Fog%2Fhome.jpg)
+基于 [Once UI Magic Portfolio](https://github.com/once-ui-system/magic-portfolio) 模板定制。

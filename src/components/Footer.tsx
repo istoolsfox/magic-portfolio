@@ -2,6 +2,7 @@ import { Row, IconButton, Text } from "@once-ui-system/core";
 import { social } from "@/resources";
 import { WeChatQRCard } from "./WeChatQRCard";
 import styles from "./Footer.module.scss";
+import Image from "next/image";
 
 export const Footer = () => {
   return (
@@ -52,16 +53,37 @@ export const Footer = () => {
         <Text variant="body-default-s" onBackground="neutral-weak">
           © {new Date().getFullYear()} {process.env.NEXT_PUBLIC_SITE_NAME || "ToolsFox"}. All rights reserved.
         </Text>
-        <Text variant="body-default-s" onBackground="neutral-weak">
-          <a 
-            href="https://beian.miit.gov.cn/" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            style={{ color: "inherit", textDecoration: "none" }}
-          >
-            京ICP备2024051234号-1
-          </a>
-        </Text>
+        <Row gap="8" vertical="center" horizontal="center">
+          <Text variant="body-default-s" onBackground="neutral-weak">
+            <a 
+              href="https://beian.miit.gov.cn/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              京ICP备2024051234号-1
+            </a>
+          </Text>
+          <Text variant="body-default-s" onBackground="neutral-weak">
+            |
+          </Text>
+          <Row gap="4" vertical="center" horizontal="center">
+            <Image 
+              src="/images/beian-icon.svg" 
+              alt="备案图标" 
+              width="16" 
+              height="16" 
+            />
+            <a 
+              href="https://beian.mps.gov.cn/#/query/webSearch?code=33010902004850" 
+              target="_blank" 
+              rel="noreferrer"
+              style={{ color: "inherit", textDecoration: "none" }}
+            >
+              浙公网安备33010902004850号
+            </a>
+          </Row>
+        </Row>
       </Row>
       <Row height="80" hide s={{ hide: false }} />
     </Row>

@@ -1,4 +1,4 @@
-import { Row, IconButton } from "@once-ui-system/core";
+import { Row, IconButton, Text } from "@once-ui-system/core";
 import { social } from "@/resources";
 import { WeChatQRCard } from "./WeChatQRCard";
 import styles from "./Footer.module.scss";
@@ -40,6 +40,28 @@ export const Footer = () => {
             );
           })}
         </Row>
+      </Row>
+      <Row
+        fillWidth
+        paddingY="16"
+        paddingX="16"
+        horizontal="center"
+        vertical="center"
+        s={{ direction: "column", align: "center" }}
+      >
+        <Text variant="body-default-s" onBackground="neutral-weak">
+          © {new Date().getFullYear()} {process.env.NEXT_PUBLIC_SITE_NAME || "ToolsFox"}. All rights reserved.
+        </Text>
+        <Text variant="body-default-s" onBackground="neutral-weak">
+          <a 
+            href="https://beian.miit.gov.cn/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ color: "inherit", textDecoration: "none" }}
+          >
+            京ICP备2024051234号-1
+          </a>
+        </Text>
       </Row>
       <Row height="80" hide s={{ hide: false }} />
     </Row>

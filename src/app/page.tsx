@@ -1,20 +1,21 @@
 import {
+  Background,
   Heading,
   Text,
   Button,
   Avatar,
+  IconButton,
+  Chip,
   RevealFx,
   Column,
-  Badge,
   Row,
   Schema,
   Meta,
-  Line,
 } from "@once-ui-system/core";
-import { home, about, person, baseURL, routes } from "@/resources";
-import { Mailchimp } from "@/components";
+import { home, about, work, routes, person, baseURL } from "@/resources";
 import { Projects } from "@/components/work/Projects";
 import { Posts } from "@/components/blog/Posts";
+import { WeChatQRCard } from "@/components/WeChatQRCard";
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -27,6 +28,8 @@ export async function generateMetadata() {
 }
 
 export default function Home() {
+  const featuredSlug = home.featured.href.split("/").pop() ?? "";
+
   return (
     <Column maxWidth="m" gap="xl" paddingY="12" horizontal="center">
       <Schema
@@ -35,96 +38,143 @@ export default function Home() {
         path={home.path}
         title={home.title}
         description={home.description}
-        image={`/api/og/generate?title=${encodeURIComponent(home.title)}`}
+        image={home.image}
         author={{
           name: person.name,
           url: `${baseURL}${about.path}`,
           image: `${baseURL}${person.avatar}`,
         }}
       />
-      <Column fillWidth horizontal="center" gap="m">
-        <Column maxWidth="s" horizontal="center" align="center">
-          {home.featured.display && (
-            <RevealFx
-              fillWidth
-              horizontal="center"
-              paddingTop="16"
-              paddingBottom="32"
-              paddingLeft="12"
-            >
-              <Badge
-                background="brand-alpha-weak"
-                paddingX="12"
-                paddingY="4"
-                onBackground="neutral-strong"
-                textVariant="label-default-s"
-                arrow={false}
-                href={home.featured.href}
-              >
-                <Row paddingY="2">{home.featured.title}</Row>
-              </Badge>
-            </RevealFx>
-          )}
-          <RevealFx translateY="4" fillWidth horizontal="center" paddingBottom="16">
-            <Heading wrap="balance" variant="display-strong-l">
+
+      {/* Hero */}
+      <Column fillWidth horizontal="center" position="relative">
+        <Column maxWidth="s" horizontal="center" align="center" gap="24" paddingY="64" zIndex={1}>
+          <RevealFx translateY="8">
+            <Avatar src={person.avatar} size={6.5} />
+          </RevealFx>
+          <RevealFx translateY="8" delay={0.1}>
+            <Heading wrap="balance" variant="display-strong-l" align="center">
               {home.headline}
             </Heading>
           </RevealFx>
-          <RevealFx translateY="8" delay={0.2} fillWidth horizontal="center" paddingBottom="32">
-            <Text wrap="balance" onBackground="neutral-weak" variant="heading-default-xl">
+          <RevealFx translateY="8" delay={0.2}>
+            <Text
+              wrap="balance"
+              onBackground="neutral-weak"
+              variant="body-default-l"
+              align="center"
+            >
               {home.subline}
             </Text>
           </RevealFx>
-          <RevealFx paddingTop="12" delay={0.4} horizontal="center" paddingLeft="12">
-            <Button
-              id="about"
-              data-border="rounded"
-              href={about.path}
-              variant="secondary"
-              size="m"
-              weight="default"
-              arrowIcon
-            >
-              <Row gap="8" vertical="center" paddingRight="4">
-                {about.avatar.display && (
-                  <Avatar
-                    marginRight="8"
-                    style={{ marginLeft: "-0.75rem" }}
-                    src={person.avatar}
-                    size="m"
-                  />
-                )}
-                {about.title}
+          {home.focus && home.focus.length > 0 && (
+            <RevealFx translateY="8" delay={0.3}>
+              <Row gap="8" wrap vertical="center" horizontal="center">
+                {home.focus.map((item) => (
+                  <Chip key={item} label={item} />
+                ))}
               </Row>
-            </Button>
+            </RevealFx>
+          )}
+          <RevealFx translateY="8" delay={0.4}>
+            <Row gap="12" wrap vertical="center" horizontal="center" paddingTop="16">
+              <Button
+                id="work"
+                data-border="rounded"
+                href={work.path}
+                variant="primary"
+                size="m"
+                suffixIcon="arrowRight"
+              >
+                查看项目
+              </Button>
+              {routes["/chat"] && (
+                <Button id="chat" data-border="rounded" href="/chat" variant="secondary" size="m">
+                  聊聊合作
+                </Button>
+              )}
+              <Row gap="8" paddingLeft="12" vertical="center">
+                <WeChatQRCard>
+                  <IconButton
+                    href="/images/wechat-qr.jpg"
+                    icon="wechat"
+                    variant="ghost"
+                    size="m"
+                    tooltip="微信"
+                    tooltipPosition="bottom"
+                  />
+                </WeChatQRCard>
+                <IconButton
+                  href="https://bonjour.bio/toolsfox"
+                  target="_blank"
+                  rel="noreferrer"
+                  icon="bonjour"
+                  variant="ghost"
+                  size="m"
+                  tooltip="Bonjour"
+                  tooltipPosition="bottom"
+                />
+                <IconButton
+                  href={`mailto:${person.email}`}
+                  icon="email"
+                  variant="ghost"
+                  size="m"
+                  tooltip="Email"
+                  tooltipPosition="bottom"
+                />
+              </Row>
+            </Row>
           </RevealFx>
         </Column>
       </Column>
-      <RevealFx translateY="16" delay={0.6}>
-        <Projects range={[1, 1]} />
-      </RevealFx>
-      {routes["/blog"] && (
-        <Column fillWidth gap="24" marginBottom="l">
-          <Row fillWidth paddingRight="64">
-            <Line maxWidth={48} />
+
+      {/* 精选项目 */}
+      {home.featured.display && (
+        <Column fillWidth gap="16">
+          <Row fillWidth vertical="center" horizontal="between" paddingX="l">
+            <Text variant="label-strong-s" onBackground="brand-medium">
+              精选项目
+            </Text>
+            <Button href={home.featured.href} variant="tertiary" size="s" suffixIcon="arrowRight">
+              查看案例
+            </Button>
           </Row>
-          <Row fillWidth gap="24" marginTop="40" s={{ direction: "column" }}>
-            <Row flex={1} paddingLeft="l" paddingTop="24">
-              <Heading as="h2" variant="display-strong-xs" wrap="balance">
-                Latest from the blog
-              </Heading>
-            </Row>
-            <Row flex={3} paddingX="20">
-              <Posts range={[1, 2]} columns="2" />
-            </Row>
-          </Row>
-          <Row fillWidth paddingLeft="64" horizontal="end">
-            <Line maxWidth={48} />
-          </Row>
+          <Projects range={[1, 1]} featured={featuredSlug} />
         </Column>
       )}
-      <Projects range={[2]} />
-      <Mailchimp />
+
+      {/* 最新文章 */}
+      {routes["/blog"] && (
+        <Column fillWidth gap="16">
+          <Row fillWidth vertical="center" horizontal="between" paddingX="l">
+            <Heading as="h2" variant="display-strong-xs">
+              最新文章
+            </Heading>
+            <Button href="/blog" variant="tertiary" size="s" suffixIcon="arrowRight">
+              全部文章
+            </Button>
+          </Row>
+          <Column paddingX="l">
+            <Posts range={[1, 2]} columns="2" />
+          </Column>
+        </Column>
+      )}
+
+      {/* 更多项目 */}
+      <Column fillWidth gap="16">
+        <Row fillWidth vertical="center" horizontal="between" paddingX="l">
+          <Text variant="label-strong-s" onBackground="brand-medium">
+            更多项目
+          </Text>
+          <Button href={work.path} variant="tertiary" size="s" suffixIcon="arrowRight">
+            全部项目
+          </Button>
+        </Row>
+        <Projects
+          exclude={home.featured.display ? [featuredSlug] : undefined}
+          featured={featuredSlug}
+        />
+      </Column>
     </Column>
   );
 }

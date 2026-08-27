@@ -1,11 +1,11 @@
 import { About, Blog, Gallery, Home, Newsletter, Person, Social, Work } from "@/types";
-import { Line, Row, Text } from "@once-ui-system/core";
+import { LetterFx } from "@once-ui-system/core";
 
 const person: Person = {
   firstName: "ToolsFox",
   lastName: "",
   name: `ToolsFox`,
-  role: "AI Application Engineer",
+  role: "AI 应用工程师",
   avatar: "/images/avatar.png",
   email: "toolsfox@qq.com",
   location: "Asia/Shanghai", // Expecting the IANA time zone identifier, e.g., 'Europe/Vienna'
@@ -47,29 +47,31 @@ const home: Home = {
   path: "/",
   image: "/images/og/home.jpg",
   label: "Home",
-  title: `ToolsFox – AI Application Engineer`,
+  title: `ToolsFox – AI 应用工程师`,
   description: `专注于 AI Agent、企业自动化、LLM 应用落地`,
-  headline: <>Building AI agents, automation workflows, and intelligent business systems.</>,
+  headline: (
+    <>
+      <LetterFx trigger="instant" speed="fast">
+        把大语言模型，
+      </LetterFx>
+      <br />
+      <LetterFx trigger="instant" speed="fast">
+        变成实际生产力。
+      </LetterFx>
+    </>
+  ),
   featured: {
     display: true,
-    title: (
-      <Row gap="12" vertical="center">
-        <strong className="ml-4">跨境电商全链路自动化</strong>{" "}
-        <Line background="brand-alpha-strong" vert height="20" />
-        <Text marginRight="4" onBackground="brand-medium">
-          精选项目
-        </Text>
-      </Row>
-    ),
+    title: <>跨境电商全链路自动化</>,
     href: "/work/ecommerce-automation-system",
   },
   subline: (
     <>
-      我是 ToolsFox，一名 AI 应用工程师，专注于把大语言模型转化为实际生产力。
-      <br />
-      Focus: LLM Applications · AI Agent · Workflow Automation · E-commerce AI · Local Model Deployment
+      我是 ToolsFox，一名 AI 应用工程师。我把 Agent 编排、RAG 与自动化工作流接进真实业务——
+      跨境电商、企业知识库、内容生产，让模型能力真正落到业务价值。
     </>
   ),
+  focus: ["AI Agent", "RAG", "工作流自动化", "本地模型部署"],
 };
 
 const about: About = {
@@ -138,21 +140,16 @@ const about: About = {
             打通 Shopify 运营链路：商品一键上架与管理、客户信息管理、客户旅程追踪、
             画像分析与归因分析，让运营决策有数据可依。
           </>,
-          <>
-            实现 4PX 物流追踪与管理，及时跟进问题物流；运费管理与追踪，异常场景实时监控与通知。
-          </>,
+          <>实现 4PX 物流追踪与管理，及时跟进问题物流；运费管理与追踪，异常场景实时监控与通知。</>,
           <>
             Meta 广告数据分析，并整合加购、销量、广告等多维数据做统计与转化率分析，
             为投放与运营策略提供支撑。
           </>,
+          <>搭建 PR 自动化：自动搜寻并追踪博主，跟进博主状态与发帖动态，实现友好互动与合作转化。</>,
+          <>金蝶财务数据分析与自动化：实现一键报销、财务金额管理与支配。</>,
           <>
-            搭建 PR 自动化：自动搜寻并追踪博主，跟进博主状态与发帖动态，实现友好互动与合作转化。
-          </>,
-          <>
-            金蝶财务数据分析与自动化：实现一键报销、财务金额管理与支配。
-          </>,
-          <>
-            开发 OpenClaw 企业 AI Agent：自动找博主、广告设计、开款头脑风暴，以及多个企业知识库的沉淀。
+            开发 OpenClaw 企业 AI
+            Agent：自动找博主、广告设计、开款头脑风暴，以及多个企业知识库的沉淀。
           </>,
         ],
         images: [],
@@ -179,9 +176,9 @@ const about: About = {
         title: "AI Application",
         description: (
           <>
-            AI Agent 设计与编排 · RAG · Tool Calling · MCP · Prompt Engineering，理解
-            Transformer 与 AI 运作的底层逻辑。深度使用 ChatGPT、Claude、Gemini、DeepSeek、
-            Kimi、Qwen、Seed 系列等模型，在实际业务中深刻理解不同模型的差距与优劣。
+            AI Agent 设计与编排 · RAG · Tool Calling · MCP · Prompt Engineering，理解 Transformer 与
+            AI 运作的底层逻辑。深度使用 ChatGPT、Claude、Gemini、DeepSeek、 Kimi、Qwen、Seed
+            系列等模型，在实际业务中深刻理解不同模型的差距与优劣。
           </>
         ),
         tags: [
@@ -195,7 +192,10 @@ const about: About = {
       {
         title: "Automation",
         description: (
-          <>n8n 工作流设计与运维 · Python 自动化 · AI 生图/生视频工作流 · 跨系统 API 集成。把重复性人工操作转化为稳定运行的自动化系统。</>
+          <>
+            n8n 工作流设计与运维 · Python 自动化 · AI 生图/生视频工作流 · 跨系统 API
+            集成。把重复性人工操作转化为稳定运行的自动化系统。
+          </>
         ),
         tags: [
           { name: "n8n", icon: "rocket" },
@@ -206,7 +206,10 @@ const about: About = {
       {
         title: "Full-Stack & Infrastructure",
         description: (
-          <>前端 / 后端 / 数据库（PostgreSQL）全栈开发 · Docker 容器化 · Linux / 阿里云 ECS 服务器运维 · 本地 LLM 部署（Ollama）· 网络与计算机硬件。从开发到部署的全链路自持。</>
+          <>
+            前端 / 后端 / 数据库（PostgreSQL）全栈开发 · Docker 容器化 · Linux / 阿里云 ECS
+            服务器运维 · 本地 LLM 部署（Ollama）· 网络与计算机硬件。从开发到部署的全链路自持。
+          </>
         ),
         tags: [
           { name: "Docker", icon: "grid" },
@@ -219,7 +222,10 @@ const about: About = {
       {
         title: "Business",
         description: (
-          <>跨境电商业务全流程 · Shopify · 聚水潭 ERP · 金蝶财务 · 4PX 物流 · Meta 广告。理解业务是 AI 落地的前提——技术方案始终服务于业务价值。</>
+          <>
+            跨境电商业务全流程 · Shopify · 聚水潭 ERP · 金蝶财务 · 4PX 物流 · Meta 广告。理解业务是
+            AI 落地的前提——技术方案始终服务于业务价值。
+          </>
         ),
         tags: [
           { name: "Shopify", icon: "globe" },

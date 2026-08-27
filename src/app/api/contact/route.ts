@@ -21,7 +21,8 @@ function rateLimited(ip: string): boolean {
 
 export async function POST(request: NextRequest) {
   try {
-    const ip = request.headers.get("x-real-ip") || request.headers.get("x-forwarded-for") || "unknown";
+    const ip =
+      request.headers.get("x-real-ip") || request.headers.get("x-forwarded-for") || "unknown";
     if (rateLimited(ip)) {
       return NextResponse.json({ error: "发送太频繁了，请稍后再试" }, { status: 429 });
     }

@@ -55,17 +55,20 @@ export default function Ideas() {
           包括但不限于恋爱、工作、朋友。
         </Text>
         <Text variant="body-default-m" onBackground="neutral-medium">
-          所以在未来（也许很遥远，也许很近），人们为了快速了解对方，会通过自己的 Agent
-          去找到和 ta 相符的那个 Agent，让 Agent 帮你匹配适合你的人——coffee chat、寻找朋友、约会、寻找恋人。
+          所以在未来（也许很遥远，也许很近），人们为了快速了解对方，会通过自己的 Agent 去找到和 ta
+          相符的那个 Agent，让 Agent 帮你匹配适合你的人——coffee chat、寻找朋友、约会、寻找恋人。
         </Text>
         <Text variant="body-default-m" onBackground="neutral-medium">
-          一个人的性格由先天和后天共同形成。要让匹配足够精准，AI 需要像一个真正喜欢你的伴侣那样去了解你：
+          一个人的性格由先天和后天共同形成。要让匹配足够精准，AI
+          需要像一个真正喜欢你的伴侣那样去了解你：
           从出生年月与具体时间，到人生轨迹与历程——生命中的重大事件、转折点、普通经历，还有交友与家庭。
-          对你的一切都感兴趣，让人们愿意和 AI 聊天。这样 AI 才能真正了解你，找人才会精准——甚至比你自己还了解你自己。
+          对你的一切都感兴趣，让人们愿意和 AI 聊天。这样 AI
+          才能真正了解你，找人才会精准——甚至比你自己还了解你自己。
         </Text>
         <Text variant="body-default-m" onBackground="neutral-medium">
           我认为可以综合玄学、医疗、心理学等多个维度，形成多体系地探索一个人的内在本质。我很喜欢
-          AdventureX 报名问卷的形式：它不直白地问最浅层的问题，而是更深入、更细致地探索一个人的观念、
+          AdventureX
+          报名问卷的形式：它不直白地问最浅层的问题，而是更深入、更细致地探索一个人的观念、
           理性思维和逻辑能力。如果要做这样的产品，就应该做到这种深度。
         </Text>
       </Column>
@@ -83,8 +86,8 @@ export default function Ideas() {
           想做一个 AI + 心理学的模块：通过外部硬件设备，自动分析一个人当前的心理状态。
         </Text>
         <Text variant="body-default-m" onBackground="neutral-medium">
-          这个想法目前还在草稿阶段，没有太多具体构思——但它和上面 AtoA
-          的方向是一体的：让 AI 从更多维度真正读懂一个人。
+          这个想法目前还在草稿阶段，没有太多具体构思——但它和上面 AtoA 的方向是一体的：让 AI
+          从更多维度真正读懂一个人。
         </Text>
       </Column>
 

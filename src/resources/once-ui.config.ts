@@ -37,29 +37,27 @@ const display: DisplayConfig = {
 const protectedRoutes: ProtectedRoutesConfig = {};
 
 // Import and set font for each variant
-import { Geist } from "next/font/google";
-import { Geist_Mono } from "next/font/google";
+// 拉丁字符走 Geist，中文回退到 Noto Sans SC，最终在 custom.css 里组合成字体栈
+import { Geist, Geist_Mono, Noto_Sans_SC } from "next/font/google";
 
 const heading = Geist({
-  variable: "--font-heading",
+  variable: "--font-sans-latin",
   subsets: ["latin"],
   display: "swap",
 });
 
-const body = Geist({
-  variable: "--font-body",
-  subsets: ["latin"],
-  display: "swap",
-});
+const body = heading;
 
-const label = Geist({
-  variable: "--font-label",
-  subsets: ["latin"],
-  display: "swap",
-});
+const label = heading;
 
 const code = Geist_Mono({
-  variable: "--font-code",
+  variable: "--font-mono-latin",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const cjk = Noto_Sans_SC({
+  variable: "--font-sans-cjk",
   subsets: ["latin"],
   display: "swap",
 });
@@ -223,6 +221,7 @@ export {
   protectedRoutes,
   baseURL,
   fonts,
+  cjk,
   style,
   schema,
   sameAs,

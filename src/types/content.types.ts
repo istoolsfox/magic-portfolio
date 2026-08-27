@@ -107,6 +107,8 @@ export interface Home extends BasePageConfig {
   };
   /** The sub text which appears below the headline */
   subline: React.ReactNode;
+  /** Focus areas rendered as chips below the subline */
+  focus?: string[];
 }
 
 /**

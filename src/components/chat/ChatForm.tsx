@@ -56,19 +56,8 @@ export const ChatForm = () => {
     <form onSubmit={handleSubmit} style={{ width: "100%" }}>
       <Column fillWidth gap="16">
         <Row fillWidth gap="16" s={{ direction: "column" }}>
-          <Input
-            id="chat-name"
-            label="你的称呼 *"
-            ref={nameRef}
-            maxLength={100}
-          />
-          <Input
-            id="chat-email"
-            label="你的邮箱 *"
-            type="email"
-            ref={emailRef}
-            maxLength={200}
-          />
+          <Input id="chat-name" label="你的称呼 *" ref={nameRef} maxLength={100} />
+          <Input id="chat-email" label="你的邮箱 *" type="email" ref={emailRef} maxLength={200} />
         </Row>
         <Textarea
           id="chat-message"

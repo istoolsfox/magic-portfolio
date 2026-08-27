@@ -10,25 +10,24 @@ export function formatDate(date: string, includeRelative = false) {
   const daysAgo = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
   const hoursAgo = Math.floor(timeDifference / (1000 * 60 * 60));
   const minutesAgo = Math.floor(timeDifference / (1000 * 60));
-  const secondsAgo = Math.floor(timeDifference / 1000);
 
   let formattedDate = "";
 
   if (daysAgo >= 365) {
-    formattedDate = `${Math.floor(daysAgo / 365)}y ago`;
+    formattedDate = `${Math.floor(daysAgo / 365)} 年前`;
   } else if (daysAgo >= 30) {
-    formattedDate = `${Math.floor(daysAgo / 30)}mo ago`;
+    formattedDate = `${Math.floor(daysAgo / 30)} 个月前`;
   } else if (daysAgo > 0) {
-    formattedDate = `${daysAgo}d ago`;
+    formattedDate = `${daysAgo} 天前`;
   } else if (hoursAgo > 0) {
-    formattedDate = `${hoursAgo}h ago`;
+    formattedDate = `${hoursAgo} 小时前`;
   } else if (minutesAgo > 0) {
-    formattedDate = `${minutesAgo}m ago`;
+    formattedDate = `${minutesAgo} 分钟前`;
   } else {
-    formattedDate = "just now";
+    formattedDate = "刚刚";
   }
 
-  const fullDate = targetDate.toLocaleString("en-us", {
+  const fullDate = targetDate.toLocaleString("zh-CN", {
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -38,5 +37,5 @@ export function formatDate(date: string, includeRelative = false) {
     return fullDate;
   }
 
-  return `${fullDate} (${formattedDate})`;
+  return `${fullDate}（${formattedDate}）`;
 }

@@ -17,6 +17,7 @@ export {
   protectedRoutes,
   baseURL,
   fonts,
+  cjk,
   style,
   schema,
   sameAs,

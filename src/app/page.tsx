@@ -1,5 +1,4 @@
 import {
-  Background,
   Heading,
   Text,
   Button,
@@ -12,8 +11,7 @@ import {
   Schema,
   Meta,
 } from "@once-ui-system/core";
-import { home, about, work, routes, person, baseURL } from "@/resources";
-import { Projects } from "@/components/work/Projects";
+import { home, about, routes, person, baseURL } from "@/resources";
 import { Posts } from "@/components/blog/Posts";
 import { WeChatQRCard } from "@/components/WeChatQRCard";
 
@@ -28,8 +26,6 @@ export async function generateMetadata() {
 }
 
 export default function Home() {
-  const featuredSlug = home.featured.href.split("/").pop() ?? "";
-
   return (
     <Column maxWidth="m" gap="xl" paddingY="12" horizontal="center">
       <Schema
@@ -79,18 +75,18 @@ export default function Home() {
           <RevealFx translateY="8" delay={0.4}>
             <Row gap="12" wrap vertical="center" horizontal="center" paddingTop="16">
               <Button
-                id="work"
+                id="about"
                 data-border="rounded"
-                href={work.path}
+                href={about.path}
                 variant="primary"
                 size="m"
                 suffixIcon="arrowRight"
               >
-                查看项目
+                关于我
               </Button>
               {routes["/chat"] && (
                 <Button id="chat" data-border="rounded" href="/chat" variant="secondary" size="m">
-                  聊聊合作
+                  联系我
                 </Button>
               )}
               <Row gap="8" paddingLeft="12" vertical="center">
@@ -128,21 +124,6 @@ export default function Home() {
         </Column>
       </Column>
 
-      {/* 精选项目 */}
-      {home.featured.display && (
-        <Column fillWidth gap="16">
-          <Row fillWidth vertical="center" horizontal="between" paddingX="l">
-            <Text variant="label-strong-s" onBackground="brand-medium">
-              精选项目
-            </Text>
-            <Button href={home.featured.href} variant="tertiary" size="s" suffixIcon="arrowRight">
-              查看案例
-            </Button>
-          </Row>
-          <Projects range={[1, 1]} featured={featuredSlug} />
-        </Column>
-      )}
-
       {/* 最新文章 */}
       {routes["/blog"] && (
         <Column fillWidth gap="16">
@@ -159,22 +140,6 @@ export default function Home() {
           </Column>
         </Column>
       )}
-
-      {/* 更多项目 */}
-      <Column fillWidth gap="16">
-        <Row fillWidth vertical="center" horizontal="between" paddingX="l">
-          <Text variant="label-strong-s" onBackground="brand-medium">
-            更多项目
-          </Text>
-          <Button href={work.path} variant="tertiary" size="s" suffixIcon="arrowRight">
-            全部项目
-          </Button>
-        </Row>
-        <Projects
-          exclude={home.featured.display ? [featuredSlug] : undefined}
-          featured={featuredSlug}
-        />
-      </Column>
     </Column>
   );
 }

@@ -47,38 +47,38 @@ const home: Home = {
   path: "/",
   image: "/images/og/home.jpg",
   label: "Home",
-  title: `ToolsFox – AI 应用工程师`,
-  description: `专注于 AI Agent、企业自动化、LLM 应用落地`,
+  title: `ToolsFox – 个人主页`,
+  description: `ToolsFox 的个人网站：AI 学习笔记、技术实践与生活分享`,
   headline: (
     <>
       <LetterFx trigger="instant" speed="fast">
-        把大语言模型，
+        记录学习，
       </LetterFx>
       <br />
       <LetterFx trigger="instant" speed="fast">
-        变成实际生产力。
+        分享思考。
       </LetterFx>
     </>
   ),
   featured: {
-    display: true,
+    display: false,
     title: <>跨境电商全链路自动化</>,
     href: "/work/ecommerce-automation-system",
   },
   subline: (
     <>
-      我是 ToolsFox，一名 AI 应用工程师。我把 Agent 编排、RAG 与自动化工作流接进真实业务——
-      跨境电商、企业知识库、内容生产，让模型能力真正落到业务价值。
+      我是 ToolsFox，一名对 AI 和自动化感兴趣的工程师。这里是我的个人小站，
+      记录我在 AI 应用、编程与日常生活中的学习笔记和一点思考。
     </>
   ),
-  focus: ["AI Agent", "RAG", "工作流自动化", "本地模型部署"],
+  focus: ["AI 应用", "编程笔记", "读书思考", "生活随记"],
 };
 
 const about: About = {
   path: "/about",
   label: "About",
   title: `About – ${person.name}`,
-  description: `${person.name}，${person.role}，专注 AI 应用落地`,
+  description: `${person.name} 的个人介绍与学习经历`,
   tableOfContent: {
     display: true,
     subItems: false,
@@ -145,7 +145,7 @@ const about: About = {
             Meta 广告数据分析，并整合加购、销量、广告等多维数据做统计与转化率分析，
             为投放与运营策略提供支撑。
           </>,
-          <>搭建 PR 自动化：自动搜寻并追踪博主，跟进博主状态与发帖动态，实现友好互动与合作转化。</>,
+          <>搭建 PR 自动化：自动搜寻并追踪博主，跟进博主状态与发帖动态。</>,
           <>金蝶财务数据分析与自动化：实现一键报销、财务金额管理与支配。</>,
           <>
             开发 OpenClaw 企业 AI
@@ -241,8 +241,8 @@ const about: About = {
 const blog: Blog = {
   path: "/blog",
   label: "Blog",
-  title: "实战复盘与 AI 实验室",
-  description: `${person.name} 的 AI 应用实践笔记`,
+  title: "学习笔记与思考",
+  description: `${person.name} 的个人学习笔记`,
   // Create new blog posts by adding a new .mdx file to app/blog/posts
   // All posts will be listed on the /blog route
 };
@@ -251,7 +251,7 @@ const work: Work = {
   path: "/work",
   label: "Projects",
   title: `Projects – ${person.name}`,
-  description: `AI 应用与自动化项目`,
+  description: `项目与实践记录`,
   // Create new project pages by adding a new .mdx file to app/blog/posts
   // All projects will be listed on the /home and /work routes
 };

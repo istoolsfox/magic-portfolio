@@ -37,7 +37,7 @@ export default function Chat() {
       <Column gap="12">
         <Heading variant="display-strong-l">Chat to Me</Heading>
         <Text variant="body-default-l" onBackground="neutral-weak">
-          有想聊的项目、想法，或者只是想打个招呼？在这里写给我，内容会直接发送到我的邮箱，
+          有想聊的想法、问题，或者只是想打个招呼？在这里写给我，内容会直接发送到我的邮箱，
           我看到后会尽快回复你。
         </Text>
       </Column>

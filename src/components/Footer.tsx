@@ -53,6 +53,22 @@ export const Footer = () => {
         <Row gap="4" vertical="center" horizontal="center">
           <Image
             src="/images/beian.png"
+            alt="备案图标"
+            width={15}
+            height={16}
+          />
+          <a
+            href="https://beian.miit.gov.cn/"
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: "inherit", textDecoration: "none" }}
+          >
+            浙ICP备2026047392号-1
+          </a>
+        </Row>
+        <Row gap="4" vertical="center" horizontal="center">
+          <Image
+            src="/images/beian.png"
             alt="公安备案图标"
             width={15}
             height={16}

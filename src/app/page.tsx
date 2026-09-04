@@ -89,36 +89,34 @@ export default function Home() {
                   联系我
                 </Button>
               )}
-              <Row gap="8" paddingLeft="12" vertical="center">
+              <Row gap="12" paddingLeft="8" vertical="center">
                 <WeChatQRCard>
                   <IconButton
                     href="/images/wechat-qr.jpg"
                     icon="wechat"
-                    variant="ghost"
+                    variant="secondary"
                     size="m"
                     tooltip="微信"
                     tooltipPosition="bottom"
                   />
                 </WeChatQRCard>
-                <IconButton
+                <Button
                   href="https://bonjour.bio/toolsfox"
                   target="_blank"
                   rel="noreferrer"
-                  icon="bonjour"
-                  variant="ghost"
+                  prefixIcon="bonjour"
+                  variant="secondary"
                   size="m"
-                  tooltip="Bonjour"
-                  tooltipPosition="bottom"
+                  aria-label="Bonjour"
                 />
                 <IconButton
                   href={`mailto:${person.email}`}
                   icon="email"
-                  variant="ghost"
+                  variant="secondary"
                   size="m"
                   tooltip="Email"
                   tooltipPosition="bottom"
-                />
-              </Row>
+                />              </Row>
             </Row>
           </RevealFx>
         </Column>

@@ -1,7 +1,18 @@
-@use "./breakpoints.scss" as breakpoints;
+.beianLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.2s ease;
 
-@media (max-width: breakpoints.$s) {
-    .mobile {
-        text-align: center;
+    &:hover {
+        background: var(--neutral-alpha-weak);
+    }
+
+    img {
+        display: block;
+        opacity: 0.9;
     }
 }

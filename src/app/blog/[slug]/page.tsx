@@ -22,6 +22,11 @@ import React from "react";
 import { Posts } from "@/components/blog/Posts";
 import { ShareSection } from "@/components/blog/ShareSection";
 
+// 全量 SSG：未在 generateStaticParams 列出的 slug 一律路由层 404。
+// Next 默认 dynamicParams=true 会对未知 slug 做动态渲染兜底，流式响应开始后才抛
+// notFound() 时状态码已发 200，形成 SEO 软 404。
+export const dynamicParams = false;
+
 function decodeParam(slug: string): string {
   try {
     return decodeURIComponent(slug);

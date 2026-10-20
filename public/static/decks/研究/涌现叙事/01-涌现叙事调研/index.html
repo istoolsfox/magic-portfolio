@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讲解 · 涌现叙事调研（2026-09-29 首轮）</title>
+<link rel="stylesheet" href="../../../_app/deck.css">
+<style>:root{--accent:#9a4fc4;--accent-soft:#9a4fc422}</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<main id="deck"></main>
+<footer id="hud">
+  <div id="progress"><i></i></div>
+  <div id="hud-row">
+    <button id="btn-back" title="返回原文 (Esc)">‹ 返回</button>
+    <div class="hud-nav">
+      <button id="btn-prev" title="上一页 (←)">◀</button>
+      <span id="counter">1 / 1</span>
+      <button id="btn-next" title="下一页 (→)">▶</button>
+    </div>
+    <div class="hud-nav">
+      <button id="btn-overview" title="概览 (O)">☰</button>
+      <button id="btn-full" title="全屏 (F)">⛶</button>
+    </div>
+  </div>
+</footer>
+<div id="overview" hidden></div>
+<script type="application/json" id="deck-data">{"slides": [{"type": "cover", "title": "涌现叙事调研（2026-09-29 首轮）", "category": "研究", "meta": "约 4 分钟 · 1750 字 · 8 节"}, {"type": "toc", "items": ["理论最小集（5 分钟版）", "谱系拆解：每家的\"涌现配方\"", "可抄的涌现配方清单（自研时逐条对照）", "技术架构（若自研）", "开源项目清单（分三档）", "给你的动手路线（与 WorldBox 三线衔接）", "待核实清单", "来源"], "targets": [2, 4, 6, 8, 12, 14, 16, 18], "more": 0}, {"type": "points", "kicker": "01", "title": "理论最小集（5 分钟版）", "points": ["涌现 vs 预设：预设叙事是编剧写的（有主线剧本）", "涌现叙事是系统模拟\"长\"出来的（玩家只是解读者）。", "游戏设计理论里称为 emergent narrative vs authored narrative。", "奠基人：Dwarf Fortress 作者 Tarn Adams，GDC 2016 演讲（Emergent Chara…"]}, {"type": "points", "kicker": "01", "title": "理论最小集（5 分钟版）（续）", "points": ["经典定义：RimWorld 作者 Tynan Sylvester（《Designing Games》作者）——\"Rim…", "关键洞见（Ada Plays: Procedural, Emergent, Tomatoes, Potatoes）：涌…", "这就是为什么\"看 UP 主玩\"也能成立：末影大黑本身就是那个\"赋予结构的解读者\"。", "学术前沿：Player-Driven Emergence in LLM-Driven Game Narrative（a…"]}, {"type": "table", "kicker": "02", "title": "", "headers": ["作品", "年份", "涌现配方（核心机制）", "产出故事的样子"], "rows": [["Dwarf Fortress", "2006", "个体极致深度：每个矮人有性格/偏好/记忆/恩怨；开局先生成千年世界史", "\"一只猫喝了酒后暴怒踢翻了酒库\"——Legends mode 可查任何角色的编年史"], ["The Sims", "2000", "需求驱动：饥饿/社交/娱乐的微观冲突", "邻居自来熟住下不走的日常闹剧"], ["RimWorld", "2018", "AI Storyteller 导演（三个导演人格控制事件节奏）+ 属性组合爆炸 + 系统互相碰撞", "\"袭击断了电源→冷库解冻→食物腐烂→内讧\"的连锁反应"], ["WorldBox", "2018/2021 Steam", "轻量群体涌现：个体无深度，靠规模+神力扰动+王国/编年史系统", "UP 主式叙事：\"兽人帝国毁灭了，因为上帝造了座火山\""], ["Crusader Kings 3", "2020", "角色关系网：阴谋/联姻/继承/叛乱，属性随机+互动涌现", "王朝史诗：\"谋杀了哥哥的国王最终被侄女复仇\""], ["EVE Online", "2003~", "玩家即 agent 的宏观涌现：无剧本，全靠玩家组织行为", "B-R5RB 血战（2014，21 小时舰队战，媒体估算损失约 30 万美元真实货币）【二手，数字为当时报道】"], ["斯坦福 AI 小镇", "2023", "LLM agent：25 个 AI 居民，记忆流+反思+计划", "自发组织情人节派对、传播小镇八卦——generative_agents（22166★，Apache-2.0，2026-09 仍活跃）"]]}, {"type": "points", "kicker": "02", "title": "谱系拆解：每家的\"涌现配方\"", "points": ["观察：前六家是\"规则涌现\"（确定性引擎），最后一家是\"模型涌现\"（LLM 当大脑）。两条线正在合流。"]}, {"type": "points", "kicker": "03", "title": "可抄的涌现配方清单（自研时逐条对照）", "points": ["属性多样性 + 组合爆炸：个体属性多维度随机（RimWorld traits），碰撞才有戏剧性。属性太浅=没有故事。", "需求/动机驱动：agent 自己想要什么（Sims 需求条 / DF 偏好），行为由动机涌现而非脚本。", "记忆与关系：谁记得谁、欠谁、恨谁（DF 恩怨簿 / CK 关系网）。记忆是长线故事的载体。", "导演事件器：随机扰动要有\"节奏感\"——RimWorld 的 Storyteller 不是一个 RNG，是有人格的导演（…"]}, {"type": "points", "kicker": "03", "title": "可抄的涌现配方清单（自研时逐条对照）（续）", "points": ["史官层：把模拟数据流翻译成可读文本（WorldBox 编年史 / DF Legends）。", "模拟精度可以低，但叙事可读性必须高——玩家看的不是数值是故事。", "失败即名场面：\"Losing is fun\"（DF 格言）。允许灾难、允许毁灭，惨败才出好故事，玩家才会自发传播。", "LLM 分层介入（2026 新配方）：确定性模拟跑事件流 → LLM 只在关键节点介入（对话/写史/重大决策），per…"]}, {"type": "points", "kicker": "04", "title": "技术架构（若自研）", "points": ["三条路线对比", "A. 纯规则模拟（DF/RimWorld 路线）", "模拟层：个体状态机 + 需求 + 记忆 + 关系 → 全部确定性 tick", "叙事层：模板化史官（规则引擎把事件流转文本）"]}, {"type": "points", "kicker": "04", "title": "技术架构（若自研）（续）", "points": ["优：零 API 成本、可离线、涌现 100% 可控    劣：叙事模板写到手软", "B. LLM 叙事层（AI 小镇路线）", "模拟层：简单世界观（格子/房间）→ LLM 直接当 agent 大脑（感知→思考→行动）", "优：对话/八卦/联盟自然涌现、故事质量高    劣：token 成本高、长程一致性差"]}, {"type": "points", "kicker": "04", "title": "技术架构（若自研）（续）", "points": ["C. 混合架构 ★ 推荐方向", "模拟层：确定性引擎跑个体行为（寻路/生产/战斗，规则涌现）", "叙事层：事件流 → 便宜 LLM 批量\"写史\"+ 关键场景贵模型\"导演\"（JC0ft8 分工论适用）", "优：成本可控 + 故事感强    劣：两层的接缝设计是真功夫"]}, {"type": "points", "kicker": "04", "title": "技术架构（若自研）（续）", "points": ["关键决策点：LLM 调用粒度。", "per-agent per-tick 调用会烧穿钱包", "正解是模拟层全确定性，LLM 只接\"值得讲的事件\"（王国灭亡/背叛/奇观），事件去重+冷却。", "参考 omniscient-agent 的 sediment（60s 冷却）思路。"]}, {"type": "table", "kicker": "05", "title": "", "headers": ["项目", "星数", "说明"], "rows": [["joonspk-research/generative_agents", "22166★", "斯坦福 AI 小镇官方实现，跑通 = 亲眼看到 LLM 涌现"], ["a16z-infra/ai-town", "10561★ MIT", "AI 小镇可自部署改造版（TypeScript，自定义角色/背景）"], ["SillyTavern/SillyTavern", "33898★ AGPL", "LLM 角色扮演前端，多角色同场交互的事实标准"], ["WorldBox 本体 + worldbox-mcp", "8★ MIT", "让 AI 当上帝玩真游戏（29 工具，多 agent 共管世界）"]]}, {"type": "points", "kicker": "05", "title": "开源项目清单（分三档）", "points": ["DFHack（2047★）：DF 内存改写工具库——DF 本体闭源但社区魔改到骨头缝里，证明\"模拟游戏 mod 生态\"…", "Dwarf Therapist（721★）：矮人管理面板"]}, {"type": "points", "kicker": "06", "title": "给你的动手路线（与 WorldBox 三线衔接）", "points": ["今晚版（A 线延伸）：WorldBox + worldbox-mcp 接 GLM/Claude，让 AI 当上帝之外再…", "当天可跑通。", "周末版（B 线预热）：本地部署 generative_agents 或 ai-town，看 25 个 LLM 居民怎么…", "顺手摸清\"记忆流+反思\"的实现（这两块可以直接搬进自研引擎）。"]}, {"type": "points", "kicker": "06", "title": "给你的动手路线（与 WorldBox 三线衔接）（续）", "points": ["长线版（立项候选）：自研\"混合架构涌现模拟器\"——确定性模拟层（WorldBox 式网格文明）+ LLM 史官层。", "原 M0-M3 计划之上新增 M2.5：编年史系统（事件流→结构化→LLM 写史），这就是和 WorldBox 拉开差…"]}, {"type": "points", "kicker": "07", "title": "待核实清单", "points": ["[ ] Aivilization（HKUST 号称\"全球最大 AI 多智能体教育沙盒\"）实际形态与可玩性【仅有新闻稿】", "[ ] Emergence World（emergence.ai）商业平台性质、是否可体验【仅官方博客】", "[ ] Reddit r/aigamedev 那个\"完全由自主 AI agent 运转的文明\"项目的具体 repo【仅…", "[ ] RimWorld 有无主流 LLM 对话 mod（Nexus/创意工坊未搜）【待查】"]}, {"type": "points", "kicker": "07", "title": "待核实清单（续）", "points": ["[ ] siftystudio/viv 引擎实际形态（36★ 但描述极简）【值得 clone】", "[ ] B-R5RB 战役损失金额为当年媒体估算【二手来源】"]}, {"type": "points", "kicker": "08", "title": "来源", "points": ["Steam: WorldBox - God Simulator", "generative_agents（斯坦福官方） / arXiv 2304.03442", "ai-town · SillyTavern", "arXiv 2404.17027: Player-Driven Emergence in LLM-Driven Gam…"]}, {"type": "points", "kicker": "08", "title": "来源（续）", "points": ["Tarn Adams GDC 2016 · Tynan Sylvester《Designing Games》", "星数/协议数据：GitHub API 实查（2026-09-29）"]}, {"type": "close", "title": "涌现叙事调研（2026-09-29 首轮）", "takeaways": ["理论最小集（5 分钟版）", "谱系拆解：每家的\"涌现配方\"", "可抄的涌现配方清单（自研时逐条对照）"]}], "accent": "#9a4fc4", "title": "涌现叙事调研（2026-09-29 首轮）", "seed": 6174, "home": "../../../../../", "article": "../../../../../研究/涌现叙事/01-涌现叙事调研.html"}</script>
+<script src="../../../_app/deck.js"></script>
+</body>
+</html>

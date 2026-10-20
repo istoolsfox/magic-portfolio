@@ -1,0 +1,88 @@
+---
+title: "Add Runtime Controls to AI Agents with NVIDIA OpenShell"
+subtitle: "链接情报"
+summary: "原文链接：https://developer.nvidia.com/blog/add-runtime-controls-to-ai-agents-with-nvidia-openshell/"
+publishedAt: "2026-09-29"
+tag: "链接情报"
+knowledgeHub: true
+---
+
+> ▶ 本文配有互动讲解动画：[点此观看](/static/decks/%E9%93%BE%E6%8E%A5%E6%83%85%E6%8A%A5/04-nvidia-openshell-runtime-controls/index.html)
+
+**原文链接**：https://developer.nvidia.com/blog/add-runtime-controls-to-ai-agents-with-nvidia-openshell/
+
+
+# NVIDIA OpenShell：agent 安全运行时（0.1.0）
+
+## 定位
+
+开源运行时，定义并强制执行 AI agent 可访问的系统和数据，**无需重写 agent 本身**。支持 Codex、Claude Code、Pi、Hermes 等框架；覆盖企业应用、前沿研究和物理 AI（机器人/边缘）。Perplexity 红队实测 10 家沙箱中唯二未被打穿之一。
+
+## 架构三件套
+
+1. **Gateway**（控制平面）：管理多个沙箱的生命周期与策略，支持跨组治理
+2. **Supervisor**：与每个沙箱配对，运行在 agent 工作负载**之外**，逐请求检查出站流量是否符合策略
+3. **Sandbox**：运行工作负载，OS 内核级控制限制文件读写、阻止提权；**除经 Supervisor 外没有其他网络路径**
+
+## 工作方式
+
+- 网络控制比"允许连接"细得多：Supervisor 可检查 HTTP、GraphQL、MCP 流量，**允许同一 API 的读而阻断写**
+- 控制在 agent 启动 shell、运行生成代码、创建子进程、委派子代理时依然生效
+- 审计记录用 OCSF（Open Cybersecurity Schema Framework）；拦截时返回描述性错误，帮 agent 决定下一步
+- 策略用 YAML 编写，编译为 OPA/Rego 逐条评估出站请求
+
+## 策略示例
+
+```yaml
+network_policies:
+  github_api:
+    name: github-api-readonly
+    endpoints:
+      - host: api.github.com
+        port: 443
+        protocol: rest
+        enforcement: enforce
+        access: read-only
+    binaries:
+      - path: /usr/bin/curl
+```
+
+- 策略可热更新（`openshell policy set`，无需重启沙箱）；文件系统与进程限制在沙箱启动时确定，需新建沙箱才能改
+
+## 凭证保护
+
+真实凭证留在 agent 工作负载之外，通过 provider profile 定义凭证、端点与允许的程序；占位符仅对授权端点生效，发往其他目的地会被拒绝。**即使凭证本身有写权限，只读 API 策略也能阻断写请求**——agent 永远看不到真实凭据，OpenShell 只把凭据注入到发往已批准端点的请求中。
+
+## 形式化策略验证
+
+策略证明器用形式逻辑验证建模后的权限是否在操作员定义的边界内，或给出越界的具体行为。官方举的对抗实验：**前沿 agent 试图说服 AI 审核者授权其修改受保护的 GitHub 仓库，形式化分析让审核者看清权限含义，最终无仓库写入发生**。多代理联合权限检查是进行中工作。
+
+## 动态权限调整（policy advisor）
+
+agent 可提出窄范围的网络/文件策略变更，默认需人工审核，**agent 无法批准自己的请求**；批准后新规则热加载到运行中的沙箱。
+
+## 上手
+
+```sh
+curl -LsSf https://raw.githubusercontent.com/NVIDIA/OpenShell/main/install.sh | sh
+openshell sandbox create --name demo
+```
+
+- 要求 Linux、Apple Silicon macOS 或 WSL 2（实验性），需 Docker/Podman/主机虚拟化
+- 常用命令：`openshell sandbox create` / `openshell logs` / `openshell policy set` / `openshell settings set`
+- 快速开始：https://docs.nvidia.com/openshell/dev/get-started/quickstart
+- 官方快速示例用 OpenCode + OpenRouter 免费模型
+- Agent Skills：`npx skills add NVIDIA/OpenShell`
+- SDK：Python（`uv add openshell`）、TypeScript（`@nvidia/openshell-sdk`）、Go、Rust
+- K8s：Helm 部署 gateway，要求 CNI 支持 NetworkPolicy
+- 遥测：匿名操作计数，`OPENSHELL_TELEMETRY_ENABLED=false` 可关
+
+## 采纳方
+
+Cadence（芯片设计 ChipStack）、Slack（按需 agent 平台）、Gecko Robotics（物理机器人治理）。
+
+## 与我方的关系
+
+- **OpenHarness 安全层的参考实现**：网络/文件/凭证治理的成熟设计——凭证注入式（agent 永不见真凭据）+ 逐请求策略检查 + 形式化验证 + agent 不能自批权限，四件套都值得在 omniscient-agent 的安全加固中对标
+- Rust 主实现，Apple Silicon 本机可跑，适合 spike
+

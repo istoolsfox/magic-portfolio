@@ -1,0 +1,109 @@
+---
+title: "论文深读合集：8 篇（附 PDF）"
+subtitle: "云栖深读"
+summary: "三条线：1→2→3 是服务系统线（vLLM 打地基 → Mooncake 上生产 → Marconi 解新架构）；4→5 是线性注意力数学线（RWKV-7 与 Kimi Linear 同源）；6→7→8 是 DiffSy…"
+publishedAt: "2026-09-23"
+tag: "云栖深读"
+knowledgeHub: true
+---
+
+> ▶ 本文配有互动讲解动画：[点此观看](/static/decks/%E4%BA%91%E6%A0%96%E6%B7%B1%E8%AF%BB/07-%E8%AE%BA%E6%96%87%E6%B7%B1%E8%AF%BB%E5%90%88%E9%9B%86/index.html)
+
+# 论文深读合集：8 篇（附 PDF）
+
+> 2026-09-23 整理。本轮对话提及的全部论文逐一深读（arXiv 元数据 + 摘要级方法解析 + 与云栖演讲/知识图谱的连接）。
+> PDF 全部下载在 `papers/` 子目录，文件名 = arXiv 编号。
+
+## 总索引
+
+| # | 论文 | arXiv | 会议/团队 | PDF |
+|---|------|-------|-----------|-----|
+| 1 | vLLM / PagedAttention | 2309.06180 | SOSP 2023 · UC Berkeley | ✓ |
+| 2 | Mooncake | 2407.00079 | FAST 2025 · 清华+月之暗面 | ✓ |
+| 3 | Marconi | 2411.19379 | MLSys 2025 杰出论文提名 · CMU+Meta | ✓ |
+| 4 | RWKV-7 "Goose" | 2503.14456 | 2025-03 · RWKV 社区（Bo Peng 等 18 人） | ✓ |
+| 5 | Kimi Linear (KDA) | 2510.26692 | 2025-10 · Kimi Team 59 人 | ✓ |
+| 6 | Diffusion Templates | 2604.24351 | 2026-04 · DiffSynth 团队 | ✓ |
+| 7 | i2L 图像到 LoRA | 2606.13809 | 2026-06 · DiffSynth 团队 | ✓ |
+| 8 | DiffSynth-Music | 2609.12774 | 2026-09 · DiffSynth 团队 | ✓ |
+
+三条线：**1→2→3 是服务系统线**（vLLM 打地基 → Mooncake 上生产 → Marconi 解新架构）；**4→5 是线性注意力数学线**（RWKV-7 与 Kimi Linear 同源）；**6→7→8 是 DiffSynth 团队三部曲**（框架 → 惊人应用 → 可控生成）。
+
+---
+
+## 1. Efficient Memory Management for LLM Serving with PagedAttention（vLLM 论文）
+
+- **作者**：Kwon, Li, Zhuang, Sheng, Zheng, Yu, Gonzalez, Zhang, Stoica（UC Berkeley 系，Ion Stoica 挂名）
+- **问题**：KV Cache 大且动态增长，现有系统按最大长度预留 + 碎片 + 重复复制 → 限制 batch size
+- **方法**：PagedAttention 借操作系统虚拟内存分页管 KV（块表、按需分配、跨请求共享）；vLLM 引擎在其上建
+- **结果**：近零浪费，吞吐 **2-4×**（对比 FasterTransformer/Orca），序列越长/模型越大/解码越复杂提升越大
+- **连接**：知识图谱 #3/#4 的原始出处——整个 vLLM 故事的起点论文
+
+## 2. Mooncake: A KVCache-centric Disaggregated Architecture
+
+- **作者**：Qin Ruoyu 等（清华 + 月之暗面；Kimi 的生产平台）
+- **方法**：①P/D 分离架构（prefill/decode 集群分开）②复用集群闲置 CPU/DRAM/SSD 建**分离式 KVCache 池** ③KVCache 中心调度器平衡吞吐与 SLO ④**预测式提前拒绝**——不等排队爆炸，直接预测过载提前拒单（真实生产系统才有的设计）
+- **结果**：模拟长上下文场景吞吐 +525%；真实负载下 Kimi 多扛 **75%** 请求
+- **连接**：PD 分离架构图（你拍的幻灯片）里 mooncake-store 的论文本体；知识图谱 #17/#23
+
+## 3. Marconi: Prefix Caching for the Era of Hybrid LLMs
+
+- **作者**：Rui Pan 等（CMU + Meta，**Tri Dao** 在列——FlashAttention 作者）
+- **问题**：混合 LLM（注意力层+循环层/SSM）的循环层状态**原地更新不可回滚** → 部分前缀匹配失效，只剩精确匹配，缓存被大而无用的条目塞满
+- **方法**：首个支持混合 LLM 高效前缀缓存的系统；准入/驱逐不只看新旧，看 **复用概率预测 × 单位内存的计算节省**；同时管理同一序列不同注意力类型的缓存条目
+- **结果**：token 命中率最高 **34.4×**；TTFT 降 **71.1%**（至多省 617ms）
+- **连接**：MLSys 海报页（Reference 页第 5 号链接）；与 Kimi K3（混合架构）直接相关；驱逐思想与 tair-kvcache 水位线同题（#17/#54）
+
+## 4. RWKV-7 "Goose" with Expressive Dynamic State Evolution
+
+- **作者**：Bo Peng 等 18 人（RWKV 开源社区）
+- **方法**：推广 Delta Rule——**向量值门控 + 上下文学习率** + 松弛值替换规则；每 token 常数内存、常数推理时间
+- **理论**：可识别**全部正则语言**（状态跟踪能力），表达力超出 TC0 Transformer（复杂度类层面）；训练仍可并行
+- **结果**：2.9B 模型在多语言任务创 3B SoTA、英文持平——**训练 token 还更少**；附 3.1T token 开源多言语料；Apache 2.0
+- **连接**：Zhiyuan Li 博客 DPLR 篇指明 RWKV-7 的状态更新是 DPLR 显式转移矩阵的实例化——博客与论文互证（#15/#51）
+
+## 5. Kimi Linear: An Expressive, Efficient Attention Architecture ★全对话知识线的交汇点
+
+- **作者**：Kimi Team 59 人（含 Songlin Yang——FLA 框架作者、Jianlin Su——苏剑林）
+- **方法核心**：KDA = Gated DeltaNet 推广，**更细粒度门控**更高效利用有限状态记忆；定制 chunkwise 算法采用 **DPLR 转移矩阵的特化变体**（比一般 DPLR 省算且更贴经典 delta rule）
+- **模型**：3B 激活/48B 总参，**KDA 与 MLA 逐层混合**（论文原文：layerwise hybrid）
+- **结果**：同训练配方下**全面超过纯 MLA**；KV Cache 最高省 **75%**；1M 上下文解码吞吐最高 **6×**；开源内核 + vLLM 实现 + 模型
+- **连接**：一张图串起五个知识点——KDA(#15) 是 DPLR 数学(03 文件)的工程化、MLA(#14) 混合(#50)、vLLM Day-0(#43)、K3 架构(#41)；**演讲 Reference 页那篇 KDA 博客就是给这篇论文铺数学基础的**
+
+## 6. Diffusion Templates: 统一的可控扩散插件框架
+
+- **作者**：Duan Zhongjie 等（DiffSynth-Studio 团队）
+- **问题**：可控生成方法各自为战、骨干绑定、训练管线不兼容
+- **方法**：三件套——Template models（任务输入→能力中间表示）+ Template cache（标准化注入接口）+ Template pipeline（加载/合并/注入）；接口是**系统级**而非架构级，所以同一接口能挂 KV-Cache 和 LoRA 两种"载体"
+- **结果**：模型动物园覆盖结构控制/亮度色彩/编辑/超分/锐化/美学对齐/内容参考/修复/年龄控制
+- **连接**：DiffSynth 演讲里"DiffSynth Templates"小节（知识图谱 #39）的论文本体
+
+## 7. i2L: 把图像风格训练压缩成一次前向
+
+- **作者**：Duan Zhongjie, Chen Yingda
+- **方法**：图像编码器 + 可学习 LoRA queries + 压缩解码头，**直接预测目标文生图模型的 LoRA 权重**；用语义多样的风格对训练，教会预测器"保外观线索、不抄参考内容"
+- **结果**：在 Z-Image / FLUX.2 / Hidream-O1 上风格保真、提示对齐、感知质量全面优于基线；因为输出是**显式 LoRA 权重**，白送三个能力：非对称 CFG、多参考风格融合、与可控生成模块组合
+- **连接**：知识图谱 #38 的论文本体；"训"和"推"的边界在这里被抹掉一次
+
+## 8. DiffSynth-Music: 音频条件 KV-Cache 适配器
+
+- **作者**：Duan Zhongjie 等
+- **方法**：给音乐扩散骨干加**逐层 KV 注入**的可组合音频条件——三个模板模型（Control/Prosody/Reference）用条件 Flow Matching 训练；共享 VAE 把条件波形映射到统一潜空间；**条件 timestep 固定在干净数据端点 → 每个控制缓存只算一次、整个采样过程复用**（把"缓存复用"思想从服务系统搬进了生成模型！）；训练数据靠节拍提取/源分离/人声重合成构造
+- **结果**：中英文歌曲五种控制（节拍/人声/伴奏/韵律/参考）依从度全部提升，人声条件下歌词保真更好；总体质量与基线持平
+- **准确性备注**：README 说"基于 ACE-Step"，论文摘要只说"music synthesis backbone"——骨干具体是谁以论文正文为准
+- **连接**：知识图谱 #37/#101；**同一个 KV-Cache 概念在 LLM 服务（缓存历史）和扩散生成（注入条件）两个宇宙里各自开花**——这是本轮调研最漂亮的对称
+
+---
+
+## 跨论文综合（三条线的交汇）
+
+1. **DPLR 数学是枢纽**：Zhiyuan Li 博客（统一 IPLR/KDA/DPLR 仿射框架）↔ RWKV-7（DPLR 实例，理论表达力）↔ Kimi Linear（DPLR 特化变体，工程落地 +75% KV 节省）——一个数学结构长出两棵树：理论树（复杂度类）和产品树（Kimi 生产模型）。
+2. **缓存经济学一以贯之**：vLLM（分页消灭浪费）→ Mooncake（池化跨实例复用）→ Marconi（按"复用概率×节省率"投资）→ DiffSynth-Music（条件缓存算一次复用全程）——四个系统共享同一个价值观：**显存里每一段 KV 都要挣自己的饭钱**。
+3. **DiffSynth 团队三部曲的路线**：Templates（搭通用框架）→ i2L（极致应用博眼球）→ Music（框架上的可控生成实证）——开源项目"先立框架再放卫星"的教科书节奏。
+
+## 下一步可深挖
+
+- Kimi Linear 正文第 3 节（KDA chunkwise 算法）配 Zhiyuan Li 博客读，数学 hardest part
+- Marconi 的准入策略细节（§4）与 tair-kvcache Manager 的驱逐设计对比
+- i2L 的 LoRA 权重预测头架构（§3.2）——想自己复现的话这是入口
+

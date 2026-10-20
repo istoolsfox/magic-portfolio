@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讲解 · 13 可观测性与运维规范</title>
+<link rel="stylesheet" href="../../../_app/deck.css">
+<style>:root{--accent:#2f6db3;--accent-soft:#2f6db322}</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<main id="deck"></main>
+<footer id="hud">
+  <div id="progress"><i></i></div>
+  <div id="hud-row">
+    <button id="btn-back" title="返回原文 (Esc)">‹ 返回</button>
+    <div class="hud-nav">
+      <button id="btn-prev" title="上一页 (←)">◀</button>
+      <span id="counter">1 / 1</span>
+      <button id="btn-next" title="下一页 (→)">▶</button>
+    </div>
+    <div class="hud-nav">
+      <button id="btn-overview" title="概览 (O)">☰</button>
+      <button id="btn-full" title="全屏 (F)">⛶</button>
+    </div>
+  </div>
+</footer>
+<div id="overview" hidden></div>
+<script type="application/json" id="deck-data">{"slides": [{"type": "cover", "title": "13 可观测性与运维规范", "category": "知识库", "meta": "约 2 分钟 · 1159 字 · 14 节"}, {"type": "toc", "items": ["三支柱与最小落地", "日志规范", "指标与告警", "追踪与关联", "Runbook（运维手册）", "服务概览：做什么、依赖什么、被谁依赖", "关键指标与看板链接", "常见告警处置", "发布与回滚：怎么发、怎么回、前置条件"], "targets": [2, 4, 7, 8, 9, 10, 11, 12, 13], "more": 5}, {"type": "table", "kicker": "01", "title": "", "headers": ["支柱", "回答什么问题", "最小落地"], "rows": [["日志 Logs", "出了什么事？细节是什么", "结构化日志 + 集中收集（哪怕先聚到文件轮转）"], ["指标 Metrics", "系统健康吗？趋势如何", "四个黄金指标 + 基础资源指标"], ["追踪 Traces", "一次请求慢在哪/错在哪", "跨服务调用链（初期可只做入口+外部调用两跳）"]]}, {"type": "points", "kicker": "01", "title": "三支柱与最小落地", "points": ["四个黄金指标（每个服务必配）：流量（QPS）、错误率、延迟（P95/P99）、饱和度（队列积压/连接池水位/CPU）。", "出问题时按\"错误率↑→看日志→看 trace 定位\"的链路走。"]}, {"type": "points", "kicker": "02", "title": "日志规范", "points": ["结构化（JSON 行），必备字段：ts、level、service、traceid、msg", "业务事件带实体 ID（orderid/user_id）", "级别纪律（呼应 08 §7）", "ERROR：需要人介入（外部依赖持续失败、数据不一致）——ERROR 必须可行动，收到告警却没有对应处置动作的 ERR…"]}, {"type": "points", "kicker": "02", "title": "日志规范（续）", "points": ["WARN：可自愈异常（重试成功、降级触发）", "INFO：关键业务动作（下单、支付回调、配置变更），带实体 ID", "DEBUG：诊断细节，生产默认关、可动态开。", "每次 HTTP 请求一条访问日志：方法、路径、状态码、耗时、用户标识"]}, {"type": "points", "kicker": "02", "title": "日志规范（续）", "points": ["日志内容红线（呼应 10 §7）：无密钥/token/密码/完整身份证；请求体先脱敏再记", "保留策略：ERROR/安全类 ≥90 天，常规 ≥14 天，超期自动清理；日志有轮转，磁盘打满本身就是事故。"]}, {"type": "points", "kicker": "03", "title": "指标与告警", "points": ["业务指标与技术指标同权：下单成功率、支付回调延迟这类业务指标往往比 CPU 先报警", "告警三要素：有阈值、有持续时间、有处置动作（Runbook 链接）。发出去没人知道干嘛的告警是噪音制造机", "分级路由：P1（主链路不可用）电话/强提醒，任何时间响应；P2（部分功能劣化）工作时间响应；P3（趋势异常）周报跟踪", "告警收敛：同根因的告警聚合；每周回顾——误报率 >50% 就调阈值，告警疲劳是真实事故的放大器。"]}, {"type": "points", "kicker": "04", "title": "追踪与关联", "points": ["入口生成 trace_id，贯穿：HTTP 头传递 → 日志字段 → MQ 消息体 → 下游调用", "外部调用（DB/第三方/MQ）打点起止与结果，慢调用（>预算）单独采样记录", "没有完整 APM 时，退而求其次：入口中间件记 trace_id + 各 adapter 手动打点，足够回答\"慢在哪一…"]}, {"type": "points", "kicker": "05", "title": "Runbook（运维手册）", "points": ["每个服务一份 RUNBOOK.md，与告警互链，内容最小集"]}, {"type": "note", "kicker": "06", "title": "服务概览：做什么、依赖什么、被谁依赖", "text": "本节以代码与结构化内容为主，建议阅读原文。"}, {"type": "note", "kicker": "07", "title": "关键指标与看板链接", "text": "本节以代码与结构化内容为主，建议阅读原文。"}, {"type": "points", "kicker": "08", "title": "常见告警处置", "points": ["症状 → 排查步骤（1. 看发布记录 2. 看 trace 3. 看依赖状态页）→ 缓解动作 → 升级路径（找谁）"]}, {"type": "note", "kicker": "09", "title": "发布与回滚：怎么发、怎么回、前置条件", "text": "本节以代码与结构化内容为主，建议阅读原文。"}, {"type": "note", "kicker": "10", "title": "应急开关：降级开关列表、位置、效果（呼应 05 §2.3）", "text": "本节以代码与结构化内容为主，建议阅读原文。"}, {"type": "points", "kicker": "11", "title": "联系人与升级路径", "points": ["规则：每次真实故障后回填 Runbook（故障演练价值最高的时刻）；值班交接看 Runbook 而不是看聊天记录。"]}, {"type": "points", "kicker": "12", "title": "故障复盘（无指责原则）", "points": ["触发线：P1 必复盘，P2 抽样；复盘在修复后 48h 内完成", "格式：时间线 → 影响面 → 根因（问到流程/设计层，不停在\"手滑\"）→ 为什么告警/预案没拦住 → 行动项（责任人+…", "复盘产出进本集知识库迭代（规范是活的，事故是最好的规范来源）。"]}, {"type": "points", "kicker": "13", "title": "发布检查单（上线前最后一道）", "points": ["[ ] 测试全绿、核心接口压测达标（05 §4.4）？", "[ ] 迁移脚本验证过且可回滚（07 §6）？灰度与回滚步骤写在发布单里？", "[ ] 新端点鉴权/限流在位，安全检查单（10）过完？", "[ ] 新指标/日志/告警已配置并试触发？"]}, {"type": "points", "kicker": "13", "title": "发布检查单（上线前最后一道）（续）", "points": ["[ ] 配置项有默认值，密钥走环境注入？", "[ ] 相关人知道发布窗口与观察指标？发布后观察 30 分钟再撤离？"]}, {"type": "points", "kicker": "14", "title": "检查单", "points": ["[ ] 四个黄金指标齐，业务指标与技术指标同权？", "[ ] 日志结构化、带 trace_id、级别纪律执行、红线内容零出现？", "[ ] 每条告警有 Runbook 链接，误报率受控？", "[ ] trace_id 贯穿全链路？"]}, {"type": "points", "kicker": "14", "title": "检查单（续）", "points": ["[ ] RUNBOOK.md 存在且与最近一次故障同步过？", "[ ] 复盘行动项闭环，规范有迭代？"]}, {"type": "close", "title": "13 可观测性与运维规范", "takeaways": ["三支柱与最小落地", "日志规范", "指标与告警"]}], "accent": "#2f6db3", "title": "13 可观测性与运维规范", "seed": 1155, "home": "../../../../../", "article": "../../../../../知识库/软件研发规范/13-可观测性与运维规范.html"}</script>
+<script src="../../../_app/deck.js"></script>
+</body>
+</html>

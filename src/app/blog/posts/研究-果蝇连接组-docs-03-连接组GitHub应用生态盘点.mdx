@@ -1,0 +1,112 @@
+---
+title: "连接组的 GitHub 应用生态盘点：打游戏、养桌宠、做科研"
+subtitle: "研究"
+summary: "MaleCNS v1.0（2026-06-08）和 Cell 正刊（2026-09-03）发布后，GitHub 上出现了一个爆发式增长的\"果蝇连接组应用\"生态，聚合仓库 cobanov/awesome-fly](http…"
+publishedAt: "2026-09-20"
+tag: "研究"
+knowledgeHub: true
+---
+
+> ▶ 本文配有互动讲解动画：[点此观看](/static/decks/%E7%A0%94%E7%A9%B6/%E6%9E%9C%E8%9D%87%E8%BF%9E%E6%8E%A5%E7%BB%84/docs/03-%E8%BF%9E%E6%8E%A5%E7%BB%84GitHub%E5%BA%94%E7%94%A8%E7%94%9F%E6%80%81%E7%9B%98%E7%82%B9/index.html)
+
+# 连接组的 GitHub 应用生态盘点：打游戏、养桌宠、做科研
+
+> 深挖日期：2026-09-20 ｜ 方法：GitHub 仓库搜索（gh）+ awesome-fly 聚合仓库全文读取（该清单 2026-09-12 复审）
+> 纪律：星数为 2026-09-20 快照；条目描述主要转述仓库自述，未逐个复现 [二手/仓库自述]；论文对应关系已核对原文 [实锤]
+
+## TL;DR
+
+MaleCNS v1.0（2026-06-08）和 Cell 正刊（2026-09-03）发布后，GitHub 上出现了一个**爆发式增长的"果蝇连接组应用"生态**，聚合仓库 [cobanov/awesome-fly](https://github.com/cobanov/awesome-fly)（545★，2026-09-12 复审）已收录 80+ 个项目。四大类：
+
+1. **打游戏**：连接组玩 Doom、超级马里奥 64、Flappy Bird、五子棋、21 点、国际象棋，还有把 6,000 神经元逃跑回路可视化的浏览器 3D 逃脱游戏；
+2. **桌宠与互动世界**：桌面果蝇（有 macOS/Linux/Android 多端移植）、3D 生态缸、Minecraft 里的果蝇脑；
+3. **猎奇实验**：连接组炒股（paper trading）、开无人机、写俳句、做音乐、当语言模型的"外挂脑"；
+4. **科研级代码**：全脑 LIF 模型（Shiu et al.）、连接组约束视觉网络（flyvis / Nature 2024）、物理躯体（flybody / NeuroMechFly）、以及 Eon Systems 的全脑仿真——**docs/01 待核实清单第 1 项（Eon Systems）就此解决**：Eon 是真实公司（public benefit corporation），GitHub 组织 eonsystemspbc 有正式开源仓库。
+
+一句话：**"用真实布线图当网络结构、只训练一个小的输出层"成了 2026 年中的社区标准玩法**，但几乎每个严肃项目都在 README 里诚实标注：会动 ≠ 会学习 ≠ 生物保真。
+
+---
+
+## 1. 为什么是现在爆发（时间线）
+
+| 时间 | 事件 | 对生态的影响 |
+|------|------|--------------|
+| 2023-05 | Shiu et al. 全脑 LIF 模型预印本 + 开源代码 | 提供了"拿来即跑"的全脑仿真基座 [实锤，bioRxiv 2023.05.02.539144] |
+| 2024-10 | FlyWire 雌脑 Nature 特刊 + 数据全开放 | 数据可得性解决 |
+| 2024-12 | flyvis（连接组约束视觉网络，Nature 2024）| "连接组约束深度学习"范式成型 [实锤] |
+| 2026-06-08 | MaleCNS v1.0 发布 | 16.7 万神经元全 CNS 图谱可直接下载 |
+| 2026-09-03 | Cell 正刊 + HHMI/Google 宣传 | 出圈效应，社区项目在 8–9 月密集涌现（多数仓库更新时间集中在 2026-09） |
+
+## 2. 打游戏与控制实验（"打游戏"）
+
+共同技术模式：**真实连接组图（冻结权重）作主体 + 人工设计的传感器编码 + 小型可训练输出层**。awesome-fly 用两个标签区分诚实度："full retained graph"（全图保留）vs "circuit subset"（只用了子回路），并要求标注负结果。
+
+| 项目 | 玩什么 | 技术要点 [仓库自述] |
+|------|--------|---------------------|
+| [doomfly](https://github.com/nftechie/doomfly)（371★）| ViZDoom | MaleCNS 仿真 + 可塑性实验，**明确报告未学会存活（负结果）** |
+| [Fly64](https://github.com/ornata/fly) | 超级马里奥 64 | MaleCNS 模型当手柄 |
+| [Help the Fly Escape](https://github.com/dzhng/fly-escape) / [Swat](https://github.com/hrook1/Swat) | 浏览器 3D 逃脱/闪避游戏 | Rust/WASM：Escape 用 MaleCNS 选定回路驱动果蝇在家居场景里导航；Swat 把 6,000 神经元逃跑回路对闪避动作的影响可视化，均可在线玩 |
+| [The Fly's Table](https://github.com/WilliamJones/fly-blackjack) | 21 点 | MaleCNS 蘑菇体子回路（682 PN / 1200 KC / 97 输出 / 332 多巴胺），多巴胺门控突触抑制规则现场学习：3 万局后胜率 -45%→-16%；切断多巴胺收益消失（对照） |
+| [fly-flappy](https://github.com/ns2250225/fly-flappy) | Flappy Bird | MaleCNS v1.0 全图 50 Hz 浏览器运行 |
+| [Fly Dino](https://github.com/cobanov/flyjump) | Chrome 恐龙 | 固定 80 神经元子回路 + 243 参数读出层，CEM 训练，附消融对照 |
+| [FLYT3](https://github.com/seanphan/flyt3) | 井字棋 + 卫星火灾分类 | 全图 + REINFORCE 只训读出层；**自带负对照：普通 MLP（85.7%）反而打赢果蝇读出层（60.8%）** |
+| [fly-swing](https://github.com/JHC56/fly-swing) | MuJoCo 蛛丝荡秋千 | 逃跑由真实巨纤维回路（LC4/LPLC2→DNp01）触发，20/20 关卡通关 |
+| 其余 | Pong、象棋（Fly Chess Lab：FlyWire 图 Rust/WASM LIF 仿真 + 切断对照）、Craftax、格斗游戏、CARLA 转向 | 见 awesome-fly "Games and control experiments" 节 |
+
+**注意这个生态的诚实文化**：doomfly、FlyPong、FLYT3、NeuroTerrarium 等都在 README 公布负结果或"普通网络打败果蝇"的对照——awesome-fly 的编者按明确写着"一只会动的果蝇本身不能证明生物保真或习得行为"。
+
+## 3. 桌宠与互动世界
+
+- [DesktopFly](https://github.com/DenisSergeevitch/desktop-fly)（macOS）——爆款起点：桌面上的果蝇由 FlyWire 脉冲回路 + MaleCNS"脑到腿"提取物驱动；已有 Linux/GNOME、Hyprland（[gnat](https://github.com/lubabs770/gnat)）、Android 至少三个社区移植（移植数量本身即流行度证据）[仓库自述]
+- [Fly Brain Minecraft](https://github.com/blendi-remade/fly-brain-minecraft)——Fabric 模组：每只游戏里的果蝇 mob 跑一份 MaleCNS 过滤图，带实时神经 HUD；衍生出嗅觉干预实验（[fly-odor-onoff](https://github.com/yukincom/fly-odor-onoff)，含输入通路审计）
+- [NeuroCraft Fly](https://github.com/evnsnclr/neurocraft-fly-public)（157★）——Minecraft 交互式果蝇脑演示（发布中）
+- 浏览器系：[closed-loop-fly](https://github.com/ZeroXClem/closed-loop-fly)（感觉运动闭环）、[flyverse](https://github.com/tel-0s/flyverse-core)（颜色视觉/嗅觉/风）、[Infinite Sugar](https://github.com/cnqso/infinite-sugar)（艺术装置）
+
+## 4. 猎奇向：炒股、无人机、俳句、音乐
+
+- [stonkfly](https://github.com/nftechie/stonkfly)（782★，生态内最高星）——MaleCNS 看 K 线图做 paper trading + Coinbase 接口；README 明示"未证明学到盈利能力"
+- [FlyDrones](https://github.com/SpikeCalls/FlyDrones)（203★）——摄像头→果蝇复眼→脉冲脑→下行神经元→真实无人机，浏览器 3D 演示
+- [flm](https://github.com/nftechie/flm)（86★）——冻结语言模型 + MaleCNS 全图耦合："和果蝇脑聊天"（语言能力来自 LM，果蝇脑只是挂件，README 自己说清了）
+- [fly_ocr](https://github.com/jerryjliu/fly_ocr)（88★）——固定连接组 + 小解码器做印刷字符识别，附完整研究报告
+- 其余：Ableton 音乐（Fly Lab）、俳句生成（Faiku）、求偶回路干预实验（Fruitless）、时尚印花（Fruit Fly Fashion）、Boltzmann 机掩码耦合蘑菇体回路（boltzmann-fly，ICONIP 2026 论文）
+- 阴暗面：[flycoinrh](https://github.com/fruitflydev/flycoinrh)（192★）"用 16.5 万神经元在 Robinhood Chain 发币"——meme 币蹭热点，技术上与连接组科学无关 [仓库自述]
+
+## 5. 科研级：论文与配套代码（"做论文"）
+
+这是生态里质量最高的一层，全部有正式论文对应：
+
+| 仓库 | 论文 | 贡献 [实锤] |
+|------|------|-------------|
+| [philshiu/Drosophila_brain_model](https://github.com/philshiu/Drosophila_brain_model) | Shiu et al. 2023（bioRxiv 2023.05.02.539144）| 全脑 LIF 模型原版代码：FlyWire 连接组 + LIF 动力学，可激活/沉默任意神经元，模拟光遗传实验 |
+| [eonsystemspbc/fly-brain](https://github.com/eonsystemspbc/fly-brain) | 基于 Shiu et al. | **Eon Systems**（PBC 公司）的多后端全脑仿真：Brian2-CUDA / PyTorch / NEST-GPU / GeNN，带基准测试 |
+| [TuragaLab/flyvis](https://github.com/TuragaLab/flyvis) | Lappalainen et al., *Nature* 2024 | 连接组约束深度网络（DMN）预测果蝇视觉系统对自然图像的神经响应，预训练模型开源 |
+| [TuragaLab/flybody](https://github.com/TuragaLab/flybody)（DeepMind + Janelia）| *Nature* 2025（全躯体运动 RL）| MuJoCo 解剖级果蝇身体 + 行走/飞行环境 + RL 基准——"虚拟果蝇"的躯体供应商 |
+| [NeLy-EPFL/flygym](https://github.com/NeLy-EPFL/flygym)（364★）| NeuroMechFly v2（EPFL Ramdya 组）| 生物力学躯体 + 感觉接口 + 物理环境框架 |
+| [eudald-seeslab/train-your-fly](https://github.com/eudald-seeslab/train-your-fly) | — | PyG 工具包：果蝇眼模型→FlyWire 全图消息传递→蘑菇体读出，只训练逐突触增益 |
+| [erojasoficial-byte/fly-brain](https://github.com/erojasoficial-byte/fly-brain)（63★）| 附预印本 | 138,639 神经元全脑 + NeuroMechFly v2 身体闭环：视觉/嗅觉/味觉/飞行，"全部来自真实连接组" |
+| [Kisame76/drosophila-brain-mlx](https://github.com/Kisame76/drosophila-brain-mlx) | — | Apple MLX/Metal 移植全脑 LIF，**含"度保持洗牌连接组"对照实验**（回答"接线到底重不重要"）|
+| [janelia-flyem / flyconnectome / reiserlab 系列](https://github.com/flyconnectome) | Berg et al. 2025/26 等 | MaleCNS 官方数据、补充数据、跨数据集工具（cocoa、2025malecns）、雄性视觉系统连接组分析代码 |
+| [htem/BANC-project](https://github.com/htem/BANC-project) | — | **BANC：成年雌性"脑+神经索"连接组**（雌性版 MaleCNS，2025-07 预印本）——两性全 CNS 图谱均已开放 |
+
+性能工程方向：[FastFly](https://github.com/eonfathom/FastFly)（消费级 GPU 实时跑全图）、Apple MPS / MLX 移植、WebGPU/WASM 浏览器全图（[Lulzx/fly-brain](https://github.com/Lulzx/fly-brain)：WASM LIF 脑 + MuJoCo 身体 + flyvis 视觉）。
+
+## 6. 数据与工具层（生态的地基）
+
+- 官方：MaleCNS（male-cns.janelia.org + neuPrint）、FlyWire（flywire.ai）、codex.flywire.ai（Murthy 实验室的 Connectome Data Explorer）
+- 分析栈：NAVis + fafbseg（Python/R natverse 全家桶）、neuprint-python、CAVEclient、connectome-interpreter
+- 入门教程：[sjcabs/fly_connectome_data_tutorial](https://github.com/sjcabs/fly_connectome_data_tutorial)（59★，加载/分析/可视化各大连接组数据集的 workshop 材料）、[seung-lab/FlyConnectome](https://github.com/seung-lab/FlyConnectome)
+- 模板：[cobanov/fly-connectome-template](https://github.com/cobanov/fly-connectome-template)——MaleCNS soma 图谱 + Flybody 网格 + React/Three.js 工作台，"自带环境和模型"即可开做
+
+## 7. 对 docs/01 待核实清单的更新
+
+- **第 1 项（Eon Systems"虚拟果蝇"）→ 已解决**：Eon Systems 是真实公司（eonsystemspbc，PBC 形态），GitHub 有基于 Shiu et al. 的 FlyWire 全脑 LIF 仿真器（多后端、带基准）[实锤，仓库 README]。"连接组 + 物理引擎虚拟躯体"的整体图景由 flybody（DeepMind/Janelia）+ NeuroMechFly（EPFL）+ 各闭环项目共同构成，Eon 是其中做全脑仿真基座的一支。中文维基"首次全脑驱动虚拟躯体"的具体表述仍未见一手确认，但方向属实。
+- **新增事实**：存在 BANC（雌性脑+神经索全连接组，2025-07 预印本），意味着雌雄两性全 CNS 图谱都已开放——docs/01 §2 时间线可补此条。
+
+## 8. 来源
+
+- 聚合清单：[cobanov/awesome-fly](https://github.com/cobanov/awesome-fly)（2026-09-12 复审版全文，经 gh API 读取）[实锤]
+- 各仓库 README（经 gh API 读取）：philshiu/Drosophila_brain_model、eonsystemspbc/fly-brain、TuragaLab/flyvis [实锤]
+- GitHub 仓库搜索（`gh search repos`，2026-09-20 快照）：星数与更新时间 [实锤]
+- 论文：Shiu et al. bioRxiv 2023.05.02.539144；Lappalainen et al. Nature 2024（s41586-024-07939-3）；flybody Nature 2025（s41586-025-09029-4）；Dorkenwald et al. Nature 2024（s41586-024-07558-y）[实锤/清单核对]
+- 注意：各游戏/桌宠项目的技术描述转述自其 README，未复现运行；星数随时变化
+

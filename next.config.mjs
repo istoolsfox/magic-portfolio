@@ -2,7 +2,9 @@ import mdx from "@next/mdx";
 
 const withMDX = mdx({
   extension: /\.mdx?$/,
-  options: {},
+  // 知识库迁移文章大量使用 GFM 表格/删除线，MDX 默认管线不识别；
+  // Turbopack 要求 options 可序列化，插件只能传模块名字符串（loader 构建期动态 import）
+  options: { remarkPlugins: ["remark-gfm"] },
 });
 
 /** @type {import('next').NextConfig} */

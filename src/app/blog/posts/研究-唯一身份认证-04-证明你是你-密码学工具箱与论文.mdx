@@ -1,0 +1,113 @@
+---
+title: "04 证明你是你：密码学工具箱与研究论文清单 ★核心"
+subtitle: "研究"
+summary: "第④点是全课题最重要的认知：密码学管\"证明的传递\"，不管\"证明的源头\"。 谁在注册第一天撒谎，密码学只会忠实地保护这个谎言。"
+publishedAt: "2026-09-14"
+tag: "研究"
+knowledgeHub: true
+---
+
+> ▶ 本文配有互动讲解动画：[点此观看](/static/decks/%E7%A0%94%E7%A9%B6/%E5%94%AF%E4%B8%80%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/04-%E8%AF%81%E6%98%8E%E4%BD%A0%E6%98%AF%E4%BD%A0-%E5%AF%86%E7%A0%81%E5%AD%A6%E5%B7%A5%E5%85%B7%E7%AE%B1%E4%B8%8E%E8%AE%BA%E6%96%87/index.html)
+
+# 04 证明你是你：密码学工具箱与研究论文清单 ★核心
+
+> 本课题的核心问题："怎么证明你是你"到底是个什么问题？答案：它是四个子问题，每个子问题有不同的密码学工具。密码学能漂亮地解决其中两个半，剩下的（源头唯一性）必须靠物理世界。
+
+## 一、问题拆解（全课题的钥匙）
+
+| 子问题 | 通俗说法 | 密码学能解决吗 |
+|---|---|---|
+| ① 控制权 | "此刻出示证明的人就是凭证主人" | ✅ 数字签名/密钥对——成熟 |
+| ② 防篡改/可验证 | "这份证明没被改过、任何人可验" | ✅ 哈希/Merkle/链——成熟 |
+| ③ 隐私性 | "证明该证明的，不泄露多余的" | ✅ 零知识证明/匿名凭证——前沿但可用 |
+| ④ 源头唯一性 | "这个身份只注册过一次、背后是活人" | ❌ 密码学无解，靠物理世界（生物特征+专用硬件+官方库） |
+
+第④点是全课题最重要的认知：**密码学管"证明的传递"，不管"证明的源头"。** 谁在注册第一天撒谎，密码学只会忠实地保护这个谎言。
+
+## 二、工具箱（按四个子问题组织）
+
+### A. 控制权：数字签名体系
+
+- **原理**：私钥签名、公钥验签。签名不可伪造（不知道私钥就造不出有效签名）、不可抵赖、绑定具体消息。
+- **常用算法**：ECDSA（Bitcoin/以太坊在用）、Ed25519（更快更安全工程性，Signal/SSH 新版在用）、Schnorr（Bitcoin Taproot）、BLS（签名可聚合，以太坊验证者用）。
+- **passkey / FIDO2 / WebAuthn（现役主力，必懂）**：
+  - 流程：网站发挑战 → 手机安全芯片（TEE/Secure Enclave）里的私钥对挑战+**网站域名**签名 → 网站用公钥验签。
+  - 三大杀器：①私钥永不出芯片，deepfake/木马偷不走；②签名绑定域名 → 钓鱼网站自动失效（origin binding）；③每个网站一把独立密钥，无撞库。
+  - **这就是"AI 时代证明你是你"的现役答案**：它证明的不是"你的脸像你"，而是"只有你的芯片能签出这个名"。
+- **passkey 的软肋**：密钥和人的绑定靠设备解锁（指纹/PIN）——绑定强度=设备物理安全。恢复（丢手机）是最大 UX/安全难题。
+
+### B. 防篡改与可验证：哈希、Merkle 树、承诺
+
+- **哈希函数**（SHA-256/Keccak）：单向、抗碰撞。用途：把大文件/身份属性压成指纹，泄露指纹不泄露原文。
+- **Merkle 树**：叶子是数据哈希，父节点是子节点哈希的哈希。改任何一片叶子，根必变——用 O(log n) 大小就能证明"某数据在/不在集合里"（Merkle 证明）。
+- **承诺（commitment）**：先锁一个值（commit），事后打开验证（reveal），锁定后不可反悔。身份场景：注册时对生物特征模板做承诺上链，之后每次验证"打开"比对。
+- **区块链的角色**：本质上就是"全球可见、无法回改的 Merkle 树 + 谁都验得了的时间戳"。它在身份里的位置是把 B 类工具变成公共基础设施。
+
+### C. 隐私性：零知识证明与匿名凭证（前沿主战场）
+
+- **零知识证明（ZKP）**：证明"我知道 X / X 满足某性质"，但不泄露 X 本身。三个性质：完备性（真的一定能证）、可靠性（假的几乎不可能证成）、零知识（验的人什么都没学到）。
+  - 交互式 → 非交互式的关键：Fiat-Shamir 启发式（1986，把交互挑战换成哈希，证明可离线验证）。
+  - **zk-SNARK**：证明极小、验证极快，但需要可信初始化仪式。代表：Groth16（2016）、PLONK（2019，通用可升级）。
+  - **zk-STARK**：无需可信初始化、抗量子假设，但证明更大。代表：Ben-Sasson et al. 2018。
+- **身份场景的真实应用**：
+  - World ID：证明"我是唯一注册的人类"，不暴露是哪一个。
+  - 匿名凭证（anonymous credentials）：只出示"我已成年"不暴露生日，"我是中国公民"不暴露身份证号。
+- **匿名凭证思想源头**：David Chaum 1985《Security without identification: transaction systems to make big brother obsolete》——"用密码学让Big Brother失业"，40 年前的预言级论文。
+- **可撤销生物识别（cancelable biometrics）**：Ratha 等 2001 提出——不上传原始人脸，上传"用可撤销变换扰动后的模板"；泄露就换变换再发一个。等于给生物特征加上了"改密码"能力。同类：生物模板保护标准 ISO/IEC 24745。
+
+### D. 源头唯一性：密码学的边界之外
+
+密码学在这里只有"辅助件"：
+
+- **虹膜码查重**（Daugman 的 iriscode 算法，1993/2004）：虹膜纹理展开成 2048 位码，汉明距离比对，错配率极低——World ID 唯一性的技术根基。
+- **TEE 远程证明（remote attestation）**：安全芯片证明"这段代码跑在真硬件、未被篡改的环境里"——可信的是硬件制造商（Intel/ARM/苹果），不是数学。
+- **阈值签名 / MPC（多方安全计算）**：私钥拆成 N 份分处多方，凑够 t 份才能签——防单点偷钥，也用于"社会化恢复"（你的密钥由你+3 个亲友+1 家公司分持）。
+- 结论：第④子问题的答案在密码学之外——专用硬件 + 高维生物特征 + 权威库查重。**这也是"唯一身份认证永远需要一个物理世界的信任根"的根本原因。**
+
+## 三、论文与标准清单（全部真实可查）
+
+### 开山/奠基
+
+1. Douceur, *The Sybil Attack*, IPTPS 2002 — 女巫攻击定义性论文（见 docs/02）
+2. Chaum, *Security without identification…*, CACM 1985 — 匿名凭证与隐私身份思想源头
+3. Ratha, Connell, Bolle, *Enhancing security and privacy in biometrics-based authentication systems*, IBM Systems Journal 2001 — 可撤销生物识别
+4. Daugman, *High confidence visual recognition of persons by a test of statistical independence*, IEEE TPAMI 1993 — 虹膜码/iriscode 算法
+5. Fiat & Shamir, *How to Prove Yourself*, CRYPTO 1986 — 交互证明→非交互签名，ZK 工程化的地基
+
+### 零知识证明谱系
+
+6. Groth, *On the Size of Pairing-based Non-interactive Arguments*, EUROCRYPT 2016（"Groth16"）
+7. Gabizon, Williamson, Ciobotaru, *PLONK: Permutations over Lagrange-bases…*, 2019
+8. Ben-Sasson et al., *Scalable, transparent, and post-quantum secure computational integrity (zk-STARK)*, 2018（IACR ePrint 2018/046）
+
+### 人格证明（proof of personhood）专题
+
+9. Biryukov, Khovratovich, Puddu, *Proof-of-Personhood: Redemocratizing Permissionless Cryptocurrencies*, IEEE EuroS&P 2017 — "proof of personhood"术语出处
+10. Siddarth, Ivliev, Siri et al., *Who Watches the Watchmen? A Review of Subjective Approaches for Sybil-resistance in Proof of Personhood Protocols*, Frontiers in Blockchain 2020, arXiv:2008.05300 — 主观验证流派综述（docs/02 分类框架来源）
+11. *Personhood Credentials: Artificial Intelligence and the Value of Privacy-Preserving Tools to Distinguish Who is Real Online*, 2024, arXiv:2408.07892 — 2024 年最重要的政策向论文（AI 时代为什么要人格凭证）
+12. *Zero-Knowledge Proof-of-Identity: Sybil-Resistant, Anonymous Authentication on Permissionless Blockchains*, arXiv:1905.09093
+13. *LinkDID: A Privacy-Preserving, Sybil-Resistant and Key-Updating Decentralized Identity System*, arXiv:2307.14679
+14. World（前 Worldcoin），*An Introduction to Proof of Personhood*（技术白皮书，2023，官网可下）【表述以官方 PDF 为准】
+
+### 标准（工程落地必读）
+
+15. W3C *Decentralized Identifiers (DIDs) v1.0*（2022 W3C Recommendation）— DID 数据模型
+16. W3C *Verifiable Credentials Data Model v2.0* — 可验证凭证
+17. FIDO Alliance / W3C *WebAuthn*（FIDO2）— passkey 协议
+18. ISO/IEC 30107-3 — 呈现攻击检测（PAD，活体检测的测评标准）
+19. ISO/IEC 24745 — 生物特征信息保护（模板保护）
+20. EU eIDAS 2.0（Regulation (EU) 2024/1183）— EUDI 数字身份钱包法律框架
+21. 中国网信办《促进分布式数字身份互通互认应用规定（征求意见稿）》2026-06
+
+### 工程项目（可动手）
+
+22. Semaphore（PSE/以太坊基金会生态）：零知识集合成员证明，匿名 signaling 的积木
+23. Anon Aadhaar（PSE）：ZK 证明印度 Aadhaar 身份；zkPassport：ZK 证明电子护照芯片（同类开源生态，具体成熟度动手前核实）
+
+## 四、学习路径建议（面向有编程底子）
+
+1. **先动手 passkey**：自己网站上接 WebAuthn（python 用 py_webauthn 库），把"挑战-签名-验签"跑通——这是所有现代身份的地基。
+2. **再玩 ZK**：装 Circom + snarkjs 或用 Noir，写一个"证明我知道 x 的平方根"的最小电路，再读 Semaphore 的 membership proof 电路。
+3. **论文顺序**：Douceur(2002) → Chaum(1985) → Siddarth(2020) → Personhood Credentials(2024)。前三篇读摘要+结论即可，第 4 篇精读。
+4. **标准当字典**：DID Core 和 WebAuthn spec 不要通读，用到哪段查哪段。
+

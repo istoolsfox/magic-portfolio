@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讲解 · 个人小工具/出海小产品的零成本部署组合</title>
+<link rel="stylesheet" href="../../_app/deck.css">
+<style>:root{--accent:#4a8a5c;--accent-soft:#4a8a5c22}</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<main id="deck"></main>
+<footer id="hud">
+  <div id="progress"><i></i></div>
+  <div id="hud-row">
+    <button id="btn-back" title="返回原文 (Esc)">‹ 返回</button>
+    <div class="hud-nav">
+      <button id="btn-prev" title="上一页 (←)">◀</button>
+      <span id="counter">1 / 1</span>
+      <button id="btn-next" title="下一页 (→)">▶</button>
+    </div>
+    <div class="hud-nav">
+      <button id="btn-overview" title="概览 (O)">☰</button>
+      <button id="btn-full" title="全屏 (F)">⛶</button>
+    </div>
+  </div>
+</footer>
+<div id="overview" hidden></div>
+<script type="application/json" id="deck-data">{"slides": [{"type": "cover", "title": "个人小工具/出海小产品的零成本部署组合", "category": "链接情报", "meta": "约 1 分钟 · 370 字 · 3 节"}, {"type": "toc", "items": ["数据（采集时点）", "组合清单", "与我方的关系"], "targets": [2, 3, 4], "more": 0}, {"type": "points", "kicker": "01", "title": "数据（采集时点）", "points": ["万浏览、1860+ 收藏。"]}, {"type": "table", "kicker": "02", "title": "", "headers": ["组件", "干什么", "免费点"], "rows": [["Cloudflare Pages", "静态前端+自动构建", "全球 CDN 白嫖"], ["Workers", "后端 API", "毫秒冷启动，几十万请求/天"], ["D1", "边缘 SQLite", "免连接池管理"], ["R2", "S3 兼容对象存储", "出网流量免费"], ["Resend", "邮件", "3000 封/月"]]}, {"type": "points", "kicker": "03", "title": "与我方的关系", "points": ["直接对标 toolsfox 服务器（n8n 三容器、docker 要 sudo、执行历史 72h、cron 连环失败的…", "边界：n8n 这类需常驻进程的工作流引擎不适用（serverless 模型不匹配）", "有状态大数据库不适用", "CF 国内访问速度一般，国内正式业务需备案+自建"]}, {"type": "close", "title": "个人小工具/出海小产品的零成本部署组合", "takeaways": ["数据（采集时点）", "组合清单", "与我方的关系"]}], "accent": "#4a8a5c", "title": "个人小工具/出海小产品的零成本部署组合", "seed": 9716, "home": "../../../../", "article": "../../../../链接情报/08-推文-陈大黄-cloudflare全家桶.html"}</script>
+<script src="../../_app/deck.js"></script>
+</body>
+</html>

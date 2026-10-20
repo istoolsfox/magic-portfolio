@@ -1,0 +1,27 @@
+---
+title: "log"
+subtitle: "知识库"
+summary: "- 依据 Karpathy《LLM Wiki》Gist 完成改造：本库正式定义为 The Wiki 层，raw/ 为 Raw 层，SCHEMA.md 为宪法"
+publishedAt: "2026-09-28"
+tag: "知识库"
+knowledgeHub: true
+---
+
+> ▶ 本文配有互动讲解动画：[点此观看](/static/decks/%E7%9F%A5%E8%AF%86%E5%BA%93/log/index.html)
+
+# 知识库操作日志（append-only）
+
+> 格式见 [SCHEMA](/blog/%E7%9F%A5%E8%AF%86%E5%BA%93-SCHEMA) §6。前缀固定：`## [YYYY-MM-DD] ingest|query|lint|schema | 主题`
+> 解析：`grep "^## \[" log.md | tail -20`
+
+## [2026-09-28] schema | LLM Wiki 改造落地（P0 地基）
+- 依据 Karpathy《LLM Wiki》Gist 完成改造：本库正式定义为 The Wiki 层，`_raw/` 为 Raw 层，SCHEMA.md 为宪法
+- 新建：SCHEMA.md（v1.0）、index.md（全局枢纽）、log.md（本文件）
+- workspace 根目录注册为 Obsidian Vault（原空壳 vault 已删除）；04-knowledge git 化并推送 istoolsfox/knowledge 私有仓
+- AGENTS.md 加知识库钩子；P1 试点门类：social-mechanics/02-person-reading
+
+## [2026-09-28] ingest | P1 试点：02-person-reading 纳入 wiki 规范
+- 10 页补 frontmatter（type 六型标注：index×2 / synthesis×4 / concept×4）
+- SYNTHESIS.md 尾部加 8 条 wikilink（首组知识图谱边）
+- 课题 README 原有文档地图即为合格页表，未动
+

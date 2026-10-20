@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讲解 · fly-connectome（果蝇全脑连接组研究）</title>
+<link rel="stylesheet" href="../../../_app/deck.css">
+<style>:root{--accent:#6a6fb5;--accent-soft:#6a6fb522}</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<main id="deck"></main>
+<footer id="hud">
+  <div id="progress"><i></i></div>
+  <div id="hud-row">
+    <button id="btn-back" title="返回原文 (Esc)">‹ 返回</button>
+    <div class="hud-nav">
+      <button id="btn-prev" title="上一页 (←)">◀</button>
+      <span id="counter">1 / 1</span>
+      <button id="btn-next" title="下一页 (→)">▶</button>
+    </div>
+    <div class="hud-nav">
+      <button id="btn-overview" title="概览 (O)">☰</button>
+      <button id="btn-full" title="全屏 (F)">⛶</button>
+    </div>
+  </div>
+</footer>
+<div id="overview" hidden></div>
+<script type="application/json" id="deck-data">{"slides": [{"type": "cover", "title": "fly-connectome（果蝇全脑连接组研究）", "category": "研究", "meta": "约 1 分钟 · 637 字 · 5 节"}, {"type": "toc", "items": ["状态", "项目简介", "目录说明", "深挖规则（沿用 unique-identity…", "备注"], "targets": [2, 3, 5, 8, 9], "more": 0}, {"type": "points", "kicker": "01", "title": "状态", "points": ["状态：进行中（文档研究型，不写代码，social-mechanics / unique-identity-auth 模…", "立项：2026-09-20（由 00-inbox 调研笔记转正）", "最后更新：2026-09-20"]}, {"type": "points", "kicker": "02", "title": "项目简介", "points": ["最近很火的\"果蝇神经元\" = 果蝇连接组（connectome，完整神经布线图）", "HHMI Janelia + Google 发布首个完整雄性果蝇中枢神经系统连接组（脑+腹神经索…", "FlyWire 联盟成年雌性果蝇全脑连接组（约 14 万神经元 / 5000 万突触），Natu…", "年：连接组 + 物理引擎 = \"虚拟果蝇\"全脑模拟（Eon Systems，待核实）。"]}, {"type": "points", "kicker": "02", "title": "项目简介（续）", "points": ["关注角度：①神经科学里程碑本身", "AI 视角——AI 分割是生产工具、连接组又是神经形态计算/图学习的黄金参考", "脑疾病医学模型价值。"]}, {"type": "points", "kicker": "03", "title": "目录说明", "points": ["docs/：编号调研与深挖文档", "果蝇全脑连接组调研.md — 首轮调研（时间线/技术路线/关键数字/来源/待核实清单）", "神经元提取原理解析.md — 为什么能\"提取\"神经元并量化：染色→电镜→160万亿体素→Flood-Fillin…", "MaleCNS 为 FIB-SEM 非 ssTEM）"]}, {"type": "points", "kicker": "03", "title": "目录说明（续）", "points": ["连接组GitHub应用生态盘点.md — GitHub 应用生态：连接组打游戏/桌宠/炒股/无人机 + 科研级代…", "解决 01 待核实第 1 项", "连接组用于模型训练.md — 模型训练路线：三种训练范式（连接组约束训练/储层计算/连接组当数据）、flyvis…", "notes/：后续追踪的随手记"]}, {"type": "points", "kicker": "03", "title": "目录说明（续）", "points": ["assets/：图片素材", "output/：对外产出"]}, {"type": "points", "kicker": "04", "title": "深挖规则（沿用 unique-identity-auth 模式）", "points": ["docs/ 下新增编号文档（02、03……），一事一档", "数字必须带来源链接，未完全确认标【待核实】或置信度 [实锤]/[二手]/[待核实]", "跟进新进展时先查 docs/01 的\"待核实清单\"是否已被新证据解决"]}, {"type": "points", "kicker": "05", "title": "备注", "points": ["项目用途定位：跟踪研究 + 用连接组做模型训练（范式与入手路线见 docs/04）", "git 仓库级身份：istoolsfox（与 era-analysis 一致）", "候选深挖方向：FlyWire 技术栈细节（flood-filling 分割 + 众包校对）/ 连接组约束的神经网络（c…"]}, {"type": "close", "title": "fly-connectome（果蝇全脑连接组研究）", "takeaways": ["状态", "项目简介", "目录说明"]}], "accent": "#6a6fb5", "title": "fly-connectome（果蝇全脑连接组研究）", "seed": 7732, "home": "../../../../../", "article": "../../../../../研究/果蝇连接组/index/index.html"}</script>
+<script src="../../../_app/deck.js"></script>
+</body>
+</html>

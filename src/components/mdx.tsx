@@ -1,4 +1,5 @@
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 import React, { ReactNode } from "react";
 import { slugify as transliterate } from "transliteration";
 
@@ -77,6 +78,18 @@ function createImage({ alt, src, ...props }: MediaProps & { src: string }) {
   );
 }
 
+// 标题 children 可能是行内代码/链接等元素（知识库迁移文章常见），先递归抽出纯文本再做锚点
+function childText(node: React.ReactNode): string {
+  if (node === null || node === undefined || typeof node === "boolean") return "";
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map((n) => childText(n as React.ReactNode)).join("");
+  if (typeof node === "object" && "props" in node) {
+    const props = (node as { props?: { children?: React.ReactNode } }).props;
+    return childText(props?.children);
+  }
+  return "";
+}
+
 function slugify(str: string): string {
   const strWithAnd = str.replace(/&/g, " and "); // Replace & with 'and'
   return transliterate(strWithAnd, {
@@ -90,7 +103,7 @@ function createHeading(as: "h1" | "h2" | "h3" | "h4" | "h5" | "h6") {
     children,
     ...props
   }: Omit<React.ComponentProps<typeof HeadingLink>, "as" | "id">) => {
-    const slug = slugify(children as string);
+    const slug = slugify(childText(children));
     return (
       <HeadingLink marginTop="24" marginBottom="12" as={as} id={slug} {...props}>
         {children}
@@ -211,7 +224,8 @@ type CustomMDXProps = MDXRemoteProps & {
 export function CustomMDX(props: CustomMDXProps) {
   return (
     <MDXRemote
-      options={{ blockJS: false }}
+      // 知识库迁移文章大量使用 GFM 表格，MDXRemote 走独立编译管线，需在此单独启用
+      options={{ blockJS: false, mdxOptions: { remarkPlugins: [remarkGfm] } }}
       {...props}
       components={{ ...components, ...(props.components || {}) }}
     />

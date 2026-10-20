@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讲解 · Zhiyuan Li 博客：KDA 与 DPLR 数学原理（深读）</title>
+<link rel="stylesheet" href="../../_app/deck.css">
+<style>:root{--accent:#0e8f96;--accent-soft:#0e8f9622}</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<main id="deck"></main>
+<footer id="hud">
+  <div id="progress"><i></i></div>
+  <div id="hud-row">
+    <button id="btn-back" title="返回原文 (Esc)">‹ 返回</button>
+    <div class="hud-nav">
+      <button id="btn-prev" title="上一页 (←)">◀</button>
+      <span id="counter">1 / 1</span>
+      <button id="btn-next" title="下一页 (→)">▶</button>
+    </div>
+    <div class="hud-nav">
+      <button id="btn-overview" title="概览 (O)">☰</button>
+      <button id="btn-full" title="全屏 (F)">⛶</button>
+    </div>
+  </div>
+</footer>
+<div id="overview" hidden></div>
+<script type="application/json" id="deck-data">{"slides": [{"type": "cover", "title": "Zhiyuan Li 博客：KDA 与 DPLR 数学原理（深读）", "category": "云栖深读", "meta": "约 1 分钟 · 653 字 · 3 节"}, {"type": "toc", "items": ["《KDA（Kimi Delta Attenti…", "《DPLR（Diagonal Plus Low…", "我的扩展"], "targets": [2, 4, 8], "more": 0}, {"type": "points", "kicker": "01", "title": "《KDA（Kimi Delta Attention）的数学原理：从矩阵乘法到 Affine 变换》（02-17，2952 字）", "points": ["动机：softmax 注意力 O(N²) 且要缓存全部历史 KV", "线性注意力换成固定大小状态矩阵 S，O(N) 复杂度 + 常数显存，推理期无增长的 KV Cache。", "KDA 三要素：Delta Rule（只按预测误差更新状态）+ 逐维衰减（向量值遗忘率，推广 GDN 的标量衰减）+ …", "推导骨架：三个引理（外积累积=矩阵乘法 / 下三角矩阵求逆 / 衰减对数分解）→ WY 表示解耦状态依赖的残差 → 核…"]}, {"type": "points", "kicker": "01", "title": "《KDA（Kimi Delta Attention）的数学原理：从矩阵乘法到 Affine 变换》（02-17，2952 字）（续）", "points": ["并行的根基：仿射映射可复合——多卡（Context Parallel：AllGather + 前缀扫描）与单卡（SM-…"]}, {"type": "points", "kicker": "02", "title": "《DPLR（Diagonal Plus Low Rank）的数学原理》（02-21，1892 字）", "points": ["定位：广义 Delta Rule 变体，转移矩阵显式给出：Pt = diag(exp(gt)) + b_t aᵀ（对角…", "目标同样是把 O(t) 顺序递推变成 chunk-wise 并行。", "关键结果", "乘积封闭性：累积转移 P_{t:1} 保持\"对角+低秩\"结构（引理 2）"]}, {"type": "points", "kicker": "02", "title": "《DPLR（Diagonal Plus Low Rank）的数学原理》（02-21，1892 字）（续）", "points": ["WY 表示定理的推广：P{t:1} = 纯对角累积衰减 + Σ(衰减 bi)·(递归权重向量 wi)ᵀ", "矩阵形式 W=(I+Aab)⁻¹A^gate、U=(I+Aab)⁻¹Aak·V，其中 Aab/Aak 是严格下三角注意…", "Chunk 末状态 S′ = M·S + B：M = diag(exp(glast)) + BdecayedᵀW，B …", "chunk 输出 = QS + 两个 masked 注意力项"]}, {"type": "points", "kicker": "02", "title": "《DPLR（Diagonal Plus Low Rank）的数学原理》（02-21，1892 字）（续）", "points": ["工程细节：下三角求逆 O(C³)、相对衰减 exp(−g+g_last) 保数值稳定、fp32 计算 bf16 存储", "统一框架（本篇最有价值的视角）：IPLR（无衰减，Identity+LowRank）⊂ KDA（隐式 Delta 残差…", "实现基于 Flash Linear Attention（FLA）框架。", "与 RWKV-7 的关系：RWKV-7 的 Dynamic State Evolution 是 DPLR 的实例化"]}, {"type": "points", "kicker": "02", "title": "《DPLR（Diagonal Plus Low Rank）的数学原理》（02-21，1892 字）（续）", "points": ["理论上模拟梯度下降更新，表达力声称超出 TC0（Transformer 电路复杂度类）达 NC1。"]}, {"type": "points", "kicker": "03", "title": "我的扩展", "points": ["这条线的家谱：Linear Transformer(2020) → DeltaNet(2021, 误差修正思想) → …", "共同基因=\"用可并行训练的状态机替换 KV Cache\"。", "为什么\"显式 vs 隐式\"重要：隐式（KDA）chunk 形式更省算", "显式（DPLR）表达力强但要多存中间变量（HBM 压力）——数学结构与显存带宽的 trade-off 直接写在公式里，…"]}, {"type": "points", "kicker": "03", "title": "我的扩展（续）", "points": ["与 Marconi（03 文件）的呼应：混合架构（线性层+全注意力层）正是 Marconi 要解的缓存难题的来源——这…", "进一步阅读：Kimi Linear 论文 arXiv:2510.26692", "FLA 框架 github.com/fla-org/flash-linear-attention", "RWKV-7 论文（Delta Rule 的 NC1 表达力论证）。"]}, {"type": "close", "title": "Zhiyuan Li 博客：KDA 与 DPLR 数学原理（深读）", "takeaways": ["《KDA（Kimi Delta Attention）的数学原理：从矩阵乘法到 Affine 变换》（02-17，2952 字）", "《DPLR（Diagonal Plus Low Rank）的数学原理》（02-21，1892 字）", "我的扩展"]}], "accent": "#0e8f96", "title": "Zhiyuan Li 博客：KDA 与 DPLR 数学原理（深读）", "seed": 7412, "home": "../../../../", "article": "../../../../云栖深读/03-zhiyuanli博客-kda与dplr数学.html"}</script>
+<script src="../../_app/deck.js"></script>
+</body>
+</html>

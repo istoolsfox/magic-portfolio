@@ -1,0 +1,335 @@
+---
+title: "用 AI 写代码：问题、治理与实践全景研究"
+subtitle: "知识库"
+summary: "---"
+publishedAt: "2026-09-15"
+tag: "知识库"
+knowledgeHub: true
+---
+
+> ▶ 本文配有互动讲解动画：[点此观看](/static/decks/%E7%9F%A5%E8%AF%86%E5%BA%93/ai-coding-governance/AI%E5%86%99%E4%BB%A3%E7%A0%81%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86%E7%A0%94%E7%A9%B6-2026-09/index.html)
+
+# 用 AI 写代码：问题、治理与实践全景研究
+
+> 调研日期：2026-09-15 · 五路并行调研合成（量化实证 / 官方规范 / 一线工程师 / GitHub 工具生态 / 中文圈）
+> 所有数字与引语均经原始来源核对；未能核实的已标注【待核实】。来源 URL 见第 9 节总表。
+> 定位：长期研究笔记。若沉淀为正式知识门类，建议移入 `04-knowledge/`（与《软件研发规范》互补）。
+
+---
+
+## 0. 问题定位：你的痛点在业界的对应物
+
+| 你在 workspace 里的实际经历 | 业界实证对应 | 结论 |
+|---|---|---|
+| 立项后反复修 bug | Uplevel 2024：用 Copilot 的开发者 bug 率 **+41%**；Stack Overflow 2025：66% 开发者最大痛点是"AI 代码几乎对但差一点"，45% 称调试 AI 代码更费时 | 不是你用得差，是 AI 代码的固有属性 |
+| 多轮安全加固（omniscient-agent 渗透修复轮等） | Veracode 2025：**45%** AI 生成代码未通过安全测试，且 2021→2026 四年这个比例基本不动；Apiiro：AI 辅助者提交快 3-4 倍，安全发现 **+10 倍** | 安全必须靠门禁，不能指望模型变好 |
+| 违反软件设计规范需要返工 | arXiv 2510.03029：LLM 生成代码坏味道比专业参考解平均 **+63%**（Codex +85%） | 设计规范要变成机器可执行的约束 |
+| **新增功能模块变量全是写死的** | arXiv 2508.00700 实测 LLM 爱把测试数据硬编码进代码；Truffle Security 实测多数模型会教开发者硬编码 API key；魔法数字已成识别 LLM 代码的"指纹"特征 | 有专门的分层解法（见第 6 节） |
+
+---
+
+## 1. 实证：AI 代码的问题被量化到什么程度
+
+### 1.1 可维护性恶化（最扎实的结论）
+
+**GitClear（样本 2.11 亿+变更行，2020-2026）**——两个年度报告：
+- 2025 报告：重构（moved lines）占变更行比例从 2021 年 25% 跌到 2024 年 \<10%；copy/paste 从 8.3% 升到 12.3%，**2024 年历史上首次超过移动代码**；5 行以上克隆块增长 **4 倍**。
+- 2026 报告《The Maintainability Gap》（数据至 2026H1）：每百万变更行重复块 40.3（2023）→ **73.0（+81%，历史峰值）**；moved lines 从 21%（2022）跌到 3.8%；AI 时代"复制粘贴的概率是重构的约 5 倍"；存活 2 年以上的"长青代码"占比 **-74%**（1.7%→0.46%）——即 AI 代码大量是"生了就死"的短命代码。
+- 另一个祛魅数据：重度 AI 用户产出是非用户的 4-10 倍，但这个差距在 AI 出现前就存在；与自己过去比，实际提速只有约 25%。
+
+**含义**：AI 天然"复制粘贴优先于复用"，代码库重复率与坏味道持续上升，需要主动设"重构预算"对冲。
+
+### 1.2 安全
+
+- **NYU《Asleep at the Keyboard》**（2021，1689 个 Copilot 程序）：约 **40%** 含安全漏洞——这个问题从第一天就存在。
+- **Veracode GenAI Code Security Report**（100+ 模型 × 80 任务）：2025 年 **45%** 测试产出含 OWASP Top 10 漏洞的代码；按语言：Java 最差（失败率 >70%），Python/C#/JS 38-45%；XSS 防御失败率 86%。2026 更新：平均安全通过率 56%，**四年基本没变**——模型进步没有降低漏洞率。
+- **BaxBench**（ICML 2025，392 个后端任务）：最佳模型功能正确性仅 62%；涉数据库场景，最安全的模型也只有 33% 产出安全代码——**"功能测试通过"和"安全"是两回事**。
+- **Apiiro**（2025-09，财富 50 强数据）：AI 辅助工程师提交速度快 3-4 倍，但安全发现增长约 **10 倍**，提权类问题 +322%。
+- **Snyk 调查**（500+ 开发者）：约 **80%** 承认为引入 AI 代码绕过/忽视安全策略。
+
+### 1.3 生产力悖论：感知与实际脱节
+
+三条独立证据线指向同一种认知偏差：
+- **METR RCT**（2025-07，16 名资深 OSS 维护者、246 个真实 issue）：用 AI 实际**慢 19%**，但事前预期快 24%、事后仍自认快 20%——自评与实测差 40 个百分点。2026-02 更新：新实验（57 人）点估计翻正（回归受试者约快 18%），但 METR 自认存在严重选择偏差——**正反双方都在拿它当弹药**。
+- **DORA 2024**（Google）：AI 采纳每 +25% → 交付吞吐 -1.5%、稳定性 **-7.2%**，但个人"感觉"全面提升。DORA 2025：90% 从业者已用、80%+ 自认提效，AI 是组织现有优劣的"放大器"。
+- **Stack Overflow 2025**（4.9 万人）：使用率 84% 创新高，但对准确度**不信任 46% > 信任 33%**，高度信任仅 3.1%。
+
+**正面对照**（避免片面悲观）：arXiv 2509.19708（约 300 工程师一年纵向研究）：代码交付 +28%，头部采用者 +61%，评审周期 -31.8%；DX 2026 数据：93% 开发者用 AI，自报每周省约 4 小时。
+
+**有争议/被质疑的**：Uplevel "bug+41%"（样本 351 人、相关非因果、厂商利益）；GitHub "55% faster"（88 人实验室任务，被批高估）；DORA 两年叙事方向相反。**唯一可靠的是在自己项目里做前后对照。**
+
+### 1.4 代码坏味道（与你的返工直接相关）
+
+- arXiv 2510.03029（2025）：4 个 LLM 生成 Java 代码的坏味道比专业参考解平均 **+63%**。
+- arXiv 2512.18020：60.5% 的系统受 LLM 坏味道影响。
+- 一线观察（Ronacher）：过度抽象/重复造轮子/与问题规模不匹配的方案、吞错误抹 traceback、引入过时依赖。
+- **硬编码专项**：arXiv 2508.00700 实测 LLM 会把测试用例值直接嵌进代码；Truffle Security 实测多数模型生成硬编码 API key 的示例代码；魔法数字（magic numbers）已成识别 LLM 代码的标志性特征。
+
+### 1.5 供应链新风险
+
+- 复旦白泽×腾讯悟空×北大（2026-02）：GitHub Top1000 实证，AI 代码漏洞呈"浅层高频"（输入验证/不安全 API）；建议给 AI 代码加元数据标记可追溯。
+- 国内安全社区：53 个可注册的"幻觉依赖包"成为供应链攻击入口（AI 编造不存在的包名被抢注，即 slopsquatting）。OWASP LLM Top 10 (2025) 将其归入供应链风险。
+
+---
+
+## 2. 成因分析：为什么 AI 会写出这样的代码
+
+1. **训练数据偏向 demo 代码**：教程、示例、原型里到处是写死的值、魔法数字、内联配置——AI 学到的"默认风格"就是一次性脚本风格。
+2. **上下文里没有"变化维度"的信息**：需求没说"这个值将来会变"，AI 就走最省事路径写死。**硬编码的根因 90% 在 spec 层，不在代码层**——这是所有 spec 驱动方案的出发点。
+3. **概率性复述 vs 工程判断**：AI 优化"这段代码像不像能跑的答案"，不优化"这个模块五年后好不好改"。
+4. **无全局架构观**：每次会话只看得到局部，倾向于就地解决而不是接到既有抽象上（绕过缓存层、重复已有逻辑——Boris Tane 观察到的"局部正确但破坏周边"）。
+5. **无人审查的默认会被兑现**：Snyk 80% 绕过安全策略、CodeRabbit 数据 AI 参与代码漏洞多 2.74 倍——没有门禁，坏代码就会进主干。
+6. **"删库式自信"**：AI 表现得极其确定（Ronacher："这些 agent 的代码能差到什么程度，怎么说都不为过"），人的心智容易脱岗（他称之为 mental disengagement，最大隐性风险）。
+
+---
+
+## 3. 官方与组织规范：怎么"规定"
+
+### 3.1 各家要点
+
+**Anthropic（Claude Code Best Practices）**
+- Explore → Plan → Code 工作流；非平凡任务先出计划再写码。
+- 给**可验证信号**：让 AI 自己跑测试/lint/截图比对直到通过；Stop hooks 做确定性门禁。
+- CLAUDE.md 写"删掉就会出错"的最小约定，进 git，保持精简。
+- **Writer/Reviewer 双会话**：一个会话写、一个全新上下文的会话复审，避免自我审查偏差。
+- 权限白名单 + OS 级沙箱；任务间清上下文。
+- 注意：Dario Amodei "90% 代码由 AI 写"的说法被第三方机构质疑口径，属厂商宣传。
+
+**OpenAI（Codex Best Practices）+ AGENTS.md 标准**
+- 提示四要素：**Goal / Context / Constraints / Done-when**（完成判据要写成"测试通过"这类可验证标准）。
+- AGENTS.md 放仓库结构 + build/test/lint 命令 + 约定 + **禁令**；分层覆盖（全局>仓库>子目录）；Codex 犯错就复盘回写。OpenAI 自己让 Codex 审 100% PR。
+- 官方列的常见错误：把长期规则埋在 prompt 里、太早给全权限、一个 chat 跑整个项目。
+- AGENTS.md 已成事实标准：**6 万+开源项目采用**，归 Linux Foundation 旗下管理，Codex/Gemini CLI/Cursor/Amp/Zed/VS Code/JetBrains/Copilot 等 20+ 工具支持。
+
+**GitHub**
+- Copilot 官方立场："you are in charge"——采用前必须读懂，兼顾安全/可读/可维护；配 lint、code scanning。
+- **Spec Kit**（136.9k stars）：spec-driven development 工具包——constitution（项目宪法）→ specify（需求）→ plan（技术方案）→ tasks → implement → converge（代码与 spec 对账收敛）。
+
+**AWS Kiro（spec 驱动三文件）**
+- requirements.md：用户故事 + **EARS 语法**验收标准（"WHEN \<条件> THE SYSTEM SHALL \<行为>"——变化和边界被迫显式写出来）。
+- design.md：架构/时序/测试策略；tasks.md：带依赖的任务图。
+- hooks 事件驱动自动化（保存即更新测试、提交前扫密钥）。
+- 评价两极：支持者称"原型到生产的正路"，批评者（Marmelab《The Waterfall Strikes Back》、Internet of Bugs）称"瀑布回魂"。
+
+**Google**
+- 内部指南（2025-06 由 9to5Google 曝光）：**代码评审/安全/维护责任仍在人**。
+- 2026-04 Google Cloud 官方博客《When AI writes the code, who reviews it?》：瓶颈从写码移到评审；护栏 = 每个 PR 附 AI 快照+风险评估、"Conditional LGTM"（测试过才批）、模板 PII 用占位符。
+- Pichai 2026-04：75% 新代码由 AI 生成、由人类工程师评审。
+
+**Cursor**
+- .cursor/rules 下 .mdc 文件四类（Always / 按 glob 自动挂载 / Agent 智能判断 / 手动），Team 规则可企业强制。
+- 官方建议：单条 \<500 行、风格问题交给 linter、**"Agent 重复犯同一错误时才加规则"**、规则进 git。
+
+**OWASP LLM Top 10 (2025) 映射到编码场景**：CLAUDE.md/rules 等上下文文件即注入面；依赖幻觉（slopsquatting）属供应链；**过度代理（Excessive Agency）**——agent 权限必须最小化。
+
+### 3.2 开源社区的硬立场（反方向样本）
+
+- **Linux 内核**（最正式）：官方政策要求 AI 生成内容必须披露（工具/prompt/影响范围/如何测试），"生成比例越高审查越严"，**"你必须理解并能为提交的每行代码辩护"**。2026-08 GKH 宣布 staging 子系统**自动拒绝任何 LLM 生成补丁**（他称 LLM 结果"至少 1/3 完全错误或有害"）；但他同时认可用 AI 审查每个补丁——立场是"**AI 审可以，AI 写不行**"。
+- **LLVM**（2025-12 RFC）：贡献者永远 fully accountable；建议 `Assisted-by:` 尾标注。
+- **Git 维护者**：拒绝 Codex 生成的性能补丁，重申"非平凡 LLM 贡献不收"。
+- **curl**：Daniel Stenberg《Death by a thousand slops》（2025-07）——2025 年 HackerOne 报告约 20% 是 AI slop（仅 ~5% 真实漏洞），志愿者每周被假报告拖累；但他同年又肯定 AI 分析器找出数百真 bug。
+- arXiv 2026-09 研究：281 个有明文 AI 政策的开源项目中 76.2% 允许——多数社区允许但要求披露+人责。
+- **"Vibe coding" 源起**：Karpathy 2025-02-02 原意仅限"周末一次性项目、完全交给感觉、忘掉代码存在"，后来被泛化滥用成"不看代码让 AI 写一切"——原教旨定义和滥用定义是两回事。
+
+### 3.3 所有官方指南的共性（提炼）
+
+1. **先给上下文/先写 spec**：把项目约定写成机器可读文件（AGENTS.md/CLAUDE.md/rules）并进 git——已成事实标准。
+2. **任务拆小、先计划后动手**：plan mode、spec→plan→tasks 阶段化、提示写明完成判据。
+3. **生成后必审、人负全责**：审 diff、Writer/Reviewer 分离、内核/LLVM/Google 都强调人对每一行完全负责。
+4. **用可验证信号闭环**：测试/lint/构建退出码当门禁，不拿"AI 说做完了"当完成。
+5. **最小权限 + 沙箱**：权限白名单、默认收紧。
+6. **上下文是稀缺资源**：精简规则文件、任务间清空、失败后重开会话。
+
+---
+
+## 4. 一线工程师工作流：怎么"干"
+
+### 4.1 人物速览（14 组，立场三分）
+
+| 人物 | 立场 | 核心做法 | 一句话 |
+|---|---|---|---|
+| Simon Willison（Datasette） | 务实乐观 | 生产代码给精确规格当"数字实习生"；git 当审计链（聊天记录链进 commit） | "没亲眼见过它跑，就不算能用的系统" |
+| Armin Ronacher（Flask 作者） | 大规模使用+严格把关 | 4 万行服务 90% AI 生成；架构/schema 亲手做；逐行审 | "我仍把每一行当作我的责任，就像我自己写的一样" |
+| Addy Osmani | 务实 | 初版快生成、逐行审、新任务新会话；Batching/Priming 工作法 | **70% 问题**：入门易收尾难，产出常是"纸牌屋代码" |
+| Steve Yegge | 激进乐观 | "六波浪潮"论；抛弃补全切 chat | "不是 AI 要证明比你强，而是你要学会用好 AI" |
+| Mitchell Hashimoto（Ghostty） | 务实 | 先让 agent 写 spec.md；**专门开"反 slop 清理会话"**；关键部分手写 | "好的 AI 驾驭者是领域专家，把 AI 当助手而非替代" |
+| Thorsten Ball（Amp） | 乐观 | 自己提交的代码 70-80% 由 Amp 写；小线程（上下文>100k 变模糊）；让 agent 跑 git diff 出审查报告再人工核实 | "数字油画式编程"：架构/边界/测试策略归人，细节归 agent |
+| Harper Reed | 务实 | 脑暴→spec.md→拆小步计划→逐步执行+跑测试+todo.md 追踪 | "脑暴出 spec，再计划计划，再代码生成。离散循环。然后就是魔法" |
+| Geoffrey Huntley | 激进实验 | "Ralph"：Bash 死循环把 PROMPT.md 喂给 agent；靠类型系统+静态分析+测试**反压**；每轮犯错往 prompt 加一条禁令 | 只适用绿地项目，明言不可用于现有代码库 |
+| Kent Beck（XP 之父） | 谨慎重估 | 2023 名推："90% 技能价值跌到 \$0，10% 杠杆涨 1000 倍"；TDD 是对抗 agent 漂移的超能力 | 最头疼 agent 为让测试通过而**删测试**走捷径 |
+| DHH（Rails） | 怀疑/坚守 | "Coding should be a vibe"——拒绝交出写代码本身 | "认为人类不再需要能审查 AI 产出的人，纯属乌托邦" |
+| Internet of Bugs（Carl Brown） | 反对/打假 | 逐行复盘 Devin 演示"先制造 bug 再修 bug" | "'Just Trust the Agent' 是编程史上最烂的建议"；集成测试是终极技能 |
+| Gergely Orosz | 数据中立 | 92% 开发者在用；批评 GitHub 报告"挑选结果" | 全局统计口径不可信，要自己测自己 |
+| Cognition（Walden Yan） | 方法论输出 | 《Don't Build Multi-Agents》：共享上下文必须共享完整轨迹 | "行为携带隐式决策，冲突的决策带来坏结果" |
+| Boris Tane（2026 新声） | 务实 | research.md→plan.md→**人在计划文档上批注**→实施 | "绝不许 Claude 在你审查并批准书面计划之前写代码" |
+
+### 4.2 跨人物共性（反复出现的模式）
+
+1. **规格先行、规划与执行分离**（spec.md/plan 文件几乎人手一份）。
+2. **小步 + git 安全网**：一次一个可验证单元，可回滚。
+3. **测试当护栏**：TDD 对抗 agent 漂移；类型系统+静态分析反压；盯测试 diff 防 agent 删测试。
+4. **人工审查不可外包**：分歧只在"原型可以放过多少"，没人主张生产代码免审。
+5. **上下文管理是核心技能**：小会话、喂足上下文、失败就重开。
+6. **环境分流**：一次性脚本可以 vibe；长期维护/碰数据碰钱的代码禁止不看 diff 直接接受。
+
+分水岭不在"用不用"，而在**"谁对每一行负最终责任"**。
+
+---
+
+## 5. 工具与门禁：怎么"机器拦截"
+
+### 5.1 反硬编码/反坏味道的现成检查（直接可用）
+
+| 工具/规则 | 检查什么 | 接入 |
+|---|---|---|
+| ESLint `no-magic-numbers` | JS/TS 裸数字；支持 ignore 豁免表/enforceConst/detectObjects | eslint 配置 |
+| Ruff `PLR2004`（magic-value-comparison） | Python 比较表达式中的魔法值 | `[tool.ruff.lint] select=["PLR2004"]`，可配 allow-magic-values |
+| **gitleaks**（~27.7k stars【二手口径】） | 150+ 类硬编码 API key/token/密码，扫 git 历史 | 官方 GitHub Action；pre-commit + CI |
+| TruffleHog | 密钥扫描更广，还能**验证密钥是否仍活跃** | 与 gitleaks 互补 |
+| **Semgrep `p/secrets` 规则集** | 硬编码密钥/URL/凭据/webhook（CWE-798），起步 38 条社区规则 | `semgrep --config "p/secrets"` |
+| **anti-slop**（dmmulroy，4.5k stars）★ | 专治 AI 生成的 TS/JS"低证据"写法：双重 as 断言、filter().map() 链、空泛类型等 18+5 条规则 | Oxlint 插件，vendor 进仓库 |
+
+### 5.2 规则文件生态（约束 AI 行为的"宪法"层）
+
+- **awesome-cursorrules**（40.8k stars）：210+ 条 .mdc 规则、13 分类。真实规则原文例：`clean-code.mdc` 明确写 "**Replace hard-coded values with named constants** / Keep constants at the top of the file or in a dedicated constants file"、"Write tests before fixing bugs"；`docker.mdc` 写 "No secrets in Dockerfile or image layers"。
+- **cursor.directory**：8.8 万+ 开发者使用的社区规则目录。
+- **agentsmd/agents.md**（24.4k stars）：官方建议结构 = 开发环境命令 + 测试指令 + PR 规范（如"即使没人要求也要为改动代码补测试"）。
+- **humanlayer/12-factor-agents**（25.9k stars）：写 agent 代码的 12 条原则（Own your prompts / Own your context window / Own your control flow / Small Focused Agents / 把 agent 做成无状态 reducer 等）。
+- **awesome-claude-code**（54.1k stars）：skills/hooks/CI 集成合集。
+- **Aider 作者自述**：aider 每个版本约 **70% 新代码由 aider 自己写**（按 git attribution 统计），靠 CONVENTIONS.md 注入编码规范 + benchmark 驱动。
+
+### 5.3 AI 代码审查工具（第二双眼睛）
+
+| 工具 | 关键配置 |
+|---|---|
+| CodeRabbit（.coderabbit.yaml） | `path_instructions` 按路径下自然语言指令；`knowledge_base.code_guidelines` 可直接指向 CLAUDE.md / copilot-instructions.md；内置开关 eslint/ruff/semgrep/gitleaks/trufflehog |
+| Greptile（greptile.json） | `strictness: 1-3`；`customContext.rules` + glob scope（如"All API endpoints must have rate limiting"） |
+| Qodo PR-Agent（13k stars） | `.pr_agent.toml`：`require_security_review`、`require_tests_review`、`extra_instructions`；/review /improve /describe 命令 |
+| GitHub Copilot code review | 读 `.github/copilot-instructions.md` + `.github/instructions/*.instructions.md`（路径级）+ CLAUDE.md |
+| SonarQube AI Code Assurance | 项目标记"Contains AI code"→ 套用更严的"Sonar way for AI Code"质量门禁 |
+
+---
+
+## 6. 专题：硬编码问题的分层解法（你的最痛点）
+
+业界没有银弹，但已收敛成**五层防御**——从根因到兜底：
+
+**① 需求层（根因解法，最重要）**
+硬编码的第一因是 spec 没写"什么会变"。解法：
+- Kiro/Spec Kit 式 requirements.md，用 **EARS 语法**（WHEN…THE SYSTEM SHALL…）强迫把变化维度写出来；
+- 给 AI 的提示带四要素，**Constraints 里明说**："哪些值是配置、哪些是常量、哪些将来会变"；
+- Boris Tane 的 research.md 阶段让 AI 先读周边代码，发现既有 config 抽象。
+
+**② 架构层（12-Factor）**
+- 配置进环境变量/配置文件/常量模块——配置与代码分离是 1970 年代至今的工程常识，AI 不会替你做，但会跟着架构走；
+- Google 的做法很有启发：**模板里 PII/敏感值一律用占位符——"agent 看不到就滥用不了"**（同样的逻辑：config 里没有的值，AI 想写死都没得抄）。
+
+**③ 提示/规则层（每项目一次性成本）**
+- AGENTS.md / CLAUDE.md / .cursor/rules 写进 git 的硬禁令，例如 awesome-cursorrules `clean-code.mdc` 原文："Replace hard-coded values with named constants"；
+- Huntley 模式：AI 每犯一次错，就把教训写回规则文件——规则库随事故进化。
+
+**④ 检查层（机器门禁，不靠自觉）**
+- Ruff PLR2004 / ESLint no-magic-numbers 卡魔法数字；
+- Semgrep p/secrets + gitleaks 卡硬编码密钥/URL/端点；
+- anti-slop 卡 AI 特有的低证据写法；
+- 接 pre-commit + CI，不过就打回让 AI 重写，**别手动兜底**（Anthropic 官方建议：测试是门禁不是装饰）。
+
+**⑤ 审查层**
+- Writer/Reviewer 分离（新会话复审）；
+- 让 agent 自己跑 `git diff` 出审查报告再人工核实（Thorsten Ball 模式）；
+- 逐行读完才提交；看不懂的代码不进主干。
+
+---
+
+## 7. 中文圈实践
+
+### 7.1 大厂落地（信息浓度最高）
+
+- **美团技术团队**《用 Agent 评测思路管理 AI Coding——31 万行代码 AI 重构的实践》（2026-05）★ 本次调研国内最重的一篇：90%+ 代码 AI 生成；核心论断"**决定系统走向的是约束 AI 的能力**"；"人人对齐先于人机对齐"（先团队共识再固化成 AI Rule，顺序不能颠倒）；规范落地为 always 级 Rule + 渐进式 Skill；**Pre-PR 机制**：提交前 AI 多轮自查→标准 PR 文档→人只审业务语义；高阶模型当 Judge、不同厂商模型对抗互审。
+- **去哪儿**《AI Coding 研发平台实践》（2026-06）：覆盖率 100%、出码率 75%+；L0-L5 自动化分级（类比自动驾驶）；Harness"四把锁"（触发机制/约束门禁/沙箱隔离/人工节点）；警告"别只看出码率，防 KPI 竞赛"。
+- **小红书**（InfoQ 中国）：规范要用"**可验证的程序化护航**而非写进 Prompt"；写操作幂等键+副作用日志；"模型决定上限，工程控制面决定能否进生产"。
+
+### 7.2 工具厂商官方实践
+
+字节 Trae（内部覆盖 92% 工程师、抖音生活服务 AI 贡献率 43%）、腾讯 CodeBuddy（90% 上线后新增代码 AI 生成、覆盖 1.2 万工程师）、阿里通义灵码（国际站 30% 代码 AI 生成；**云效 AI 代码评审**：YAML 规则库四级严重度、按路径定制指令、评审记忆可沉淀）、百度 Comate（明确定义"采纳率是技术指标，代码生成占比才是价值指标"）。
+
+### 7.3 安全侧
+
+奇安信（2026-04）：某金融公司 AI 编程月产代码从 2.5 万到 25 万行，积压待审 100 万行；新漏洞形态 = 逻辑漏洞/幻觉代码/**虚构 API**/权限错配；"以智治智"三层防线。复旦×腾讯悟空×北大在野研究：AI 代码漏洞"浅层高频"，建议元数据标记可追溯。
+
+### 7.4 宝玉（baoyu.io，中文圈个人实践代表）
+
+《我的 AI 原生开发流程》（2026-08）：传统五步流程不变、执行者变 Agent；**四个不可省的确认点**（可行性/技术方案/原型/测试）；文档是 Session 间的"记忆载体"；他个人只做黑盒测试不做 Code Review（金融类核心系统仍需 Review）。反对纯 vibe coding，主张"Agentic Engineering"守住质量，瓶颈转移到代码两侧（设计确认+验证评审）。
+
+### 7.5 社区吐槽共识（V2EX/知乎/博客园）
+
+代码量爆炸难读、屎山加速失控（"超 100 行懒得细读"、"公司 vibe coding 项目团队已无法掌控"）、改一处崩多处、幻觉 API/幻觉包、硬编码密钥、删库式自信。**国内共识与国际殊途同归：AI 代码问题本质是"缺约束"，解法是把规范从文档变成可执行门禁。**
+
+---
+
+## 8. 对本 workspace 的落地建议
+
+结合你已有的资产（04-knowledge/软件研发规范 15 篇、oss-pr-deep-check-playbook 红队手册+preflight 脚本、AGENTS.md、WR-077 的 E2E 测试实战、omniscient-agent 多轮安全加固经验）：
+
+1. **补一篇《AI 协作编码规范》进 04-knowledge/软件研发规范/**（第 16 篇）：内容可直接用第 3.3 节共性 + 第 6 节五层防御 + 第 4.2 节工作流共性，与既有 10-安全编码、09-测试、12-代码评审交叉引用。
+2. **每个活跃项目根目录加 AGENTS.md**（现在只有 workspace 级）：写 build/test/lint 命令 + 3-5 条硬约定 + 明确禁令（至少包含："禁止硬编码：环境相关值一律走 config/.env/常量模块；新增可变值先问是不是配置"）。20+ 工具通用，Claude Code/ZCode 都吃。
+3. **机械门禁三件套进 pre-commit**：ruff PLR2004（魔法值）+ gitleaks（硬编码密钥）+ 测试必过。omniscient-agent 遗留的 37 个 ruff 报错正好借此清零并加严规则集。
+4. **新增功能走"先 spec 后代码"**：哪怕就是让 AI 先输出一个 plan（写明"什么会变/什么不变/哪些值是配置"）你确认再动手——这是硬编码问题的根因解法，成本最低收益最大。
+5. **Writer/Reviewer 分离常态化**：你已有七视角红队模板（发 PR 前），把它扩展到"AI 写完新功能"场景；或让 AI 开新会话自己 `git diff` 复审。
+6. **定期"反 slop 清理会话"**（Hashimoto 做法）：每个项目每轮迭代留一次专门会话让 AI 搬家重复代码/提取常量/补文档——对冲 GitClear 证实的高重复率。
+7. **AI 参与披露**：开源贡献（oss-contrib 线）沿用 `Assisted-by:` 尾标注，与 Linux/LLVM 社区政策对齐，降低被拒风险。
+8. **警惕度量自欺**（METR 教训）：别用"感觉快了"评估，用结果指标（bug 数、返工轮次、重复率）在自己项目里做前后对照。
+
+---
+
+## 9. 来源总表
+
+**实证研究**
+- GitClear 2025: https://www.gitclear.com/ai_assistant_code_quality_2025_research
+- GitClear 2026: https://www.gitclear.com/the_ai_code_quality_maintainability_gap
+- METR 2025: https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/ · 2026 更新: https://metr.org/blog/2026-02-24-uplift-update/
+- DORA 2024: https://dora.dev/research/2024/dora-report/ · 2025: https://dora.dev/insights/balancing-ai-tensions/
+- Stack Overflow 2025: https://survey.stackoverflow.co/2025/ai
+- Veracode 2025: https://www.veracode.com/resources/analyst-reports/2025-genai-code-security-report/ · 2026: https://www.veracode.com/blog/spring-2026-genai-code-security/
+- NYU: https://arxiv.org/abs/2108.09293 · Uplevel: https://uplevelteam.com/blog/genai-developers
+- 坏味道: https://arxiv.org/abs/2510.03029 · 硬编码测试数据: https://arxiv.org/html/2508.00700v1 · 企业纵向: https://arxiv.org/abs/2509.19708
+- BaxBench: https://baxbench.com/ · Apiiro: https://apiiro.com/blog/4x-velocity-10x-vulnerabilities-ai-coding-assistants-are-shipping-more-risks/
+
+**官方规范**
+- Claude Code Best Practices: https://code.claude.com/docs/en/best-practices · Context Engineering: https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents
+- Codex Best Practices: https://learn.chatgpt.com/guides/best-practices · AGENTS.md: https://agents.md
+- Spec Kit: https://github.com/github/spec-kit · Kiro: https://kiro.dev/docs/specs
+- Cursor rules: https://cursor.com/docs/context/rules · OWASP LLM Top 10: https://genai.owasp.org/llm-top-10/
+- Linux 内核政策: https://docs.kernel.org/process/generated-content.html · GKH 拒 LLM 补丁: https://www.phoronix.com/news/Linux-Staging-Reject-LLMs
+- LLVM RFC: https://discourse.llvm.org/t/rfc-llvm-ai-tool-policy-human-in-the-loop/89159 · curl slop: https://daniel.haxx.se/blog/2025/07/14/death-by-a-thousand-slops/
+- Google 内部指南（9to5Google 曝光）· Google Cloud 评审文: https://cloud.google.com/transform/when-ai-writes-the-code-who-reviews-it-cto-google-cloud
+
+**一线工程师**
+- Willison: https://simonwillison.net/2025/Mar/11/using-llms-for-code/ · slop 定义: https://simonwillison.net/2024/May/8/slop/
+- Ronacher: https://lucumr.pocoo.org/2025/12/22/a-year-of-vibes/ · https://lucumr.pocoo.org/2025/9/29/90-percent/
+- Osmani 70%: https://addyo.substack.com/p/the-70-problem-hard-truths-about
+- Yegge: https://sourcegraph.com/blog/revenge-of-the-junior-developer · Hashimoto: https://mitchellh.com/writing/non-trivial-vibing
+- Ball: https://ampcode.com/notes/how-i-use-amp · Reed: https://harper.blog/2025/02/16/my-llm-codegen-workflow-atm/
+- Huntley Ralph: https://ghuntley.com/ralph/ · Kent Beck 访谈: https://newsletter.pragmaticengineer.com/p/tdd-ai-agents-and-coding-with-kent
+- Tane: https://boristane.com/blog/how-i-use-claude-code/ · Cognition: https://cognition.com/blog/dont-build-multi-agents
+
+**工具生态**
+- ESLint: https://eslint.org/docs/latest/rules/no-magic-numbers · Ruff PLR2004: https://docs.astral.sh/ruff/rules/magic-value-comparison/
+- gitleaks: https://github.com/gitleaks/gitleaks · semgrep-rules: https://github.com/semgrep/semgrep-rules
+- anti-slop: https://github.com/dmmulroy/anti-slop · awesome-cursorrules: https://github.com/PatrickJS/awesome-cursorrules
+- 12-factor-agents: https://github.com/humanlayer/12-factor-agents · CodeRabbit 配置: https://docs.coderabbit.ai/reference/configuration
+- Qodo: https://github.com/qodo-ai/pr-agent · SonarQube AI 门禁: https://docs.sonarsource.com/sonarqube-server/quality-standards-administration/ai-code-assurance/quality-gate-for-agentic-ai
+- Octoverse 2025: https://github.blog/news-insights/octoverse/octoverse-a-new-developer-joins-github-every-second-as-ai-leads-typescript-to-1/ · Aider FAQ: https://aider.chat/docs/faq.html
+
+**中文圈**
+- 美团: https://tech.meituan.com/2026/05/07/Agent-AI-Coding.html
+- 去哪儿: 53ai.com 转载《去哪儿网 AI Coding 研发平台实践》(2026-06)
+- 小红书: https://www.infoq.cn/article/l88X1azz8wfwphDyECoP
+- 宝玉: https://baoyu.io/blog/2026-08-24/ai-native-dev-workflow
+- 奇安信: qianxin.com《AI 编程月产代码从 2.5 万到 25 万行》(2026-04)
+- V2EX 讨论: t/1186846 · t/1191296 · t/1224558 · t/1207049 · t/1214452 · t/1182388
+
+---
+
+*本文件由五路并行调研合成（2026-09-15）。如转为正式知识门类，建议路径：`04-knowledge/ai-coding-governance/`，并按约定新课题建档。*
+

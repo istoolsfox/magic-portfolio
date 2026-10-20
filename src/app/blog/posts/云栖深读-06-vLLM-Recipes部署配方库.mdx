@@ -1,0 +1,39 @@
+---
+title: "vLLM Recipes：195 条部署配方库"
+subtitle: "云栖深读"
+summary: "\"选模型 → 按你的 GPU 调整 → 复制一行 vllm serve 命令\"的配方目录。当前 195 条，覆盖 H100/H200/B200/B300、Grace-Blackwell、AMD MI300X/MI325X…"
+publishedAt: "2026-09-22"
+tag: "云栖深读"
+knowledgeHub: true
+---
+
+> ▶ 本文配有互动讲解动画：[点此观看](/static/decks/%E4%BA%91%E6%A0%96%E6%B7%B1%E8%AF%BB/06-vLLM-Recipes%E9%83%A8%E7%BD%B2%E9%85%8D%E6%96%B9%E5%BA%93/index.html)
+
+# vLLM Recipes：195 条部署配方库
+
+> 来源：https://recipes.vllm.ai/ （社区维护，配套 GitHub 仓库与 models.json API）
+
+## 是什么
+
+"选模型 → 按你的 GPU 调整 → 复制一行 `vllm serve` 命令"的配方目录。当前 **195 条**，覆盖 H100/H200/B200/B300、Grace-Blackwell、AMD MI300X/MI325X/MI355X。按 ~40 个模型厂商分组（Qwen 33 条最多、GLM 17、NVIDIA 12、DeepSeek 11……）。
+
+## 配方里都编码了什么
+
+最新条目示例：DeepSeek-V4.1-Flash、Qwen3.8-Flash-Next、Qwen-Image-2.1、Intern-S2-397B、Ling-3.0-flash、Param2-17B-A2.4B-Thinking 等。每条配方实际是一组工程决策的封装：
+- **量化**：FP8/BF16/NVFP4/MXFP4/FP4/INT4 checkpoint 选择
+- **长上下文**：262K / 1M 配置
+- **投机解码**：DFlash/DSpark 草稿模型、原生 MTP
+- **架构开关**：混合注意力、滑窗+稀疏、全模态、文生图
+- **效率注记**：如"552B 总参 / 8-16B 激活"的 MoE 配置提示
+
+## 怎么用（三个姿势）
+
+1. **部署用**：直接查表抄命令，避免自己踩量化/并行的坑。
+2. **学习用**：每条配方都是"该模型族最优部署形态"的快照——对比 Qwen 与 DeepSeek 的配方差异能读出两家的架构差异（如 MLA 模型的 DCP 参数）。
+3. **追踪用**：最新 8 条 = 推理工程风向标（当前风向：FP4 量化、投机解码标配、MoE 激活比优化）。
+
+## 我的扩展
+
+- ** recipes 是"知识图谱 → 一行命令"的压缩**：本库 01-03 文件讲的原理（量化格式、DCP、投机解码），在 recipes 里全部落成具体 flag——原理篇看懂后，recipes 就是实操场。
+- 与官方 docs（docs.vllm.ai 的 Benchmark Suites：`vllm bench` CLI）配套：配方起服务，基准脚本测效果，Agentic Bench（见 00-inbox 知识图谱）测 agentic 负载——三层工具链完整。
+

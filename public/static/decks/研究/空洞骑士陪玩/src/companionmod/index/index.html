@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讲解 · CompanionMod（游戏内 C# mod · 盲写 v0.1）</title>
+<link rel="stylesheet" href="../../../../../_app/deck.css">
+<style>:root{--accent:#5650c9;--accent-soft:#5650c922}</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<main id="deck"></main>
+<footer id="hud">
+  <div id="progress"><i></i></div>
+  <div id="hud-row">
+    <button id="btn-back" title="返回原文 (Esc)">‹ 返回</button>
+    <div class="hud-nav">
+      <button id="btn-prev" title="上一页 (←)">◀</button>
+      <span id="counter">1 / 1</span>
+      <button id="btn-next" title="下一页 (→)">▶</button>
+    </div>
+    <div class="hud-nav">
+      <button id="btn-overview" title="概览 (O)">☰</button>
+      <button id="btn-full" title="全屏 (F)">⛶</button>
+    </div>
+  </div>
+</footer>
+<div id="overview" hidden></div>
+<script type="application/json" id="deck-data">{"slides": [{"type": "cover", "title": "CompanionMod（游戏内 C# mod · 盲写 v0.1）", "category": "研究", "meta": "约 1 分钟 · 398 字 · 4 节"}, {"type": "toc", "items": ["它做什么", "构建（回家 · Windows）", "联调清单（编译/运行最可能要改的点）", "验证方式"], "targets": [2, 4, 5, 6], "more": 0}, {"type": "points", "kicker": "01", "title": "它做什么", "points": ["主线程 10Hz 轮询采样：场景 / 坐标 / HP / 灵魂(MPCharge) / 吉欧 / boss 血量，差分…", "裸 TCP 127.0.0.1:35516 推 NDJSON（换行分隔 JSON）给 hk-gateway，实时（事件…", "接收命令（管道格式）并在主线程执行：heal / sethp hp=N / givegeo amount=N / te…", "设计取舍：不 hook 任何游戏方法（盲写阶段避开签名风险，用轮询差分"]}, {"type": "points", "kicker": "01", "title": "它做什么（续）", "points": ["后续需要精确事件再换 hook）。", "零 NuGet 依赖、零 JSON 库（自带 60 行序列化器 + 命令走管道格式免解析器）。"]}, {"type": "points", "kicker": "02", "title": "构建（回家 · Windows）", "points": ["cd src\\CompanionMod", "dotnet build -c Release", "copy bin\\Release\\net472\\CompanionMod.dll \"$env:USERPROFILE\\…"]}, {"type": "table", "kicker": "03", "title": "", "headers": ["#", "位置", "风险", "现象与修法"], "rows": [["1", "CompanionMod() 构造器 : base(\"CompanionMod\")", "Modding API 版本差异", "若编译报「没有接受 1 个参数的基类构造器」：去掉参数，改为 override Name 属性"], ["2", "Version 属性 override", "旧版 API 用 GetVersion() 方法", "报「没有可重写的 Version」时改成 public override string GetVersion()"], ["3", "csproj 里 HollowKnight.Modding 引用", "程序集名不确定", "到 Managed 目录找 API 的 dll 名，改 HintPath"], ["4", "PlayerData.instance.MPCharge", "灵魂字段名", "编译报错就改 MPCharge → 实际字段（ILSpy 看 PlayerData）"], ["5", "BossSceneController 反射链", "字段名 bossHealthManager 等", "拿不到血量只影响播报不影响其他；名字以 ILSpy 为准"], ["6", "GameManager.SceneLoadInfo 传送", "字段名/用法", "teleport 命令会在 cmd_result 里带回异常文本，照着修"], ["7", "TcpListener 在 Unity Mono 下", "理论可用", "若起不来，改用手动 Socket（同命名空间，接口面很小）"]]}, {"type": "points", "kicker": "04", "title": "验证方式", "points": ["游戏启动后，任何终端：python -m hk_gateway dump-mod（在 src/hk-gateway 下…"]}, {"type": "close", "title": "CompanionMod（游戏内 C# mod · 盲写 v0.1）", "takeaways": ["它做什么", "构建（回家 · Windows）", "联调清单（编译/运行最可能要改的点）"]}], "accent": "#5650c9", "title": "CompanionMod（游戏内 C# mod · 盲写 v0.1）", "seed": 6291, "home": "../../../../../../../", "article": "../../../../../../../研究/空洞骑士陪玩/src/companionmod/index/index.html"}</script>
+<script src="../../../../../_app/deck.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讲解 · Add Runtime Controls to AI Agents with NVIDIA OpenShell</title>
+<link rel="stylesheet" href="../../_app/deck.css">
+<style>:root{--accent:#4a8a5c;--accent-soft:#4a8a5c22}</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<main id="deck"></main>
+<footer id="hud">
+  <div id="progress"><i></i></div>
+  <div id="hud-row">
+    <button id="btn-back" title="返回原文 (Esc)">‹ 返回</button>
+    <div class="hud-nav">
+      <button id="btn-prev" title="上一页 (←)">◀</button>
+      <span id="counter">1 / 1</span>
+      <button id="btn-next" title="下一页 (→)">▶</button>
+    </div>
+    <div class="hud-nav">
+      <button id="btn-overview" title="概览 (O)">☰</button>
+      <button id="btn-full" title="全屏 (F)">⛶</button>
+    </div>
+  </div>
+</footer>
+<div id="overview" hidden></div>
+<script type="application/json" id="deck-data">{"slides": [{"type": "cover", "title": "Add Runtime Controls to AI Agents with NVIDIA OpenShell", "category": "链接情报", "meta": "约 1 分钟 · 718 字 · 10 节"}, {"type": "toc", "items": ["定位", "架构三件套", "工作方式", "策略示例", "凭证保护", "形式化策略验证", "动态权限调整（policy advisor）", "上手", "采纳方"], "targets": [2, 3, 4, 6, 10, 11, 12, 13, 16], "more": 1}, {"type": "points", "kicker": "01", "title": "定位", "points": ["开源运行时，定义并强制执行 AI agent 可访问的系统和数据，无需重写 agent 本身。", "支持 Codex、Claude Code、Pi、Hermes 等框架", "覆盖企业应用、前沿研究和物理 AI（机器人/边缘）。", "Perplexity 红队实测 10 家沙箱中唯二未被打穿之一。"]}, {"type": "points", "kicker": "02", "title": "架构三件套", "points": ["Gateway（控制平面）：管理多个沙箱的生命周期与策略，支持跨组治理", "Supervisor：与每个沙箱配对，运行在 agent 工作负载之外，逐请求检查出站流量是否符合策略", "Sandbox：运行工作负载，OS 内核级控制限制文件读写、阻止提权；除经 Supervisor 外没有其他网络路径"]}, {"type": "points", "kicker": "03", "title": "工作方式", "points": ["网络控制比\"允许连接\"细得多：Supervisor 可检查 HTTP、GraphQL、MCP 流量，允许同一 API …", "控制在 agent 启动 shell、运行生成代码、创建子进程、委派子代理时依然生效", "审计记录用 OCSF（Open Cybersecurity Schema Framework）", "拦截时返回描述性错误，帮 agent 决定下一步"]}, {"type": "points", "kicker": "03", "title": "工作方式（续）", "points": ["策略用 YAML 编写，编译为 OPA/Rego 逐条评估出站请求"]}, {"type": "points", "kicker": "04", "title": "策略示例", "points": ["network_policies", "github_api", "name: github-api-readonly", "endpoints"]}, {"type": "points", "kicker": "04", "title": "策略示例（续）", "points": ["host: api.github.com", "port: 443", "protocol: rest", "enforcement: enforce"]}, {"type": "points", "kicker": "04", "title": "策略示例（续）", "points": ["access: read-only", "binaries", "path: /usr/bin/curl", "策略可热更新（openshell policy set，无需重启沙箱）"]}, {"type": "points", "kicker": "04", "title": "策略示例（续）", "points": ["文件系统与进程限制在沙箱启动时确定，需新建沙箱才能改"]}, {"type": "points", "kicker": "05", "title": "凭证保护", "points": ["真实凭证留在 agent 工作负载之外，通过 provider profile 定义凭证、端点与允许的程序", "占位符仅对授权端点生效，发往其他目的地会被拒绝。", "即使凭证本身有写权限，只读 API 策略也能阻断写请求——agent 永远看不到真实凭据，OpenShell 只把凭据…"]}, {"type": "points", "kicker": "06", "title": "形式化策略验证", "points": ["策略证明器用形式逻辑验证建模后的权限是否在操作员定义的边界内，或给出越界的具体行为。", "官方举的对抗实验：前沿 agent 试图说服 AI 审核者授权其修改受保护的 GitHub 仓库，形式化分析让审核者看…", "多代理联合权限检查是进行中工作。"]}, {"type": "points", "kicker": "07", "title": "动态权限调整（policy advisor）", "points": ["agent 可提出窄范围的网络/文件策略变更，默认需人工审核，agent 无法批准自己的请求", "批准后新规则热加载到运行中的沙箱。"]}, {"type": "points", "kicker": "08", "title": "上手", "points": ["curl -LsSf https://raw.githubusercontent.com/NVIDIA/OpenShe…", "openshell sandbox create --name demo", "要求 Linux、Apple Silicon macOS 或 WSL 2（实验性），需 Docker/Podman/主…", "常用命令：openshell sandbox create / openshell logs / openshell …"]}, {"type": "points", "kicker": "08", "title": "上手（续）", "points": ["快速开始：https://docs.nvidia.com/openshell/dev/get-started/quic…", "官方快速示例用 OpenCode + OpenRouter 免费模型", "Agent Skills：npx skills add NVIDIA/OpenShell", "SDK：Python（uv add openshell）、TypeScript（@nvidia/openshell-s…"]}, {"type": "points", "kicker": "08", "title": "上手（续）", "points": ["K8s：Helm 部署 gateway，要求 CNI 支持 NetworkPolicy", "遥测：匿名操作计数，OPENSHELLTELEMETRYENABLED=false 可关"]}, {"type": "points", "kicker": "09", "title": "采纳方", "points": ["Cadence（芯片设计 ChipStack）、Slack（按需 agent 平台）、Gecko Robotics（物…"]}, {"type": "points", "kicker": "10", "title": "与我方的关系", "points": ["OpenHarness 安全层的参考实现：网络/文件/凭证治理的成熟设计——凭证注入式（agent 永不见真凭据）+ …", "Rust 主实现，Apple Silicon 本机可跑，适合 spike"]}, {"type": "close", "title": "Add Runtime Controls to AI Agents with NVIDIA OpenShell", "takeaways": ["定位", "架构三件套", "工作方式"]}], "accent": "#4a8a5c", "title": "Add Runtime Controls to AI Agents with NVIDIA OpenShell", "seed": 3161, "home": "../../../../", "article": "../../../../链接情报/04-nvidia-openshell-runtime-controls.html"}</script>
+<script src="../../_app/deck.js"></script>
+</body>
+</html>

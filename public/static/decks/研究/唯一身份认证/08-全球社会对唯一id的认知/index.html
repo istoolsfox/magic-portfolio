@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讲解 · 08 全球社会对"唯一 ID"的认知地图</title>
+<link rel="stylesheet" href="../../../_app/deck.css">
+<style>:root{--accent:#3f7f5f;--accent-soft:#3f7f5f22}</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<main id="deck"></main>
+<footer id="hud">
+  <div id="progress"><i></i></div>
+  <div id="hud-row">
+    <button id="btn-back" title="返回原文 (Esc)">‹ 返回</button>
+    <div class="hud-nav">
+      <button id="btn-prev" title="上一页 (←)">◀</button>
+      <span id="counter">1 / 1</span>
+      <button id="btn-next" title="下一页 (→)">▶</button>
+    </div>
+    <div class="hud-nav">
+      <button id="btn-overview" title="概览 (O)">☰</button>
+      <button id="btn-full" title="全屏 (F)">⛶</button>
+    </div>
+  </div>
+</footer>
+<div id="overview" hidden></div>
+<script type="application/json" id="deck-data">{"slides": [{"type": "cover", "title": "08 全球社会对\"唯一 ID\"的认知地图", "category": "研究", "meta": "约 5 分钟 · 2327 字 · 5 节"}, {"type": "toc", "items": ["一、四种社会认知范式", "二、普通人的日常接触面：验证正在变成空气", "三、学界的批判共识（截至 2026-09）", "四、认知地图总结", "来源"], "targets": [2, 9, 11, 13, 16], "more": 0}, {"type": "points", "kicker": "01", "title": "一、四种社会认知范式", "points": ["社会底色：手机号实名（2013）、网络实名制逐平台推进十年，\"后台实名、前台匿名\"已是默认秩序。", "网证/网号在这个底色上的认知定位是\"便民+减负\"（少交身份证复印件、平台拿不到完整身份信息），而非隐私议题。", "争议真实存在但形态不同：不是\"要不要实名\"，而是\"自愿是否会滑向强制\"\"单点故障怎么办\"\"多元化登录渠道能否保留\"——…", "认知关键差异：中国语境里\"唯一性由公安人口库担保\"几乎无争议（户籍制度背书几十年）"]}, {"type": "points", "kicker": "01", "title": "一、四种社会认知范式（续）", "points": ["争议集中在权力约束而不是事实唯一。", "这与欧美（不信任国家数据库本身）、加密圈（不信任任何单一担保方）形成光谱三极。", "Aadhaar（13 亿人生物库）提供了全球最完整的\"唯一 ID 社会后果\"实证样本", "成就面：快速完成十亿级身份覆盖，堵住福利发放中的重复冒领，节省巨额成本 [实锤，广泛引用]。"]}, {"type": "points", "kicker": "01", "title": "一、四种社会认知范式（续）", "points": ["代价面：基础信息错误率约 8.8%（三邦抽样，BBC）", "判例研究显示最高法院判决后仍有 3.3% 的人因此被拒开银行账户、0.8% 被拒 SIM 卡 [实锤，学术调查]", "弱势群体（老人指纹磨损、劳动者手部磨损、无固定住所者）被生物验证系统性排斥 [实锤，PMC 收录研究 A Failur…", "司法划线：2017 Puttaswamy 案确立隐私权为基本权利"]}, {"type": "points", "kicker": "01", "title": "一、四种社会认知范式（续）", "points": ["最高法院裁定 Aadhaar 合宪但禁止私企强制要求（电信/银行不得强制绑定）[实锤，判决]。", "但执行层面\"自愿\"条款持续被突破，Access Now 等组织持续记录 [二手]。", "认知启示：Aadhaar 证明了\"生物唯一性+国家库\"技术上可规模化，也证明了错误率×10亿人=百万级受害者——排斥性…", "这直接支撑 Vitalik 的\"多元身份比一人一号更容错\"论点。"]}, {"type": "points", "kicker": "01", "title": "一、四种社会认知范式（续）", "points": ["美国：无全国身份证传统（驾照代行其职），对国家生物库的警惕刻在文化里", "Apple 护照 Digital ID 因此成为主流化捷径——政府不做的事由私人公司做，隐私争议从\"国家监控\"转为\"企…", "欧盟：GDPR 文化下，Worldcoin 成为完美靶子（西班牙/葡萄牙禁令），同时欧盟自己用 eIDAS 2.0 推…", "民调底色：IBM 研究显示全球仅约 1/3 公民高度信任本国中央政府 [二手]——任何\"国家做唯一担保方\"的设计在信任…"]}, {"type": "points", "kicker": "01", "title": "一、四种社会认知范式（续）", "points": ["这也是为什么欧美方案必须披着\"钱包在你手里、披露由你选择\"的外衣。", "World 的验证用户集中在拉美/东南亚/非洲（Orb 点 14 国），而 its 总部在旧金山——形成了\"生物数据在…", "MIT Tech Review 2022 对低收入社区付费招募的报道是这一批评的标志事件 [二手，广泛转引]。", "肯尼亚 2025-05 命令删除全部生物数据、泰国 2025-11 命令删除 120 万人数据——数据主权意识正在觉醒…"]}, {"type": "points", "kicker": "01", "title": "一、四种社会认知范式（续）", "points": ["跳蛙效应的另一面：在身份证件覆盖率低的国家，Orb/WLD 激励（注册送币）确实提供了从未有过的\"数字身份+现金\"组合…"]}, {"type": "points", "kicker": "02", "title": "二、普通人的日常接触面：验证正在变成空气", "points": ["\"证明你是人类\"按钮的常态化：CAPTCHA → Cloudflare Turnstile/人机验证 → World …", "FIDO 2026 数据：passkey 全球 50 亿把、知晓率 90%、Top100 网站 48% 支持 [实锤，…", "深伪诈骗的全民教化：香港\"AI 财务总监\"2 亿港元案（2024）之后，\"眼见不为实\"进入大众认知", "\"反向验证\"需求（真人徽章、内容溯源）开始变成消费者主动要求，而不只是平台合规要求。"]}, {"type": "points", "kicker": "02", "title": "二、普通人的日常接触面：验证正在变成空气（续）", "points": ["Vitalik\"伪匿名已死\"（2026）：AI 可从写作风格、发帖时间等 33 比特信息唯一锁定个人（他本人被 AI …"]}, {"type": "table", "kicker": "03", "title": "", "headers": ["风险", "内容", "对应反制设计"], "rows": [["隐私", "虹膜码/注册表可被反向查询\"你是否注册过\"；行为可链接", "ZK-SNARK 匿名证明、SMPC 分片（World 2024-05 已迁）"], ["强制", "政府/雇主可要求你交出秘密 s 或扫虹膜换号", "重注册作废旧 ID、MACI 式反贿选、密钥锁进可信硬件"], ["排斥", "无证件者、生物特征损伤者、多国籍者待遇悬殊", "多元身份（护照+社交图+多种凭证互备）"], ["中心化", "Orb 硬件不可验证（后门可无限造假人）；算法黑箱", "多厂商审计（\"Orb 版 IAEA\"）、ZK-ML"], ["伪匿名消亡", "一人一号 + 应用不配合轮换密钥 = 全网单一身份", "显式多元（社交图）/ 隐式多元（多凭证并存，无单一垄断）"], ["100% 市占率悖论", "任何身份系统一旦接近独占，就从\"多元\"坍缩为\"一人一号\"，上述风险全部最大化", "系统性地保持\"没有任何一种 ID 接近通吃\"——Vitalik 认为这是比技术更重要的生态原则"]]}, {"type": "points", "kicker": "03", "title": "三、学界的批判共识（截至 2026-09）", "points": ["以 Vitalik 两篇纲领文（2023 biometric / 2025 zkid）+ Aadhaar 实证为主线，…", "Vitalik 的理论理想：N 个身份的成本应为 N²（二次方曲线，与 quadratic funding 同构）——…", "判别一个\"唯一 ID\"系统好坏的第三把尺子由此确立（前两把：防女巫强度、隐私强度）：它给伪匿名和多元性留了多少余量。"]}, {"type": "table", "kicker": "04", "title": "", "headers": ["范式", "唯一性担保方", "隐私的实现方式", "对\"唯一 ID\"的集体心理"], "rows": [["中国", "国家（公安库）", "制度隔离（平台只见核验结果）", "接受为基础设施，争议在约束权力"], ["印度", "国家（UIDAI）", "判例划界（私企禁强制）", "效率认同+排斥创伤并存"], ["欧盟", "国家+法律（eIDAS）", "选择性披露凭证（SD-JWT/BBS+）", "反企业收集、接受国家钱包"], ["美国", "市场分散（驾照/Apple/公司 KYC）", "诉讼+商业承诺", "不信国家库、半信企业库"], ["加密圈", "密码学+硬件（ZK+Orb/护照）", "ZK-SNARK + 自主权", "不信任何单一担保方，分裂为\"硬件派\"vs\"多元派\""], ["全球南方", "外来者（World）+本国缺位", "几乎无（拿激励换数据）", "被动接受中觉醒数据主权"], ["普通网民", "无所谓，能用就行", "无感知", "正在被深伪新闻教育出验证需求"]]}, {"type": "points", "kicker": "04", "title": "四、认知地图总结", "points": ["给本课题的收束判断：\"唯一身份 ID\"的认知战争本质是担保权之争——谁有权定义\"你是只有一个的你\"。", "技术（ZK、硬件、国家库）都已就位，真正的未决变量是：①2026-12 eUDI 大限与欧盟实验的结果", "中国征求意见稿转正后的互通互认落地速度", "World 与主权国家的和解能否出现第一个样板"]}, {"type": "points", "kicker": "04", "title": "四、认知地图总结（续）", "points": ["AI 伪匿名崩塌速度与\"多元身份\"保护伞的建成速度，哪个先到。", "对个人研究者而言，跟踪这四个变量的窗口比入场建系统有价值得多。"]}, {"type": "points", "kicker": "05", "title": "来源", "points": ["Vitalik 2023/2025 两篇（同 docs/07）：https://vitalik.eth.limo/ge…", "https://vitalik.eth.limo/general/2025/06/28/zkid.html", "Aadhaar 排斥性研究：Dixon, A Failure to \"Do No Harm\", PMC 2017: h…", "BBC：Aadhaar 8.8% 错误率：https://www.bbc.com/news/world-asia-in…"]}, {"type": "points", "kicker": "05", "title": "来源（续）", "points": ["NYT：2018 最高法院判决：https://www.nytimes.com/2018/09/26/technolo…", "Access Now 判决解读：https://www.accessnow.org/supreme-court-of-…", "IBM Think：政府数字 ID 公众信任：https://www.ibm.com/think/insights/c…", "Tech Policy Press：AI 时代国家数字 ID 的信任课题：https://techpolicy.pre…"]}, {"type": "points", "kicker": "05", "title": "来源（续）", "points": ["World 各国监管行动：见 docs/07 来源（Wikipedia 交叉官方公告）", "《网络身份认证公共服务管理办法》与劳东燕争议【一手链接待补，现标注为二手/常识级公开事实】"]}, {"type": "close", "title": "08 全球社会对\"唯一 ID\"的认知地图", "takeaways": ["一、四种社会认知范式", "二、普通人的日常接触面：验证正在变成空气", "三、学界的批判共识（截至 2026-09）"]}], "accent": "#3f7f5f", "title": "08 全球社会对\"唯一 ID\"的认知地图", "seed": 9269, "home": "../../../../../", "article": "../../../../../研究/唯一身份认证/08-全球社会对唯一id的认知.html"}</script>
+<script src="../../../_app/deck.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讲解 · 09 测试规范</title>
+<link rel="stylesheet" href="../../../_app/deck.css">
+<style>:root{--accent:#2f6db3;--accent-soft:#2f6db322}</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<main id="deck"></main>
+<footer id="hud">
+  <div id="progress"><i></i></div>
+  <div id="hud-row">
+    <button id="btn-back" title="返回原文 (Esc)">‹ 返回</button>
+    <div class="hud-nav">
+      <button id="btn-prev" title="上一页 (←)">◀</button>
+      <span id="counter">1 / 1</span>
+      <button id="btn-next" title="下一页 (→)">▶</button>
+    </div>
+    <div class="hud-nav">
+      <button id="btn-overview" title="概览 (O)">☰</button>
+      <button id="btn-full" title="全屏 (F)">⛶</button>
+    </div>
+  </div>
+</footer>
+<div id="overview" hidden></div>
+<script type="application/json" id="deck-data">{"slides": [{"type": "cover", "title": "09 测试规范", "category": "知识库", "meta": "约 2 分钟 · 1144 字 · 9 节"}, {"type": "toc", "items": ["测试金字塔与配比", "单元测试规范", "Mock 与测试替身使用边界", "集成与 E2E 规范", "覆盖率", "CI 集成与失败处理", "TDD 与测试时机（团队约定）", "测试环境与数据", "检查单"], "targets": [2, 4, 6, 9, 10, 11, 12, 13, 14], "more": 0}, {"type": "table", "kicker": "01", "title": "", "headers": ["层", "验证什么", "依赖", "速度"], "rows": [["单元", "函数/类逻辑、边界条件", "无（外部依赖全部 mock/注入）", "毫秒"], ["集成", "模块协作、SQL 正确性、迁移可用", "真实 DB/Redis（容器化）", "秒"], ["E2E", "端到端用户旅程", "全栈环境", "分钟"]]}, {"type": "points", "kicker": "01", "title": "测试金字塔与配比", "points": ["／E2E＼        少量：关键用户旅程（登录、下单主链路），<10%", "／集成测试＼      中量：模块+真实 DB/HTTP（Testcontainers/mock 服务），20-30%", "／ 单元测试    ＼    大量：纯逻辑、函数级，秒级跑完，60-70%", "反金字塔（全是 E2E）的结果必然是：慢、脆、没人愿意跑。每层职责"]}, {"type": "points", "kicker": "02", "title": "单元测试规范", "points": ["结构 AAA：Arrange（准备）- Act（执行）- Assert（断言），一个测试一个关注点", "FIRST 原则：Fast（毫秒级）、Independent（互相不依赖、可乱序跑）、Repeatable（任何环境同…", "命名表达场景与预期：testexpiredcouponshouldbe_rejected，测试失败时名字即缺陷描述", "边界优先：空输入、0/负数/极大值、None、超长字符串、并发重复——bug 藏在边界，不在主路径"]}, {"type": "points", "kicker": "02", "title": "单元测试规范（续）", "points": ["断言具体：断言字段值而非\"不抛异常就过\"；禁止无断言的测试（跑过≠验证过）", "测试代码同样守 08 编码规范，但允许为可读性适度重复（测试拒绝 DRY 到看不懂）。"]}, {"type": "table", "kicker": "03", "title": "", "headers": ["替身", "用途", "纪律"], "rows": [["Stub", "固定返回值，喂输入", "只 stub 自己拥有的接口"], ["Mock", "验证交互被调用", "仅验证\"外部契约\"（发了通知），不验证内部实现细节（先调了 A 再调 B）"], ["Fake", "内存实现（内存仓储替代 DB 仓储）", "单测首选，比 mock 更稳"]]}, {"type": "points", "kicker": "03", "title": "Mock 与测试替身使用边界", "points": ["铁律", "mock 只注入到边界（DB 驱动、HTTP 客户端、消息发送器），通过依赖注入传入", "禁止 patch 深处私有函数——那说明模块该拆了", "mock 的行为必须与真实依赖一致（契约漂移由集成测试兜底）"]}, {"type": "points", "kicker": "03", "title": "Mock 与测试替身使用边界（续）", "points": ["集成测试必须存在：纯 mock 堆出的绿测试对\"SQL 写错了\"零防御力。"]}, {"type": "points", "kicker": "04", "title": "集成与 E2E 规范", "points": ["集成测试用容器化真实依赖（Testcontainers/docker-compose），每次跑独立 schema，跑完…", "数据自备自清：每个测试自己 seed 自己的 fixture，不依赖执行顺序", "E2E 只覆盖关键旅程（P0 主链路 5-10 条），跑在 CI 的独立阶段（可失败重试，但红灯必须修）。"]}, {"type": "points", "kicker": "05", "title": "覆盖率", "points": ["目标定位：核心业务逻辑 ≥80%，工具函数 ≥90%，生成的代码/胶水不设指标", "全仓 100% 是自欺（覆盖率≠有效断言）", "看增量不看总量：CI 检查\"新增代码覆盖率\"，存量欠账逐步还", "更重要的指标：变更代码被测试触及的比例（diff coverage）。"]}, {"type": "points", "kicker": "06", "title": "CI 集成与失败处理", "points": ["提交即触发：lint → 单测 → 集成测试", "主干（main）任何时刻可发布（红灯即最高优先级修复，禁止绕过/禁用失败测试来变绿）", "测试失败第一嫌疑人永远是\"最近合并的变更\"，其次是环境漂移", "flaky（时而不红时而绿）测试当场修复或隔离标记（@flaky + issue），不允许长期放着污染信任——一个常绿…"]}, {"type": "points", "kicker": "07", "title": "TDD 与测试时机（团队约定）", "points": ["修 bug 必先写复现测试（红）→ 修复（绿）：bug 从此有终身看护", "新逻辑推荐\"测试伴行\"（写一点测一点）；纯 TDD（先写测试）适合规则清晰的核心逻辑（计价、状态机）", "\"没时间写测试\"= 没时间修 bug，两眼一黑上线不是省时间。"]}, {"type": "points", "kicker": "08", "title": "测试环境与数据", "points": ["环境分级：本地（容器依赖）→ CI（同本地）→ staging（类生产配置、脱敏数据）→ 生产", "测试数据三来源：工厂函数（默认合法值+可覆盖）、fixture 文件（复杂结构）、生产脱敏快照（性能/迁移验证专用）", "禁止生产真实用户数据进测试环境（合规红线，见 10 §7）。"]}, {"type": "points", "kicker": "09", "title": "检查单", "points": ["[ ] 金字塔健康：单测占大头，E2E 只护关键旅程？", "[ ] 单测 AAA/FIRST，覆盖边界条件，断言具体？", "[ ] mock 只在边界注入，且集成测试真实依赖兜底？", "[ ] 增量覆盖率达标，核心逻辑 ≥80%？"]}, {"type": "points", "kicker": "09", "title": "检查单（续）", "points": ["[ ] CI 三段齐（lint/单测/集成），主干常绿，flaky 当日处理？", "[ ] 修 bug 先有复现测试？", "[ ] 测试数据工厂化，无生产敏感数据？"]}, {"type": "close", "title": "09 测试规范", "takeaways": ["测试金字塔与配比", "单元测试规范", "Mock 与测试替身使用边界"]}], "accent": "#2f6db3", "title": "09 测试规范", "seed": 5998, "home": "../../../../../", "article": "../../../../../知识库/软件研发规范/09-测试规范.html"}</script>
+<script src="../../../_app/deck.js"></script>
+</body>
+</html>

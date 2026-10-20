@@ -1,0 +1,156 @@
+---
+title: "视频总结：Evals FAQ 页面嵌入的 7 个视频"
+subtitle: "AI-Evals"
+summary: "---"
+publishedAt: "2026-09-23"
+tag: "AI-Evals"
+knowledgeHub: true
+---
+
+> ▶ 本文配有互动讲解动画：[点此观看](/static/decks/AI-Evals/%E8%A7%86%E9%A2%91%E6%80%BB%E7%BB%93-7%E4%B8%AA%E5%B5%8C%E5%85%A5%E8%A7%86%E9%A2%91/index.html)
+
+# 视频总结：Evals FAQ 页面嵌入的 7 个视频
+
+> 对象：hamel.dev Evals FAQ（[原文存档](/blog/AI-Evals-%E5%8E%9F%E6%96%87-Evals-FAQ-hamel.dev)）中嵌入的全部 7 个视频
+> 方法：yt-dlp 下载英文字幕 → 纯文本 → 子代理全文通读 → 中文结构化总结（内容级总结，非仅标题）
+> 存档日期：2026-09-23
+
+---
+
+## 视频 1：Error Analysis: The Highest ROI Technique In AI Engineering
+
+**链接**：https://www.youtube.com/watch?v=e2i6JbU2R-s ｜讲者：Hamel Husain × Jacob Carter（Nurture Boss 创始人）｜形式：案例访谈（配合《A Field Guide to Improving AI Products》博文）
+
+**背景**：Nurture Boss 为公寓/多户住宅行业提供 AI 虚拟租赁助理（电话/邮件/短信接待、约看、催租、报修，底层 OpenAI）——就是 Lenny's 文章里 objection handling 案例的那家公司，创始人亲述 error analysis 实战。
+
+**核心论点**：
+1. Error analysis 是 AI 工程 ROI 最高的技术，但多数非 ML 出身的人不知道它；
+2. 起点不是搭 eval 框架，而是**亲自读上千条真实对话**——产品上线后如同黑盒，看数据是唯一解药；
+3. 通用指标（简洁度分、幻觉分）是伪需求，必须围绕自家产品的真实痛点；
+4. 看数据直接产出产品路线图、bug 清单和对模型行为的直觉。
+
+**具体做法（可直接抄）**：
+- 自建数据查看器：逐条渲染"人说了什么 / AI 回了什么 / 调了什么工具 / 工具返回什么"，人工标好坏+写详细笔记；
+- 用 LLM 给负面笔记分类聚合（约看房错误、该转人工未转……），即刻转 bug/feature 工单；
+- 手动发现的问题沉淀成自动化回归测试：实测案例——模型不会算日期（"两周后看房"算错、"3 月 1 日"查成 2022 年），在 playground 造一批日期用例反复迭代，**成功率 33% → 100%**；
+- 陷阱提示：其会话是"常青线程"（从找房到续租贯穿始终、无清晰起止），通用 eval 工具开箱即用会失灵，必须理解自家场景再定制。
+
+**金句**：
+> "仅仅是亲自看数据，其影响力我怎么强调都不为过。"
+> "我们谈的不是简洁度分、幻觉分这类通用玩意儿，而是真实痛点。"
+
+---
+
+## 视频 2：How to Automate AI Evals (Correctly)
+
+**链接**：https://www.youtube.com/watch?v=tqUDjc1HzO4 ｜讲者：Shreya Shankar（UC Berkeley 教授，error-discovery skill 作者）｜形式：12 集迷你课程第一讲 + Live Demo
+
+**核心论点**：
+1. Evals = "错误分析 → 测量 → 改进"的迭代生命周期；错误分析是最耗人力却最关键的一环——失败模式是"见了才知道"（know-it-when-I-see-it）的问题；
+2. **全自动 evals 在认识论上不可行**：什么算"好"存在于你脑中而非 traces 里；若工具能端到端替你建好产品，它也能替所有竞争者做到——**你的判断本身就是唯一的差异化因素**；
+3. AI 的正确角色是**放大判断而非替代判断**：生命周期越靠前（错误分析）AI 越帮不上，越靠后（测量/爬山改进）可自动化越多。
+
+**三个常见错误**：
+1. 直接对 Claude Code 说"这是 S3 桶，去评估"——漏掉所有未外化的品味类问题、优先级靠编（虚构"重复啰嗦是最大问题"）、每次从零重跑无复用；
+2. 数据只看一遍——重访旧 traces 会激发新失败模式；
+3. 所有应用套统一精度标准——内部工具与用户面向产品应分级，用最坏情况推理反推 evals 与护栏投入。
+
+**Live Demo（error-discovery skill 实战）**：agent 读 33 篇 AI 生成文章 → 自选聚类法抽 21 篇代表性样本 → **4 分 42 秒写出标注应用**（trace viewer 逐条视图 + map view 聚类地图 + progress view 失败模式树图）→ 她在界面高亮文本就地反馈（"不要每句带冒号""讨厌 not just X, it's Y 句式"）→ monitor 自动归类出失败分类 → agent 把已有失败模式回溯应用到全部 traces，她接受/拒绝；**agent 只扩实例、不新增 taxonomy 类型**。
+
+**金句**：
+> "什么对你的产品算好，活在你脑子里，不在 traces 里。"
+> "我不知道有什么方法能让 AI 像二十个问题那样把你的品味套出来。Evals 永远会有人类要素。"
+
+---
+
+## 视频 3：The Evals That Made GitHub Copilot
+
+**链接**：https://www.youtube.com/watch?v=LwLxlEwrtRA（FAQ 引用 t=534s 起）｜讲者：John Berryman & Shawn Simister（前 GitHub Copilot 工程师）｜主持：Hamel
+
+**核心论点**：
+1. **是 evals 而非模型拯救了 Copilot**：初版几乎不可用，工程师们隔天就能对着 eval 指标取得进展，产品才被"解锁"；
+2. 评测是谱系：算法检查（最易）→ 可验证评测（编译/跑单测/SQL 对答案）→ LLM-as-judge（主观）→ A/B 实验（线上兜底）；
+3. LLM-as-judge 是被 Chat 产品逼出来的：评对话质量没有代码可跑，人审不可扩展——把主观标准拆成原子化清单交给 GPT-4 才可靠。
+
+**Copilot 当年具体怎么建（FAQ 引用的部分）**：
+- **HarnessLib 代码补全评测**：大规模开源仓库（限 Python/JS，测试易跑）→ 只留单测全绿仓库 → 覆盖率工具关联函数与单测 → "挖球式"掏空函数体让模型重生成再跑测试；早期通过率仅 40-50%；
+- **防训练数据泄漏**：只选 OpenAI 训练截止日之后出现的仓库（代价：仓库偏小、与生产分布不符）；
+- **A/B 只看三个北极星指标**：补全接受率、字符保留率（防"全接受再狂删"）、延迟；护栏指标数十上百个只作诊断不做硬门。指标跷跷板真实存在：极致优化接受率会得到碎小补全、体验反而垃圾；
+- **LLM judge 演化**：Label Studio 人肉 side-by-side 太慢 → GPT-4 先判+人"评评审官" → 发现 GPT-4 被大括号风格带偏 → **把标准写成逐条 bullet（"有没有 null 入参的测试？空列表？"）微管理评审官** → 验证过的旧模型作基线，之后只比新旧对话；
+- 反直觉发现：用户反感一次生成太多代码——改 prompt 生成更短补全让用户逐段 tab，接受率反升。
+
+**金句**：
+> "建评测的目的不是拥有评测，而是做出产品。"
+> "这事本该人来判断，但人不可扩展。"
+
+---
+
+## 视频 4：Stop Managing AI Projects Like Traditional Software
+
+**链接**：https://www.youtube.com/watch?v=R_HnI9oTv3c ｜讲者：Brian（Theory Ventures AI 负责人，前 Hex AI 负责人）｜实为对谈：Hamel 主持 ｜实际标题 "Burn Your Roadmap and Why AI Needs Explorers"
+
+**核心论点**：
+1. 传统路线图依赖时间估算与"票据可兑现"假设，只适合已知领域；**AI 创新是探索未测绘疆域，地图路线到不了目的地**——用实验库替代路线图（好奇提问→定义指标→估基线与效应量→ROI×effort 矩阵排优先级）；
+2. 评测建在**组件级**而非只看端到端：终点评测无法行动，分层评测才能定位哪个环节 unravel；
+3. **失败漏斗（Failure is a Funnel）**：上游失败的绝对数比下游百分比更重要，修上游有放大收益；用转移矩阵对比实验前后对各漏斗阶段的影响；
+4. NL2SQL 四层漏斗示例：语法合法 → 可执行 → 结果相关 → 解决 job-to-be-done。
+
+**金句**：
+> "做 AI 时你的目标是发现新疆域，凭什么指望地图上既有路线能带你到达？"
+> "好评测不回答'AI 行不行'，而是揭示你哪个假设是错的。"
+> "用失败来规定工程师的时间分配——这才是路线图一直想成为的东西。"
+
+---
+
+## 视频 5：Building Eval Tools with FastHTML
+
+**链接**：https://www.youtube.com/watch?v=fA4pe9bE0LY ｜讲者：Isaac Flath（FastHTML 贡献者、MonsterUI 作者）｜场合：Hamel Evals 课程客座讲座
+
+**核心论点**：**自建标注应用是评测工作中杠杆最高的投入**（AI 时代用 Python 造数据应用成本极低）；现成工具覆盖不了领域特殊性（案例：AnkiHub 医学闪卡检索，查询从两个词到 50 页 PDF、结果是一两句话的卡片——与典型 RAG 完全相反，必须自建）；标注工具应渐进生长（先上简版，暴露困惑再加功能，别花数周造完美工具）。
+
+**商业级标注应用四件套（演示内容）**：
+- 双标注员 + 分歧仲裁（终评强制写备注）；
+- dashboard 进度/状态列；
+- 键盘快捷键快速过 400 条（good/bad 二选，可对 query 本身反馈"太泛/无法解读"）；
+- 查询取自生产 traces，完成后 push 到 Phoenix 管理数据集。
+
+**技术细节**：FastHTML 纯 Python 零样板（fastlite 单表、路由由函数名推导、HTMX 局部刷新不重载页面）；**整个应用约 70-80 行、约 5 小时完成**；部署 Railway/官方托管。
+
+**金句**：
+> "先快速上线简版、修复引发困惑的点，别花几周造完美工具。"
+
+---
+
+## 视频 6：Stop Worrying About Foundation Models — Your Taste, Judgment, and UX Are the Real Moat
+
+**链接**：https://www.youtube.com/watch?v=EEw2PpL-_NM ｜讲者：AI Council 频道（内部辩论 rebuttal，回应 "the model is the product" 论）
+
+**核心论点**：
+1. AI 工程分两半："让模型做你要它做的事"（prompt/RAG/MCP，随模型进步不断**贬值**）与"想清楚你要什么"（品味/判断/UI，价值所在）；
+2. 大厂反证：Google/Microsoft 手握 SOTA 模型+自有算力+最强分发，AI 产品却普遍不及格——Google Docs AI 不能排版/不碰评论/不显示 diff（"橱窗装饰"）、日历 AI 读不到联系人、Gmail AI 生成草稿收件人竟是陌生的 "Dear Marian"、Slides 连做演讲 PPT 都办不到；对照组：第三方 Lindy 能查联系人并成功约会议；
+3. Copilot 与 Cursor 长期用同款模型却做出截然不同的产品——差异不在模型。
+
+**金句**：
+> "你才是护城河，不是模型；你的品味和产品直觉才是护城河。"
+
+**启示**：评估 AI 产品看"能不能办事"（是否接通权限与数据），拒绝贴皮式 AI；中小团队该焦虑的不是"大厂会不会做我"，而是自己的品味与 UX 是否过关。
+
+---
+
+## 视频 7：Build Your Own Eval Tools With Notebooks!
+
+**链接**：https://www.youtube.com/watch?v=aqKUwPKBkB0 ｜主持：Hamel Husain ｜实际演示者：Vincent Warmerdam（koaning.io/calmcode.io 作者、marimo 团队第一位员工）｜约 1 小时直播对谈
+
+**核心论点**：
+1. **"看数据" ≠ "盯着数据"**：人人喊 "look at your data"，多数人看一眼图表就翻篇。经典 ChickWeight 数据集示例：散点图+均值线看似结论清晰（diet 3 最好），逼自己盯五分钟+放大交互就能发现有鸡在减重、5 只提前死亡——均值线根本不成立。LLM 时代同理：flashy demo 容易，真正需要的是**逼你批判性审查输出的工具**；
+2. **交互性只是基础，反应性（reactivity）才是质变**：marimo 的 cell 间变量依赖 DAG 让"框选→过滤→重着色"全自动联动，即席探索工具几十分钟拼出来；
+3. **自建小工具胜过买平台或独立 web app**：Hamel 自述曾花数年建独立 web app 和 Jupyter 插件凑工作流，在反应式 notebook 里"直接就做完了"；工具不必维护成产品，一个 cell 即可；
+4. **anywidget 是跨 notebook 的 widget 标准**（自定义控件像乐高）；**标注界面九成归结为 yes/no/skip**，别过度设计，不打断心流第一。
+
+**演示流程**：数据审查（Altair 散点+区间选择器发现异常）→ marimo 机制（存纯 .py、git 友好、可直接进 CI）→ **Eval 探索范式：客服工单向量化 → UMAP 降 2D → Altair 框选某簇 → 下游数据框反应式更新 → 肉眼比较投诉簇** → mo-label 标注 widget（yes/no/skip+快捷键+游戏手柄+Web Speech 语音备注，标注实时流入下游 cell，按 `len(annotations) % 10` 批量落盘）。
+
+**金句**：
+> "逼自己盯着这玩意儿足足五分钟，十有八九正在发生古怪的事，你得去找。"
+> "只有肯花时间嗅，才追得上那股异味。"
+> "与其说升级了 notebook，不如说升级了我的想象力。"
+

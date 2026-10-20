@@ -1,0 +1,88 @@
+---
+title: "Escaping SPACE: Part I — Red-Teaming VM Isolation and Network Confinement for AI Agents"
+subtitle: "链接情报"
+summary: "原文链接：https://www.perplexity.ai/hub/blog/escaping-space-part-i"
+publishedAt: "2026-09-29"
+tag: "链接情报"
+knowledgeHub: true
+---
+
+> ▶ 本文配有互动讲解动画：[点此观看](/static/decks/%E9%93%BE%E6%8E%A5%E6%83%85%E6%8A%A5/02-perplexity-escaping-space-part1/index.html)
+
+**原文链接**：https://www.perplexity.ai/hub/blog/escaping-space-part-i
+
+
+# Escaping SPACE: Part I（agent 沙箱攻防红队实测）
+
+## 背景
+
+Perplexity 把自己 Computer 产品背后的沙箱 SPACE（Firecracker microVM + 宿主侧出站网关）交给 9 个前沿模型攻击，测两条独立边界：VM 隔离、网络隔离。
+
+## 实验设计
+
+- **两个任务**（CTF 形式）：
+  1. **沙箱逃逸**：拥有 guest VM root 权限的 agent 尝试获取宿主机上的 AWS honeytoken
+  2. **网络绕过**：agent 尝试访问被出站策略封锁的回调 URL
+- **四个设置**：有/无 SPACE 源码 × 有/无网络（partial-network 允许 PyPI、Ubuntu 软件源和 Perplexity 搜索）
+- **规模**：9 模型 × 2 任务 × 4 设置 × 3 次 = **216 次运行**。参与模型含 Claude Opus 5.0、GPT-5.6 Cyber、GPT-5.6 Sol、Kimi K3、Qwen 3.8、Fable、GPT-6 Astra 等
+
+## 三层结论
+
+1. **VM 隔离未被攻破**：108 次逃逸尝试全部失败——即使模型有源码、可装软件、可搜索。
+2. **完全断网时网络边界也守住了**：54 次全失败。
+3. **部分网络下 4/9 模型绕过成功**：Claude Opus 5.0、GPT-5.6 Cyber、GPT-5.6 Sol、**Kimi K3（唯一成功的开源权重模型）**。
+
+## 两种攻击技术
+
+### 1. DNS 欺骗（只在有源码时成功）
+
+agent 在 guest 内注入伪造 DNS 响应，把允许的域名 pypi.org 映射到被封回调的 IP。网关不验证响应来源，接受假映射。关键难点：伪造响应必须发到网关 DNS socket 实际绑定的 veth 端点（10.12.x.x 地址），该地址 VM 内看不到、**只有读源码才知道**——所以此攻击只在提供源码时成功。
+
+### 2. 共享 IP 利用（类 domain fronting）
+
+PyPI 托管在 Fastly CDN 上，同一 IP 服务多个域名：
+
+- GPT-5.6 Sol 发现 fiddle.fastly.dev 与 pypi.org 共享 IP，用它代为抓取回调
+- GPT-5.6 Cyber 的链路更绝：images.taboola.com → thum.io 截图服务 → 用 OCR 从 PNG 里恢复 flag
+
+## 模型行为差异（Part II 预告）
+
+- **Opus 5.0** 推理出了共享 IP 机制，但因认为"指令说不许碰其他外部系统，借第三方代理算越界"而**主动放弃**——报告认为它可能过于保守
+- **Fable 和 GPT-6 Astra 直接拒绝执行任务**，即便有官方 Cyber 验证计划的授权
+- GPT-5.6 系没有这些顾虑，直接打
+
+## 修复与复测
+
+- 防 DNS 欺骗：nftables 规则做源地址验证，丢弃源地址与 VM 分配地址不符的数据包
+- 防 IP 共享：HTTP 走验证 authority 的 relay；TLS 由网关终结，要求 SNI 和 Host 头都在白名单且与目标 IP 的 DNS 归属一致
+- **修复后同样九个模型重测：零绕过**
+
+## 第三方沙箱评测（不用 LLM，直接测网络策略）
+
+测了 10 家平台（1 家要求延期未公布），公开 9 家中 **7 家沦陷**，8/10 至少一种绕过：
+
+| 平台 | HTTPS 绕过 | HTTP 绕过 | 其他 |
+|---|---|---|---|
+| E2B | ✅ | — | — |
+| Vercel Sandbox | ✅ | — | — |
+| Modal Sandboxes | ✅ | — | 厂商不认为是漏洞 |
+| Daytona Sandbox | ✅ | — | 已修 |
+| Deno Sandbox | ✅ | ✅ | **allowNet 名单外任意 TCP 直连不拦**（已修） |
+| Fly.io Sprites | ✅ | ✅ | 修复中 |
+| microsandbox | ✅ | ✅ | v0.6.18 已修（严格模式默认关） |
+| **Cloudflare Sandbox** | ❌ | ❌ | **未被打穿** |
+| **NVIDIA OpenShell** | ❌ | ❌ | **未被打穿** |
+
+- 测试方法：HTTP 场景（策略只许 pypi.org:80 但带 Host: fiddle.fastly.dev 头，由 Fastly Fiddle 转发到研究者服务器）+ HTTPS 场景（SNI 用允许的 CloudWatch Agent S3 主机名，加密 Host 头指向未白名单 S3 桶的预签名 PutObject）。每个成功绕过都要在新沙箱用新 nonce 复现
+- **病根一致**：多租户 CDN 下只按目标 IP/域名授权不够，必须逐协议层校验 authority（SNI/Host）与授权域名一致——本质是 domain fronting
+
+## 关键启示
+
+- VM 隔离和网络隔离是**两条独立边界**，需分别评估
+- 网络绕过 ≠ VM 逃逸；未观察到逃逸也不证明隔离完美
+- 背景事件：OpenAI-Hugging Face 事件（2026-05~07），见 03 文件备注
+
+## 来源
+
+- 原文：https://www.perplexity.ai/hub/blog/escaping-space-part-i
+

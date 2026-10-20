@@ -1,0 +1,122 @@
+---
+title: "涌现叙事调研（2026-09-29 首轮）"
+subtitle: "研究"
+summary: "---"
+publishedAt: "2026-09-29"
+tag: "研究"
+knowledgeHub: true
+---
+
+> ▶ 本文配有互动讲解动画：[点此观看](/static/decks/%E7%A0%94%E7%A9%B6/%E6%B6%8C%E7%8E%B0%E5%8F%99%E4%BA%8B/01-%E6%B6%8C%E7%8E%B0%E5%8F%99%E4%BA%8B%E8%B0%83%E7%A0%94/index.html)
+
+# 涌现叙事调研（2026-09-29 首轮）
+
+> 一句话结论：**涌现叙事的本质不是"写故事"，而是设计一套"能持续产生有趣故事状态的规则系统"，让意外自己发生、事后可解释。** 它有三条实现路线——纯规则模拟（Dwarf Fortress/RimWorld）、玩家驱动（EVE/WorldBox）、LLM 混合（斯坦福 AI 小镇，2023 起）。2026 年的甜点位是第三条里的"确定性模拟层 + LLM 叙事层"混合架构。
+
+---
+
+## 1. 理论最小集（5 分钟版）
+
+- **涌现 vs 预设**：预设叙事是编剧写的（有主线剧本）；涌现叙事是系统模拟"长"出来的（玩家只是解读者）。游戏设计理论里称为 emergent narrative vs authored narrative。
+- **奠基人**：Dwarf Fortress 作者 Tarn Adams，[GDC 2016 演讲](https://www.gdcvault.com/play/1023346/-Emergent-Characters-in-Dwarf)（Emergent Characters in Dwarf Fortress）系统阐述"角色不是剧情工具，是模拟的产物"。
+- **经典定义**：RimWorld 作者 Tynan Sylvester（《Designing Games》作者）——**"RimWorld is not a game. RimWorld is a story generator"**（RimWorld 不是游戏，是故事生成器）。
+- **关键洞见**（[Ada Plays: Procedural, Emergent, Tomatoes, Potatoes](https://adaplays.blog/)）：涌现叙事**需要一个外部主体（玩家）来赋予叙事结构**——系统只输出"发生了什么"，故事感来自玩家的解读和转述。这就是为什么"看 UP 主玩"也能成立：末影大黑本身就是那个"赋予结构的解读者"。
+- **学术前沿**：[Player-Driven Emergence in LLM-Driven Game Narrative](https://arxiv.org/html/2404.17027v3)（arXiv 2404.17027）——LLM 如何让玩家参与产生涌现行为。
+
+## 2. 谱系拆解：每家的"涌现配方"
+
+| 作品 | 年份 | 涌现配方（核心机制） | 产出故事的样子 |
+|---|---|---|---|
+| Dwarf Fortress | 2006 | 个体极致深度：每个矮人有性格/偏好/记忆/恩怨；开局先生成千年世界史 | "一只猫喝了酒后暴怒踢翻了酒库"——Legends mode 可查任何角色的编年史 |
+| The Sims | 2000 | 需求驱动：饥饿/社交/娱乐的微观冲突 | 邻居自来熟住下不走的日常闹剧 |
+| RimWorld | 2018 | **AI Storyteller 导演**（三个导演人格控制事件节奏）+ 属性组合爆炸 + 系统互相碰撞 | "袭击断了电源→冷库解冻→食物腐烂→内讧"的连锁反应 |
+| WorldBox | 2018/2021 Steam | 轻量群体涌现：个体无深度，靠**规模**+神力扰动+王国/编年史系统 | UP 主式叙事："兽人帝国毁灭了，因为上帝造了座火山" |
+| Crusader Kings 3 | 2020 | 角色关系网：阴谋/联姻/继承/叛乱，属性随机+互动涌现 | 王朝史诗："谋杀了哥哥的国王最终被侄女复仇" |
+| EVE Online | 2003~ | **玩家即 agent** 的宏观涌现：无剧本，全靠玩家组织行为 | B-R5RB 血战（2014，21 小时舰队战，媒体估算损失约 30 万美元真实货币）【二手，数字为当时报道】 |
+| 斯坦福 AI 小镇 | 2023 | **LLM agent**：25 个 AI 居民，记忆流+反思+计划 | 自发组织情人节派对、传播小镇八卦——[generative_agents](https://github.com/joonspk-research/generative_agents)（22166★，Apache-2.0，2026-09 仍活跃） |
+
+**观察**：前六家是"规则涌现"（确定性引擎），最后一家是"模型涌现"（LLM 当大脑）。两条线正在合流。
+
+## 3. 可抄的涌现配方清单（自研时逐条对照）
+
+1. **属性多样性 + 组合爆炸**：个体属性多维度随机（RimWorld traits），碰撞才有戏剧性。属性太浅=没有故事。
+2. **需求/动机驱动**：agent 自己想要什么（Sims 需求条 / DF 偏好），行为由动机涌现而非脚本。
+3. **记忆与关系**：谁记得谁、欠谁、恨谁（DF 恩怨簿 / CK 关系网）。记忆是长线故事的载体。
+4. **导演事件器**：随机扰动要有"节奏感"——RimWorld 的 Storyteller 不是一个 RNG，是有人格的导演（紧张→缓和→高潮）。
+5. **史官层**：把模拟数据流翻译成可读文本（WorldBox 编年史 / DF Legends）。**模拟精度可以低，但叙事可读性必须高**——玩家看的不是数值是故事。
+6. **失败即名场面**："Losing is fun"（DF 格言）。允许灾难、允许毁灭，惨败才出好故事，玩家才会自发传播。
+7. **LLM 分层介入**（2026 新配方）：确定性模拟跑事件流 → LLM 只在关键节点介入（对话/写史/重大决策），per-event 调用而不是 per-tick，成本可控。
+
+## 4. 技术架构（若自研）
+
+三条路线对比：
+
+```
+A. 纯规则模拟（DF/RimWorld 路线）
+   模拟层：个体状态机 + 需求 + 记忆 + 关系 → 全部确定性 tick
+   叙事层：模板化史官（规则引擎把事件流转文本）
+   优：零 API 成本、可离线、涌现 100% 可控    劣：叙事模板写到手软
+
+B. LLM 叙事层（AI 小镇路线）
+   模拟层：简单世界观（格子/房间）→ LLM 直接当 agent 大脑（感知→思考→行动）
+   优：对话/八卦/联盟自然涌现、故事质量高    劣：token 成本高、长程一致性差
+
+C. 混合架构 ★ 推荐方向
+   模拟层：确定性引擎跑个体行为（寻路/生产/战斗，规则涌现）
+   叙事层：事件流 → 便宜 LLM 批量"写史"+ 关键场景贵模型"导演"（JC0ft8 分工论适用）
+   优：成本可控 + 故事感强    劣：两层的接缝设计是真功夫
+```
+
+关键决策点：**LLM 调用粒度**。per-agent per-tick 调用会烧穿钱包；正解是模拟层全确定性，LLM 只接"值得讲的事件"（王国灭亡/背叛/奇观），事件去重+冷却。参考 omniscient-agent 的 sediment（60s 冷却）思路。
+
+## 5. 开源项目清单（分三档）
+
+### 可直接玩/部署
+| 项目 | 星数 | 说明 |
+|---|---|---|
+| [joonspk-research/generative_agents](https://github.com/joonspk-research/generative_agents) | 22166★ | 斯坦福 AI 小镇官方实现，跑通 = 亲眼看到 LLM 涌现 |
+| [a16z-infra/ai-town](https://github.com/a16z-infra/ai-town) | 10561★ MIT | AI 小镇可自部署改造版（TypeScript，自定义角色/背景） |
+| [SillyTavern/SillyTavern](https://github.com/SillyTavern/SillyTavern) | 33898★ AGPL | LLM 角色扮演前端，多角色同场交互的事实标准 |
+| WorldBox 本体 + [worldbox-mcp](https://github.com/fullya99/worldbox-mcp) | 8★ MIT | 让 AI 当上帝玩真游戏（29 工具，多 agent 共管世界） |
+
+### 源码学习（涌现引擎怎么做）
+| 项目 | 星数 | 说明 |
+|---|---|---|
+| [veloren/veloren](https://gitlab.com/veloren/veloren) | 7587★ | 开源体素 RPG，受 DF 启发，Rust，工程成熟度高 |
+| [CleverRaven/Cataclysm-DDA](https://github.com/CleverRaven/Cataclysm-DDA) | 13262★ | 开源生存 roguelike，模拟深度标杆（C++） |
+| [indiv0/colonize](https://github.com/indiv0/colonize) | 388★ | Rust 写的 DF/RimWorld-like，适合读架构 |
+| [BenLubar/df-ai](https://github.com/BenLubar/df-ai) | 279★ | **让 AI 接管 Dwarf Fortress**（C++ 插件，DF+AI 的鼻祖实践） |
+| [ethz-gtc/npc-engine](https://github.com/ethz-gtc/npc-engine) | 47★ | ETH Zürich，MCTS 规划器，专攻多智能体模拟+涌现叙事 |
+| [siftystudio/viv](https://github.com/siftystudio/viv) | 36★ | 自称"An engine for emergent narrative"，值得 clone 拆【待拆】 |
+| [ShiJbey/minerva](https://github.com/ShiJbey/minerva) | 8★ | 权游/幕府式王朝多智能体模拟器，专做涌现叙事研究 |
+| [zebrr/Thing-Sandbox](https://github.com/zebrr/Thing-Sandbox) | 5★ | LLM agent 主观记忆+意图仲裁+记忆 FIFO 退化，设计巧思多 |
+| [ExpressiveIntelligence/PromWeek](https://github.com/ExpressiveIntelligence/PromWeek) | 13★ | UCSC 社交物理引擎游戏（2012），学术经典开源 |
+
+### 工具
+- [DFHack](https://github.com/DFHack/dfhack)（2047★）：DF 内存改写工具库——DF 本体闭源但社区魔改到骨头缝里，证明"模拟游戏 mod 生态"的深度上限
+- [Dwarf Therapist](https://github.com/Dwarf-Therapist/Dwarf-Therapist)（721★）：矮人管理面板
+
+## 6. 给你的动手路线（与 WorldBox 三线衔接）
+
+- **今晚版（A 线延伸）**：WorldBox + worldbox-mcp 接 GLM/Claude，让 AI 当上帝之外再兼"史官"——每次大事件后让 LLM 读王国状态写一段编年史。当天可跑通。
+- **周末版（B 线预热）**：本地部署 generative_agents 或 ai-town，看 25 个 LLM 居民怎么自己长出故事；顺手摸清"记忆流+反思"的实现（这两块可以直接搬进自研引擎）。
+- **长线版（立项候选）**：自研"混合架构涌现模拟器"——确定性模拟层（WorldBox 式网格文明）+ LLM 史官层。原 M0-M3 计划之上**新增 M2.5：编年史系统**（事件流→结构化→LLM 写史），这就是和 WorldBox 拉开差异化的点：**WorldBox 只记事件，你的引擎会讲故事**。
+
+## 7. 待核实清单
+
+- [ ] Aivilization（HKUST 号称"全球最大 AI 多智能体教育沙盒"）实际形态与可玩性【仅有新闻稿】
+- [ ] Emergence World（emergence.ai）商业平台性质、是否可体验【仅官方博客】
+- [ ] Reddit r/aigamedev 那个"完全由自主 AI agent 运转的文明"项目的具体 repo【仅帖子】
+- [ ] RimWorld 有无主流 LLM 对话 mod（Nexus/创意工坊未搜）【待查】
+- [ ] siftystudio/viv 引擎实际形态（36★ 但描述极简）【值得 clone】
+- [ ] B-R5RB 战役损失金额为当年媒体估算【二手来源】
+
+## 来源
+
+- [Steam: WorldBox - God Simulator](https://store.steampowered.com/app/1206560/WorldBox__God_Simulator/)
+- [generative_agents（斯坦福官方）](https://github.com/joonspk-research/generative_agents) / [arXiv 2304.03442](https://arxiv.org/abs/2304.03442)
+- [ai-town](https://github.com/a16z-infra/ai-town) · [SillyTavern](https://github.com/SillyTavern/SillyTavern)
+- [arXiv 2404.17027: Player-Driven Emergence in LLM-Driven Game Narrative](https://arxiv.org/html/2404.17027v3)
+- [Tarn Adams GDC 2016](https://www.gdcvault.com/play/1023346/-Emergent-Characters-in-Dwarf) · Tynan Sylvester《Designing Games》
+- 星数/协议数据：GitHub API 实查（2026-09-29）
+

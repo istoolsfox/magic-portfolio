@@ -22,6 +22,14 @@ import React from "react";
 import { Posts } from "@/components/blog/Posts";
 import { ShareSection } from "@/components/blog/ShareSection";
 
+function decodeParam(slug: string): string {
+  try {
+    return decodeURIComponent(slug);
+  } catch {
+    return slug;
+  }
+}
+
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const posts = getPosts(["src", "app", "blog", "posts"]);
   return posts.map((post) => ({
@@ -40,7 +48,8 @@ export async function generateMetadata({
     : routeParams.slug || "";
 
   const posts = getPosts(["src", "app", "blog", "posts"]);
-  let post = posts.find((post) => post.slug === slugPath);
+  // Next 会把非 ASCII 的路由参数以百分号编码形态传入，匹配前先解码（幂等）
+  let post = posts.find((post) => post.slug === decodeParam(slugPath));
 
   if (!post) return {};
 
@@ -60,7 +69,9 @@ export default async function Blog({ params }: { params: Promise<{ slug: string 
     ? routeParams.slug.join("/")
     : routeParams.slug || "";
 
-  let post = getPosts(["src", "app", "blog", "posts"]).find((post) => post.slug === slugPath);
+  let post = getPosts(["src", "app", "blog", "posts"]).find(
+    (post) => post.slug === decodeParam(slugPath)
+  );
 
   if (!post) {
     notFound();

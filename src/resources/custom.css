@@ -14,3 +14,21 @@
 [data-theme] h2 {
   overflow-wrap: anywhere;
 }
+
+/* 博客左栏：桌面 sticky 常驻，移动端折叠为顶部目录 */
+.blog-side-desktop {
+  flex: 0 0 230px;
+  min-width: 210px;
+  position: sticky;
+  top: 80px;
+  align-self: flex-start;
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+  padding: 8px 12px 32px 24px;
+}
+.blog-side-mobile { display: none; padding: 0 24px 8px; }
+.blog-side-mobile summary { cursor: pointer; padding: 8px 0; font-weight: 600; }
+@media (max-width: 880px) {
+  .blog-side-desktop { display: none; }
+  .blog-side-mobile { display: block; }
+}

@@ -89,20 +89,7 @@ export default async function Blog({ params }: { params: Promise<{ slug: string 
 
   return (
     <Row fillWidth>
-      <Column
-        maxWidth={200}
-        paddingLeft="40"
-        fitHeight
-        position="sticky"
-        top="80"
-        gap="16"
-        s={{ hide: true }}
-      >
-        <Text variant="label-strong-s" onBackground="neutral-strong">
-          本页目录
-        </Text>
-        <HeadingNav fitHeight />
-      </Column>
+      <Row maxWidth={12} m={{ hide: true }} />
       <Row fillWidth horizontal="center">
         <Column as="section" maxWidth="m" horizontal="center" gap="l" paddingTop="24">
           <Schema
@@ -179,6 +166,17 @@ export default async function Blog({ params }: { params: Promise<{ slug: string 
           <ScrollToHash />
         </Column>
       </Row>
+      <Column
+        maxWidth={12}
+        paddingLeft="40"
+        fitHeight
+        position="sticky"
+        top="80"
+        gap="16"
+        m={{ hide: true }}
+      >
+        <HeadingNav fitHeight />
+      </Column>
     </Row>
   );
 }

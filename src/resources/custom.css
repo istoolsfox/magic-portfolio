@@ -15,20 +15,47 @@
   overflow-wrap: anywhere;
 }
 
-/* 博客左栏：桌面 sticky 常驻，移动端折叠为顶部目录 */
-.blog-side-desktop {
-  flex: 0 0 230px;
-  min-width: 210px;
+/* 博客侧栏（列表页=门类目录，文章页=本页目录）：桌面 sticky，移动折叠 */
+.blog-aside-desktop {
+  flex: 0 0 220px;
+  min-width: 200px;
   position: sticky;
   top: 80px;
   align-self: flex-start;
   max-height: calc(100vh - 110px);
   overflow-y: auto;
-  padding: 8px 12px 32px 24px;
+  padding: 8px 16px 32px 24px;
 }
-.blog-side-mobile { display: none; padding: 0 24px 8px; }
-.blog-side-mobile summary { cursor: pointer; padding: 8px 0; font-weight: 600; }
+.blog-aside-mobile { display: none; width: 100%; padding: 0 24px 8px; }
+.blog-aside-mobile summary { cursor: pointer; padding: 8px 0; font-weight: 600; }
 @media (max-width: 880px) {
-  .blog-side-desktop { display: none; }
-  .blog-side-mobile { display: block; }
+  .blog-aside-desktop { display: none; }
+  .blog-aside-mobile { display: block; }
+}
+/* 目录列表：细竖线 + 当前置黑/加粗（On this page 风格） */
+.blog-toc-list {
+  border-left: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+  margin: 4px 0 0 2px;
+}
+.blog-toc-item {
+  display: block;
+  padding: 5px 0 5px 14px;
+  margin-left: -1px;
+  border-left: 2px solid transparent;
+  color: inherit;
+  text-decoration: none;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  opacity: 0.72;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.blog-toc-item:hover { opacity: 1; }
+.blog-toc-item.active {
+  border-left-color: currentColor;
+  opacity: 1;
+  font-weight: 600;
+  white-space: normal;
 }

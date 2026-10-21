@@ -8,7 +8,7 @@ import {
   Text,
 } from "@once-ui-system/core";
 import { Mailchimp } from "@/components";
-import { BlogBrowser, BlogItem } from "@/components/blog/BlogBrowser";
+import { Posts } from "@/components/blog/Posts";
 import { baseURL, blog, person, newsletter } from "@/resources";
 import { getPosts } from "@/utils/utils";
 
@@ -23,19 +23,7 @@ export async function generateMetadata() {
 }
 
 export default function Blog() {
-  const posts = getPosts(["src", "app", "blog", "posts"]).sort(
-    (a, b) =>
-      new Date(b.metadata.publishedAt).getTime() -
-      new Date(a.metadata.publishedAt).getTime()
-  );
-  const items: BlogItem[] = posts.map((p) => ({
-    slug: p.slug,
-    title: p.metadata.title,
-    publishedAt: p.metadata.publishedAt,
-    tag: (p.metadata.tag as string) || "其他",
-    summary: p.metadata.summary || "",
-  }));
-
+  const total = getPosts(["src", "app", "blog", "posts"]).length;
   return (
     <Column maxWidth="m" paddingTop="24">
       <Schema
@@ -62,12 +50,26 @@ export default function Blog() {
         <Heading variant="heading-strong-xl">{blog.title}</Heading>
         <SmartLink href="/blog/archive">
           <Text onBackground="brand-weak" variant="label-strong-m">
-            📚 全量目录页 →
+            📚 全部文章目录（{total} 篇）→
           </Text>
         </SmartLink>
       </Row>
-      <BlogBrowser posts={items} />
-      <Mailchimp marginBottom="l" marginTop="l" />
+      <Column fillWidth flex={1} gap="40">
+        <Posts range={[1, 1]} thumbnail />
+        <Posts range={[2, 3]} columns="2" thumbnail direction="column" />
+        <Mailchimp marginBottom="l" />
+        <Row fillWidth horizontal="between" vertical="center" marginLeft="l">
+          <Heading as="h2" variant="heading-strong-xl">
+            近期文章
+          </Heading>
+          <SmartLink href="/blog/archive">
+            <Text onBackground="neutral-weak" variant="label-default-m">
+              更早的文章见目录 →
+            </Text>
+          </SmartLink>
+        </Row>
+        <Posts range={[4, 15]} columns="2" />
+      </Column>
     </Column>
   );
 }

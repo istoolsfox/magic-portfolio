@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>前端交互效果 · 可玩示例展厅 — VibeCoding 话术手册配套演示</title>
+<meta name="description" content="45+ 个可以直接上手玩的前端交互效果演示：入场、滚动、悬停、点击、弹层、表单、数据进度与高级特效。每张卡片都配有一句可直接复制给 AI 的话术。">
+<style>
+/* ========== 设计令牌（暗色为默认，明色 = 「暗黑模式」演示本身） ========== */
+:root{
+  --bg:#0b0f17; --bg2:#0e1420; --card:#151b28; --card2:#1a2232;
+  --text:#e8edf6; --muted:#93a0b8; --line:rgba(255,255,255,.09);
+  --accent:#2dd4bf; --accent2:#60a5fa; --danger:#f87171; --ok:#34d399;
+  --shadow:0 8px 28px rgba(0,0,0,.45);
+  --radius:14px;
+  color-scheme:dark;
+}
+html[data-theme="light"]{
+  --bg:#f5f7fb; --bg2:#eef1f7; --card:#ffffff; --card2:#f2f5fa;
+  --text:#18213a; --muted:#5c6a85; --line:rgba(20,30,60,.10);
+  --shadow:0 8px 24px rgba(30,40,70,.10);
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--text);
+  transition:background .3s ease,color .3s ease;
+  line-height:1.6;
+}
+code,.en{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.en{font-size:.78em;color:var(--muted);font-weight:400}
+::selection{background:rgba(45,212,191,.30)}
+
+/* ========== 滚动进度条（第 2 章演示·本体） ========== */
+#progressBar{position:fixed;top:0;left:0;height:3px;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  z-index:1000;transition:width .1s linear}
+
+/* ========== 吸顶导航（第 2 章演示·本体） ========== */
+header.nav{
+  position:sticky;top:0;z-index:900;
+  padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  border-bottom:1px solid transparent;
+  transition:background .3s ease,box-shadow .3s ease,border-color .3s ease;
+}
+header.nav.scrolled{
+  background:var(--bg);border-color:var(--line);
+  box-shadow:0 6px 20px rgba(0,0,0,.25);
+}
+.brand{font-weight:700;font-size:15px;letter-spacing:.5px;white-space:nowrap}
+.brand b{color:var(--accent)}
+.nav-links{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-links a{
+  color:var(--muted);text-decoration:none;font-size:13px;padding:6px 10px;
+  border-radius:8px;white-space:nowrap;position:relative;transition:color .2s;
+}
+.nav-links a:hover{color:var(--text)}
+/* 下划线生长（第 3 章演示·本体：悬停导航链接） */
+.nav-links a::after{
+  content:"";position:absolute;left:10px;right:10px;bottom:2px;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transform:scaleX(0);transform-origin:left;transition:transform .2s ease;
+  border-radius:2px;
+}
+.nav-links a:hover::after{transform:scaleX(1)}
+#themeBtn{
+  background:var(--card);border:1px solid var(--line);color:var(--text);
+  width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:16px;
+  transition:transform .15s,background .3s;flex-shrink:0;
+}
+#themeBtn:hover{transform:scale(1.08)}
+
+/* ========== 首屏 Hero（渐变流动 + 渐变文字 + 打字机 = 三合一演示） ========== */
+.hero{
+  position:relative;overflow:hidden;text-align:center;
+  padding:72px 20px 64px;
+}
+.hero-bg{position:absolute;inset:-40%;
+  background:
+    radial-gradient(38% 42% at 30% 35%,rgba(45,212,191,.16),transparent 70%),
+    radial-gradient(34% 40% at 70% 60%,rgba(96,165,250,.14),transparent 70%),
+    radial-gradient(30% 30% at 55% 25%,rgba(167,139,250,.10),transparent 70%);
+  animation:heroFlow 8s ease-in-out infinite alternate;
+}
+@keyframes heroFlow{
+  0%{transform:translate(0,0) rotate(0deg)}
+  50%{transform:translate(3%,-2%) rotate(1.5deg)}
+  100%{transform:translate(-3%,2%) rotate(-1.5deg)}
+}
+.hero h1{position:relative;font-size:clamp(26px,4.6vw,44px);line-height:1.25}
+.hero h1 .grad{
+  background:linear-gradient(100deg,var(--accent),var(--accent2) 55%,#a78bfa);
+  background-size:200% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:gradShift 6s ease-in-out infinite alternate;
+}
+@keyframes gradShift{from{background-position:0% 50%}to{background-position:100% 50%}}
+.hero .sub{position:relative;color:var(--muted);margin-top:16px;font-size:15px;min-height:24px}
+.cursor{display:inline-block;width:2px;height:1.05em;vertical-align:-0.15em;
+  background:var(--accent);margin-left:2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.hero .meta{position:relative;margin-top:10px;font-size:12.5px;color:var(--muted);opacity:.75}
+
+/* ========== 章节与卡片 ========== */
+main{max-width:1100px;margin:0 auto;padding:0 20px 90px}
+section.chap{padding-top:56px;scroll-margin-top:86px}
+.chap-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+.chap-head .no{font-size:13px;color:var(--accent);font-weight:700;letter-spacing:1px}
+.chap-head h2{font-size:22px}
+.chap-desc{color:var(--muted);font-size:13.5px;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 18px 14px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:12px;min-width:0;
+}
+.card.wide{grid-column:span 2}
+@media(max-width:760px){.card.wide{grid-column:span 1}}
+.card-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.card-head h3{font-size:15.5px}
+.card-head .self{
+  font-size:11px;color:var(--accent);border:1px solid rgba(45,212,191,.4);
+  padding:1px 8px;border-radius:99px;white-space:nowrap;
+}
+.stage{
+  background:var(--bg2);border:1px solid var(--line);border-radius:10px;
+  min-height:130px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;padding:18px;flex:1;
+}
+.stage.tall{min-height:220px}
+.script{
+  font-size:12px;color:var(--muted);border-left:3px solid var(--accent);
+  padding:2px 0 2px 10px;line-height:1.65;
+}
+.script b{color:var(--accent);font-weight:600}
+.replay{
+  position:absolute;top:8px;right:8px;z-index:5;
+  background:var(--card);border:1px solid var(--line);color:var(--muted);
+  font-size:11px;padding:3px 9px;border-radius:99px;cursor:pointer;
+  transition:color .2s,border-color .2s;
+}
+.replay:hover{color:var(--text);border-color:var(--accent)}
+.note{font-size:11.5px;color:var(--muted);opacity:.8}
+
+/* ========== 通用小元素 ========== */
+.btn{
+  appearance:none;border:1px solid var(--line);background:var(--card2);color:var(--text);
+  padding:9px 18px;border-radius:10px;font-size:13.5px;cursor:pointer;
+  transition:transform .15s,background .2s,border-color .2s;
+}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:linear-gradient(120deg,var(--accent),#22b8a6);color:#04211d;border:none;font-weight:600}
+.chip{
+  padding:6px 14px;border-radius:99px;font-size:12.5px;cursor:pointer;
+  background:var(--card2);border:1px solid var(--line);color:var(--muted);
+  transition:all .2s ease;user-select:none;
+}
+.chip.sel{background:rgba(45,212,191,.16);border-color:var(--accent);color:var(--accent)}
+input[type=text],input[type=email],input[type=password]{
+  width:100%;padding:10px 12px;border-radius:10px;font-size:13.5px;
+  border:1px solid var(--line);background:var(--card2);color:var(--text);
+  outline:none;transition:border-color .2s,box-shadow .2s;
+}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(45,212,191,.15)}
+
+/* ========== 滚动显现 ========== */
+[data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .6s ease-out,transform .6s ease-out}
+[data-reveal].in{opacity:1;transform:none}
+
+/* ========== 入场演示 ========== */
+.fx{opacity:0}
+.fx.play{opacity:1}
+.fx-fade{transition:opacity .6s ease-out}
+.fx-up{transform:translateY(30px);transition:opacity .5s ease-out,transform .5s ease-out}
+.fx-up.play{transform:none}
+.tile-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.tile{height:44px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:var(--muted);font-weight:600;
+  background:linear-gradient(135deg,rgba(45,212,191,.18),rgba(96,165,250,.14));
+  border:1px solid var(--line);
+  opacity:0;transform:translateY(22px);
+  transition:opacity .5s ease-out,transform .5s ease-out;
+}
+.tile-row.play .tile{opacity:1;transform:none}
+/* 骨架屏 */
+.skel{width:100%}
+.skel .row{display:flex;gap:10px;margin-bottom:12px;align-items:center}
+.skel .av{width:34px;height:34px;border-radius:50%;flex-shrink:0}
+.skel .ln{height:11px;border-radius:6px}
+.skel .av,.skel .ln{background:linear-gradient(90deg,rgba(148,163,184,.14),rgba(148,163,184,.30),rgba(148,163,184,.14));
+  background-size:200% 100%;animation:breath 1.6s ease-in-out infinite}
+@keyframes breath{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-real{width:100%;opacity:0;transition:opacity .5s ease-out}
+.skel-real .row{display:flex;gap:10px;margin-bottom:12px;align-items:center}
+.skel-real .av{width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.skel-real .ln{height:11px;border-radius:6px;background:var(--card2);border:1px solid var(--line)}
+.stage.loaded .skel{display:none}
+.stage.loaded .skel-real{opacity:1}
+/* 打字机 */
+.type-line{font-size:14.5px;min-height:22px;text-align:center;width:100%}
+/* 数字滚动 */
+.big-num{font-size:34px;font-weight:800;font-variant-numeric:tabular-nums;
+  background:linear-gradient(120deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;cursor:pointer}
+
+/* ========== 滚动演示 ========== */
+.parallax-box{width:100%;height:200px;overflow-y:auto;border-radius:8px;position:relative;scrollbar-width:thin}
+.parallax-bg{position:absolute;left:-10%;top:0;width:120%;height:340%;
+  background:
+    radial-gradient(40% 26% at 40% 22%,rgba(45,212,191,.35),transparent 70%),
+    radial-gradient(46% 30% at 62% 55%,rgba(96,165,250,.30),transparent 70%);
+  will-change:transform}
+.parallax-text{position:relative;padding:150px 18px 40px;color:var(--text);font-size:13px;line-height:2}
+.snap-track{display:flex;gap:14px;width:100%;overflow-x:auto;scroll-snap-type:x mandatory;
+  padding:6px 4px;scrollbar-width:none}
+.snap-track::-webkit-scrollbar{display:none}
+.snap-slide{flex:0 0 82%;scroll-snap-align:center;height:120px;border-radius:10px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  background:linear-gradient(135deg,rgba(45,212,191,.14),rgba(96,165,250,.18));
+  border:1px solid var(--line);font-size:13px}
+.snap-slide b{font-size:20px}
+/* 回到顶部按钮 */
+#backTop{
+  position:fixed;right:22px;bottom:24px;z-index:950;
+  width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04211d;
+  font-size:18px;font-weight:700;box-shadow:var(--shadow);
+  opacity:0;transform:translateY(14px);pointer-events:none;
+  transition:opacity .3s ease,transform .3s ease;
+}
+#backTop.show{opacity:1;transform:none;pointer-events:auto}
+
+/* ========== 悬停演示 ========== */
+.hover-lift{
+  width:100%;max-width:250px;padding:16px;border-radius:12px;text-align:left;
+  background:var(--card2);border:1px solid var(--line);cursor:pointer;
+  transition:transform .25s ease-out,box-shadow .25s ease-out;
+}
+.hover-lift:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.35)}
+.hover-lift b{display:block;font-size:13.5px;margin-bottom:4px}
+.hover-lift span{font-size:12px;color:var(--muted)}
+.zoom-box{width:100%;max-width:250px;height:150px;border-radius:10px;overflow:hidden;
+  border:1px solid var(--line);cursor:zoom-in;position:relative}
+.zoom-box .img{width:100%;height:100%;
+  background:
+    radial-gradient(60% 80% at 30% 30%,rgba(45,212,191,.55),transparent 70%),
+    radial-gradient(50% 70% at 75% 70%,rgba(167,139,250,.5),transparent 70%),
+    linear-gradient(160deg,#17233a,#101827);
+  transition:transform .4s ease-out}
+.zoom-box:hover .img{transform:scale(1.07)}
+.demo-link{color:var(--accent);text-decoration:none;font-size:14px;position:relative;padding-bottom:3px}
+.demo-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .2s ease}
+.demo-link:hover::after{transform:scaleX(1)}
+.magnet-stage{width:100%;height:130px;display:flex;align-items:center;justify-content:center}
+#magnetBtn{transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
+.tilt-stage{width:100%;height:180px;display:flex;align-items:center;justify-content:center;perspective:700px}
+.tilt-card{width:190px;height:120px;border-radius:12px;padding:14px;
+  background:linear-gradient(135deg,rgba(45,212,191,.22),rgba(96,165,250,.22));
+  border:1px solid var(--line);font-size:12.5px;color:var(--muted);
+  transition:transform .5s ease;transform-style:preserve-3d;will-change:transform}
+.tilt-card.hot{transition:transform .08s linear}
+.tilt-card b{color:var(--text);display:block;margin-bottom:6px;font-size:13.5px}
+/* Tooltip */
+.tip-wrap{position:relative;display:inline-block}
+.tip-wrap .tip{
+  position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%) translateY(4px);
+  background:#111827;color:#e5e7eb;font-size:12px;padding:6px 10px;border-radius:8px;
+  white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .2s ease .3s,transform .2s ease .3s;
+}
+.tip-wrap .tip::before{content:"";position:absolute;top:100%;left:50%;margin-left:-5px;
+  border:5px solid transparent;border-top-color:#111827}
+.tip-wrap:hover .tip{opacity:1;transform:translateX(-50%) translateY(0)}
+/* 光标跟随 */
+.cursor-stage{width:100%;height:170px;cursor:none}
+.cursor-stage .dot{
+  position:absolute;width:26px;height:26px;border-radius:50%;
+  background:radial-gradient(circle,rgba(45,212,191,.85),rgba(45,212,191,.15));
+  pointer-events:none;opacity:0;transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,opacity .3s;z-index:4;
+}
+.cursor-stage .fake-btn{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  padding:8px 20px;border-radius:99px;background:var(--card2);border:1px solid var(--line);
+  font-size:12.5px;color:var(--muted);
+}
+
+/* ========== 点击演示 ========== */
+.ripple-btn{position:relative;overflow:hidden}
+.ripple-btn .rip{
+  position:absolute;border-radius:50%;pointer-events:none;
+  background:rgba(255,255,255,.45);transform:scale(0);
+  animation:rip .5s ease-out forwards;
+}
+@keyframes rip{to{transform:scale(3);opacity:0}}
+.press-btn:active{transform:scale(.95)}
+#loadBtn{min-width:120px}
+#loadBtn .spin{display:inline-block;width:13px;height:13px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.35);border-top-color:#04211d;
+  animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.like{position:relative;font-size:30px;cursor:pointer;user-select:none;
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1),color .2s;color:var(--muted)}
+.like.on{color:#f472b6;transform:scale(1.3)}
+.like.pop{animation:likepop .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes likepop{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+.like .spark{position:absolute;left:50%;top:50%;width:6px;height:6px;border-radius:50%;
+  background:#f472b6;pointer-events:none;animation:spark .6s ease-out forwards}
+@keyframes spark{to{transform:translate(var(--sx),var(--sy)) scale(0);opacity:0}}
+
+/* ========== 弹层演示 ========== */
+.overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,.5);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:20;
+}
+.overlay.open{opacity:1;pointer-events:auto}
+.modal-box{
+  width:min(320px,86%);background:var(--card);border:1px solid var(--line);
+  border-radius:14px;padding:20px;box-shadow:var(--shadow);
+  transform:scale(.95);opacity:0;transition:transform .25s ease-out,opacity .25s ease-out;
+  position:relative;
+}
+.overlay.open .modal-box{transform:scale(1);opacity:1}
+.modal-box h4{font-size:15px;margin-bottom:8px}
+.modal-box p{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+.modal-x{position:absolute;top:10px;right:12px;background:none;border:none;
+  color:var(--muted);font-size:16px;cursor:pointer}
+.btn-row{display:flex;gap:10px;justify-content:flex-end}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff;font-weight:600}
+.drawer-panel{
+  position:absolute;top:0;bottom:0;left:0;width:200px;
+  background:var(--card);border-right:1px solid var(--line);
+  transform:translateX(-100%);transition:transform .3s ease;z-index:21;
+  padding:16px;display:flex;flex-direction:column;gap:10px;
+}
+.overlay.open .drawer-panel{transform:none}
+.drawer-panel a{color:var(--muted);text-decoration:none;font-size:13px;padding:7px 10px;border-radius:8px}
+.drawer-panel a:hover{background:var(--card2);color:var(--text)}
+.sheet-panel{
+  position:absolute;left:0;right:0;bottom:0;height:62%;
+  background:var(--card);border-radius:16px 16px 0 0;border-top:1px solid var(--line);
+  transform:translateY(102%);transition:transform .3s ease;z-index:21;
+  padding:10px 16px 16px;touch-action:none;
+}
+.overlay.open .sheet-panel{transform:none}
+.sheet-handle{width:40px;height:4px;border-radius:99px;background:var(--line);
+  margin:0 auto 12px;cursor:grab}
+.dropdown-wrap{position:relative}
+.dropdown-menu{
+  position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(-6px);
+  min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:10px;
+  box-shadow:var(--shadow);padding:6px;z-index:25;
+  opacity:0;pointer-events:none;transform-origin:top center;
+  transition:opacity .18s ease,transform .18s ease;
+}
+.dropdown-menu.open{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+.dropdown-menu button{display:block;width:100%;text-align:left;background:none;border:none;
+  color:var(--text);font-size:13px;padding:8px 10px;border-radius:7px;cursor:pointer}
+.dropdown-menu button:hover{background:var(--card2)}
+#toastHost{position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:2000;
+  display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{
+  background:#111827;color:#e5e7eb;font-size:13px;padding:10px 18px;border-radius:99px;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);white-space:nowrap;
+  animation:toastIn .3s ease-out;
+}
+.toast.out{opacity:0;transform:translateY(-8px);transition:opacity .3s,transform .3s}
+@keyframes toastIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+
+/* ========== 展开收起 ========== */
+.acc{width:100%}
+.acc-item{border:1px solid var(--line);border-radius:10px;margin-bottom:8px;overflow:hidden;background:var(--card2)}
+.acc-head{width:100%;display:flex;justify-content:space-between;align-items:center;
+  background:none;border:none;color:var(--text);font-size:13.5px;padding:11px 14px;cursor:pointer}
+.acc-head .chev{transition:transform .3s ease;color:var(--muted)}
+.acc-item.open .chev{transform:rotate(180deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.acc-body p{font-size:12.5px;color:var(--muted);padding:0 14px 12px}
+.readmore p{font-size:13px;color:var(--muted);max-height:66px;overflow:hidden;
+  transition:max-height .35s ease}
+.readmore.open p{max-height:260px}
+.readmore button{margin-top:8px}
+
+/* ========== 导航切换 ========== */
+.tabs{width:100%}
+.tab-bar{display:flex;position:relative;border-bottom:1px solid var(--line)}
+.tab-bar button{flex:1;background:none;border:none;color:var(--muted);font-size:13px;
+  padding:9px 4px;cursor:pointer;transition:color .2s}
+.tab-bar button.on{color:var(--accent)}
+.tab-ind{position:absolute;bottom:-1px;height:2px;background:var(--accent);
+  transition:left .25s ease,width .25s ease;border-radius:2px}
+.tab-panels{position:relative;margin-top:12px;min-height:64px}
+.tab-pane{position:absolute;inset:0;font-size:12.5px;color:var(--muted);
+  opacity:0;transition:opacity .25s ease;pointer-events:none}
+.tab-pane.on{opacity:1;pointer-events:auto}
+.seg{display:flex;background:var(--card2);border:1px solid var(--line);border-radius:99px;padding:4px;position:relative}
+.seg button{position:relative;z-index:2;background:none;border:none;color:var(--muted);
+  font-size:13px;padding:7px 18px;cursor:pointer;transition:color .25s;border-radius:99px}
+.seg button.on{color:var(--text)}
+.seg .thumb{position:absolute;top:4px;bottom:4px;border-radius:99px;background:var(--card);
+  border:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.25);
+  transition:left .25s ease,width .25s ease;z-index:1}
+.carousel{width:100%;position:relative}
+.car-track{display:flex;transition:transform .45s ease;border-radius:10px;overflow:hidden}
+.car-slide{flex:0 0 100%;height:120px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:4px;color:#fff}
+.car-slide b{font-size:18px}
+.car-slide span{font-size:12px;opacity:.85}
+.car-nav{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.car-arrow{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);
+  background:var(--card2);color:var(--text);cursor:pointer;font-size:13px}
+.car-dots{display:flex;gap:6px}
+.car-dots i{width:7px;height:7px;border-radius:50%;background:var(--line);transition:background .2s,transform .2s}
+.car-dots i.on{background:var(--accent);transform:scale(1.25)}
+
+/* ========== 拖拽滑动 ========== */
+.range-wrap{width:100%;position:relative;padding-top:26px}
+.range-wrap .bubble{
+  position:absolute;top:0;transform:translateX(-50%);
+  background:var(--accent);color:#04211d;font-size:11.5px;font-weight:700;
+  padding:2px 8px;border-radius:7px;white-space:nowrap;
+}
+.range-wrap input{width:100%;appearance:none;height:6px;border-radius:99px;outline:none;cursor:pointer;
+  background:linear-gradient(90deg,var(--accent) var(--p,50%),var(--card2) var(--p,50%))}
+.range-wrap input::-webkit-slider-thumb{appearance:none;width:18px;height:18px;border-radius:50%;
+  background:#fff;border:3px solid var(--accent);cursor:grab;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.drag-list{width:100%;list-style:none}
+.drag-list li{
+  display:flex;align-items:center;gap:10px;background:var(--card2);
+  border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;
+  font-size:13px;cursor:grab;transition:box-shadow .2s,opacity .2s;
+}
+.drag-list li.dragging{opacity:.4;border-style:dashed}
+.drag-list .grip{color:var(--muted);letter-spacing:2px}
+.swipe-item{width:100%;position:relative;border-radius:10px;overflow:hidden;margin-bottom:8px;
+  touch-action:pan-y;user-select:none}
+.swipe-actions{position:absolute;inset:0;display:flex;justify-content:flex-end}
+.swipe-actions button{width:48px;border:none;color:#fff;font-size:12px;cursor:pointer}
+.swipe-actions .del{background:var(--danger)}
+.swipe-actions .arc{background:#64748b}
+.swipe-face{
+  position:relative;background:var(--card2);border:1px solid var(--line);border-radius:10px;
+  padding:11px 14px;font-size:13px;transition:transform .25s ease;will-change:transform;
+}
+.swipe-item.open .swipe-face{transform:translateX(-96px)}
+
+/* ========== 表单 ========== */
+.float-field{position:relative;width:100%;max-width:250px}
+.float-field input{padding:14px 12px 6px}
+.float-field label{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  color:var(--muted);font-size:13.5px;pointer-events:none;
+  transition:all .2s ease;
+}
+.float-field input:focus + label,
+.float-field input:not(:placeholder-shown) + label{
+  top:9px;transform:none;font-size:11px;color:var(--accent);
+}
+.valid-wrap{width:100%;max-width:250px;position:relative}
+.valid-msg{font-size:11.5px;margin-top:6px;min-height:16px;transition:color .2s}
+.valid-wrap.err input{border-color:var(--danger);box-shadow:0 0 0 3px rgba(248,113,113,.12)}
+.valid-wrap.ok input{border-color:var(--ok)}
+.valid-wrap .ck{
+  position:absolute;right:10px;top:9px;font-size:14px;color:var(--ok);
+  opacity:0;transform:scale(.6);transition:all .2s ease;
+}
+.valid-wrap.ok .ck{opacity:1;transform:none}
+.pwd-wrap{position:relative;width:100%;max-width:250px}
+.pwd-wrap button{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;font-size:15px;opacity:.7;
+}
+.ac-wrap{position:relative;width:100%;max-width:250px}
+.ac-list{
+  position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:10;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;
+  box-shadow:var(--shadow);overflow:hidden;display:none;
+}
+.ac-list.open{display:block;animation:toastIn .18s ease-out}
+.ac-list div{padding:8px 12px;font-size:13px;cursor:pointer}
+.ac-list div:hover,.ac-list div.hl{background:rgba(45,212,191,.12);color:var(--accent)}
+
+/* ========== 数据与进度 ========== */
+.bar-wrap{width:100%}
+.bar{height:12px;border-radius:99px;background:var(--card2);border:1px solid var(--line);overflow:hidden}
+.bar .fill{height:100%;width:0;border-radius:99px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+.bar-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:8px}
+.ring-wrap{position:relative;width:110px;height:110px}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--card2);stroke-width:9}
+.ring-fg{fill:none;stroke:url(#ringGrad);stroke-width:9;stroke-linecap:round;
+  stroke-dasharray:283;stroke-dashoffset:283;transition:stroke-dashoffset 1.2s cubic-bezier(.22,1,.36,1)}
+.ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
+.steps{display:flex;width:100%;align-items:flex-start}
+.step{flex:1;text-align:center;position:relative}
+.step .dot2{
+  width:26px;height:26px;border-radius:50%;margin:0 auto 6px;
+  background:var(--card2);border:1px solid var(--line);color:var(--muted);
+  display:flex;align-items:center;justify-content:center;font-size:12px;
+  transition:all .3s ease;
+}
+.step .lbl{font-size:11px;color:var(--muted);transition:color .3s}
+.step.done .dot2{background:var(--ok);border-color:var(--ok);color:#04211d}
+.step.now .dot2{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 4px rgba(45,212,191,.15)}
+.step.now .lbl{color:var(--accent)}
+.step:not(:last-child)::after{
+  content:"";position:absolute;top:13px;left:calc(50% + 18px);right:calc(-50% + 18px);
+  height:2px;background:var(--line);transition:background .3s;
+}
+.step.done:not(:last-child)::after{background:var(--ok)}
+.tl{width:100%;max-width:300px}
+.tl-item{position:relative;padding:0 0 18px 22px;font-size:12.5px}
+.tl-item::before{content:"";position:absolute;left:5px;top:5px;width:9px;height:9px;border-radius:50%;
+  background:var(--accent);box-shadow:0 0 0 3px rgba(45,212,191,.18)}
+.tl-item::after{content:"";position:absolute;left:9px;top:17px;bottom:-2px;width:1.5px;background:var(--line)}
+.tl-item:last-child::after{display:none}
+.tl-item b{display:block;font-size:12.5px}
+.tl-item span{color:var(--muted);font-size:11.5px}
+.marquee{width:100%;overflow:hidden;position:relative;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.mq-track{display:flex;gap:34px;width:max-content;animation:mq 14s linear infinite;padding:4px 0}
+.marquee:hover .mq-track{animation-play-state:paused}
+@keyframes mq{to{transform:translateX(-50%)}}
+.mq-item{font-weight:700;font-size:15px;color:var(--muted);opacity:.75;white-space:nowrap;
+  display:flex;align-items:center;gap:8px}
+.mq-item i{width:8px;height:8px;border-radius:2px;background:var(--accent);opacity:.6}
+
+/* ========== 高级特效 ========== */
+.glass-stage{width:100%;height:170px;position:relative;overflow:hidden;border-radius:10px}
+.glass-stage .blob{position:absolute;border-radius:50%;filter:blur(6px);opacity:.8}
+.glass-stage .b1{width:110px;height:110px;background:#2dd4bf;top:-20px;left:16%}
+.glass-stage .b2{width:90px;height:90px;background:#60a5fa;bottom:-16px;right:20%}
+.glass-stage .b3{width:60px;height:60px;background:#a78bfa;top:30%;right:38%}
+.glass-card{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:72%;padding:16px;border-radius:14px;text-align:center;
+  background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  color:#fff;
+}
+.glass-card b{font-size:13.5px}
+.glass-card p{font-size:11.5px;opacity:.8;margin-top:4px}
+.spot-card{
+  width:100%;height:130px;border-radius:12px;position:relative;overflow:hidden;
+  background:var(--card2);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+}
+.spot-card::before{
+  content:"";position:absolute;inset:0;opacity:0;transition:opacity .3s;
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%),
+    rgba(45,212,191,.16),rgba(96,165,250,.07) 45%,transparent 70%);
+}
+.spot-card:hover::before{opacity:1}
+.spot-card span{position:relative;font-size:13px;color:var(--muted)}
+.flip-stage{width:170px;height:110px;perspective:800px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .6s ease;
+  transform-style:preserve-3d}
+.flip-stage:hover .flip-inner{transform:rotateY(180deg)}
+.flip-face{
+  position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  border:1px solid var(--line);font-size:13px;
+}
+.flip-front{background:linear-gradient(135deg,rgba(45,212,191,.20),rgba(96,165,250,.20))}
+.flip-back{background:var(--card2);transform:rotateY(180deg);padding:10px;text-align:center;color:var(--muted);font-size:11.5px}
+.flip-back b{color:var(--text);font-size:12.5px}
+.wave-stage{width:100%;height:150px;position:relative;overflow:hidden;border-radius:10px;
+  background:linear-gradient(180deg,rgba(45,212,191,.10),rgba(96,165,250,.16))}
+.wave-stage svg{position:absolute;bottom:0;left:0;width:200%;height:70%}
+.wave-stage .w1{animation:waveMove 9s linear infinite}
+.wave-stage .w2{animation:waveMove 6s linear infinite reverse;opacity:.55}
+@keyframes waveMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+#particleCanvas{width:100%;height:170px;display:block;border-radius:10px;cursor:crosshair}
+.mini-nav{display:flex;gap:22px}
+/* 转场演示卡 */
+.page-a,.page-b{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  transition:opacity .2s ease,transform .2s ease;
+}
+.page-b{opacity:0;transform:translateY(26px);pointer-events:none;background:var(--bg2)}
+.pt-stage.go .page-a{opacity:0;pointer-events:none}
+.pt-stage.go .page-b{opacity:1;transform:none;pointer-events:auto}
+
+footer{border-top:1px solid var(--line);margin-top:70px;padding:34px 20px 44px;text-align:center;
+  color:var(--muted);font-size:12.5px;position:relative;overflow:hidden}
+footer .waves{position:absolute;left:0;right:0;bottom:0;height:56px;opacity:.5;pointer-events:none}
+
+/* ========== 无障碍：尊重系统减弱动态偏好（原手册缺口，这里补上） ========== */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<div id="progressBar"></div>
+<div id="toastHost"></div>
+</content>
+</invoke>
+
+<header class="nav" id="topNav">
+  <div class="brand">交互效果<b>展厅</b></div>
+  <nav class="nav-links" id="navLinks">
+    <a href="#ch1">入场加载</a><a href="#ch2">滚动触发</a><a href="#ch3">悬停反馈</a>
+    <a href="#ch4">点击反馈</a><a href="#ch5">弹层浮层</a><a href="#ch6">展开收起</a>
+    <a href="#ch7">导航切换</a><a href="#ch8">拖拽滑动</a><a href="#ch9">表单交互</a>
+    <a href="#ch10">数据进度</a><a href="#ch11">视觉特效</a><a href="#ch12">主题转场</a>
+  </nav>
+  <button id="themeBtn" title="切换明暗主题（这本身就是一个演示）">☀</button>
+</header>
+
+<div class="hero">
+  <div class="hero-bg"></div>
+  <h1>这个页面本身，就是 <span class="grad">一场交互演示</span></h1>
+  <p class="sub"><span id="typeTarget"></span><span class="cursor"></span></p>
+  <p class="meta">渐变流动（背景）· 渐变文字（标题）· 打字机（上面这行）· 滚动进度条（顶部）· 吸顶导航 · 明暗切换（右上角）——全部是活的</p>
+</div>
+
+<main>
+<!-- ============ 01 入场加载 ============ -->
+<section class="chap" id="ch1">
+  <div class="chap-head"><span class="no">01</span><h2>页面入场与加载</h2></div>
+  <p class="chap-desc">页面第一次出现、或数据还没回来时的表现。点每张卡片右上角的「重播」反复看。</p>
+  <div class="grid">
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>淡入 <span class="en">Fade In</span></h3></div>
+      <div class="stage">
+        <button class="replay" data-fx="fade">重播</button>
+        <div class="fx fx-fade" data-fade style="text-align:center">
+          <div style="font-size:26px">🌊</div><div style="font-size:13px;margin-top:4px">我从透明慢慢浮现</div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：页面加载后，卡片从透明淡入显示，时长 0.6 秒，先快后慢（ease-out）。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>上浮入场 <span class="en">Fade Up</span></h3></div>
+      <div class="stage">
+        <button class="replay" data-fx="up">重播</button>
+        <div class="fx fx-up" data-up style="text-align:center">
+          <div style="font-size:26px">🚀</div><div style="font-size:13px;margin-top:4px">从下方 30 像素处登场</div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：区块出现时，从下方 30 像素处向上滑入并同时淡入，时长 0.5 秒。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>逐条入场 <span class="en">Stagger</span></h3></div>
+      <div class="stage">
+        <button class="replay" data-fx="stagger">重播</button>
+        <div class="tile-row" data-stagger>
+          <div class="tile">A</div><div class="tile">B</div><div class="tile">C</div>
+          <div class="tile">D</div><div class="tile">E</div><div class="tile">F</div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：列表项依次入场，每一项比前一项晚 0.08 秒，从下方淡入上浮。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>骨架屏 <span class="en">Skeleton Screen</span></h3></div>
+      <div class="stage" data-skel>
+        <button class="replay" data-skel-btn>模拟数据到达</button>
+        <div class="skel">
+          <div class="row"><div class="av"></div><div style="flex:1"><div class="ln" style="width:70%;margin-bottom:7px"></div><div class="ln" style="width:45%"></div></div></div>
+          <div class="row"><div class="av"></div><div style="flex:1"><div class="ln" style="width:60%;margin-bottom:7px"></div><div class="ln" style="width:38%"></div></div></div>
+        </div>
+        <div class="skel-real">
+          <div class="row"><div class="av"></div><div style="flex:1"><div class="ln" style="width:70%;margin-bottom:7px"></div><div class="ln" style="width:45%"></div></div></div>
+          <div class="row"><div class="av"></div><div style="flex:1"><div class="ln" style="width:60%;margin-bottom:7px"></div><div class="ln" style="width:38%"></div></div></div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：数据返回前显示与真实布局一致的灰色骨架占位块，带缓慢明暗呼吸，数据到达后替换为真实内容。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>打字机 <span class="en">Typewriter</span></h3><span class="self">首屏也在演</span></div>
+      <div class="stage">
+        <button class="replay" data-typewriter>重播</button>
+        <div class="type-line">「<span data-type-text>说对话，一次做对</span>」<span class="cursor"></span></div>
+      </div>
+      <p class="script"><b>话术</b>：主标题像打字一样逐字出现，每个字间隔 80 毫秒，末尾竖线光标闪烁，打完后光标保持闪烁。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>数字滚动 <span class="en">Count Up</span></h3></div>
+      <div class="stage" style="flex-direction:column;gap:6px">
+        <button class="replay" data-count>重播</button>
+        <div class="big-num" data-count-num data-target="36528">0</div>
+        <div style="font-size:12px;color:var(--muted)">从 0 滚到 36,528，末尾减速</div>
+      </div>
+      <p class="script"><b>话术</b>：统计数字滚动到可见区域后，从 0 递增到目标值，持续 2 秒，末尾减速，带千分位逗号。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 滚动触发 ============ -->
+<section class="chap" id="ch2">
+  <div class="chap-head"><span class="no">02</span><h2>滚动触发</h2></div>
+  <p class="chap-desc">带「本页就是示例」角标的卡片，说的就是你现在看到的这个页面。</p>
+  <div class="grid">
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>滚动进度条 <span class="en">Scroll Progress</span></h3><span class="self">本页就是示例</span></div>
+      <div class="stage"><div style="text-align:center;font-size:12.5px;color:var(--muted)">看屏幕最顶部 ↑<br>那条 3 像素高的彩色细条正随你的滚动增长</div></div>
+      <p class="script"><b>话术</b>：页面顶部固定一条 3 像素高的进度条，随滚动从左向右增长，使用主题色。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>吸顶导航 <span class="en">Sticky Header</span></h3><span class="self">本页就是示例</span></div>
+      <div class="stage"><div style="text-align:center;font-size:12.5px;color:var(--muted)">往下滚动一点，看顶部导航：<br>从透明变为实底并出现阴影</div></div>
+      <p class="script"><b>话术</b>：导航栏滚到页面顶部后固定在顶端，背景从透明变为实色并加浅色阴影。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>滚动显现 <span class="en">Scroll Reveal</span></h3><span class="self">本页就是示例</span></div>
+      <div class="stage">
+        <button class="replay" data-reveal-demo>重播这一张</button>
+        <div style="text-align:center;font-size:12.5px;color:var(--muted)">本页每张卡片都是滚到可视区才淡入上浮、且只播一次<br>（这张卡可以单独重播）</div>
+      </div>
+      <p class="script"><b>话术</b>：每个版块在滚动进入视口约 80% 位置时淡入上浮，动画只播放一次，不要来回反复。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>平滑锚点 <span class="en">Smooth Scroll</span></h3><span class="self">本页就是示例</span></div>
+      <div class="stage"><div style="text-align:center;font-size:12.5px;color:var(--muted)">点顶部导航的任意章节名：<br>页面平滑滚过去，而不是瞬间跳变</div></div>
+      <p class="script"><b>话术</b>：点击目录链接时平滑滚动到对应标题处，预留吸顶导航的高度偏移，避免标题被盖住。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>视差滚动 <span class="en">Parallax</span></h3></div>
+      <div class="stage tall" style="padding:0">
+        <div class="parallax-box" data-parallax>
+          <div class="parallax-bg"></div>
+          <div class="parallax-text">↓ 在这个框里滚动<br><br>背景光斑只以滚动速度的一半移动，<br>前景文字正常速度——<br>纵深感就出来了。</div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：滚动时背景以页面滚动速度的一半移动，前景文字正常速度，形成景深；手机上可关闭保证流畅。</p>
+    </div>
+    <div class="card wide" data-reveal>
+      <div class="card-head"><h3>滚动捕捉 <span class="en">Scroll Snap</span></h3></div>
+      <div class="stage">
+        <div class="snap-track">
+          <div class="snap-slide"><b>1</b>松手自动吸附回正中</div>
+          <div class="snap-slide"><b>2</b>横向拖我试试</div>
+          <div class="snap-slide"><b>3</b>每一张都对齐</div>
+          <div class="snap-slide"><b>4</b>不会停在半路</div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：横向卡片轨道，滚动松手后自动吸附对齐到最近的一张卡片，过渡平滑。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>回到顶部 <span class="en">Back to Top</span></h3><span class="self">本页就是示例</span></div>
+      <div class="stage"><div style="text-align:center;font-size:12.5px;color:var(--muted)">向下滚过一屏后，<br>右下角会淡入一个圆形按钮，点击平滑回顶</div></div>
+      <p class="script"><b>话术</b>：向下滚动超过一屏后，右下角淡入一个圆形「回到顶部」按钮，点击后平滑滚动回页面顶部。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 悬停反馈 ============ -->
+<section class="chap" id="ch3">
+  <div class="chap-head"><span class="no">03</span><h2>悬停与指针反馈</h2></div>
+  <p class="chap-desc">桌面端精致感的主要来源。触屏设备没有悬停，正式项目记得让 AI 补一句移动端替代方案。</p>
+  <div class="grid">
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>悬停上浮 <span class="en">Hover Lift</span></h3></div>
+      <div class="stage"><div class="hover-lift"><b>把鼠标放上来</b><span>我会上浮 4 像素、阴影加深，暗示可以点</span></div></div>
+      <p class="script"><b>话术</b>：鼠标悬停卡片时，卡片向上移动 4 像素、阴影加深放大，离开时还原，过渡 0.25 秒。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>图片放大 <span class="en">Image Zoom</span></h3></div>
+      <div class="stage"><div class="zoom-box"><div class="img"></div></div></div>
+      <p class="script"><b>话术</b>：悬停时图片在容器内放大到 1.05 倍，超出容器的部分裁掉，过渡 0.4 秒。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>下划线生长 <span class="en">Underline Slide</span></h3><span class="self">顶部导航也在演</span></div>
+      <div class="stage"><a class="demo-link" href="#ch3">悬停我，下划线从左向右长出来</a></div>
+      <p class="script"><b>话术</b>：导航链接悬停时，文字下方出现一条从左向右展开的下划线，高 2 像素，时长 0.2 秒，移开向左收回。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>磁铁按钮 <span class="en">Magnetic Button</span></h3></div>
+      <div class="stage"><div class="magnet-stage"><button class="btn primary" id="magnetBtn">靠近我，我会被吸过去</button></div></div>
+      <p class="script"><b>话术</b>：鼠标靠近主按钮时，按钮向鼠标方向偏移最多 8 像素，移开后弹回原位，带回弹感（spring）。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>3D 倾斜 <span class="en">Tilt</span></h3></div>
+      <div class="stage"><div class="tilt-stage"><div class="tilt-card" id="tiltCard"><b>实体卡质感</b>鼠标在卡片上移动，卡片朝鼠标方向轻微倾斜（最大 8 度），移开缓慢回正。</div></div></div>
+      <p class="script"><b>话术</b>：鼠标在卡片上移动时，卡片朝鼠标方向轻微 3D 倾斜（最大 8 度），移开缓慢回正。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>提示气泡 <span class="en">Tooltip</span></h3></div>
+      <div class="stage">
+        <div class="tip-wrap"><button class="btn">悬停 0.3 秒</button><span class="tip">我是说明文字，带小箭头</span></div>
+      </div>
+      <p class="script"><b>话术</b>：悬停图标 0.3 秒后，在其上方弹出深色小气泡显示说明文字，带小箭头指向图标，移开消失。</p>
+    </div>
+    <div class="card wide" data-reveal>
+      <div class="card-head"><h3>光标跟随 <span class="en">Cursor Follower</span></h3></div>
+      <div class="stage">
+        <div class="cursor-stage" id="cursorStage">
+          <div class="dot" id="cursorDot"></div>
+          <div class="fake-btn" data-clickable>把光斑移到我身上会放大</div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：区域内有一个半透明光斑平滑跟随鼠标移动（略滞后形成惯性），悬停可点击元素时光斑放大。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 点击反馈 ============ -->
+<section class="chap" id="ch4">
+  <div class="chap-head"><span class="no">04</span><h2>点击与状态反馈</h2></div>
+  <p class="chap-desc">用户点下去那一刻的回应。反馈越明确，界面越显得「听话」。</p>
+  <div class="grid">
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>水波纹 <span class="en">Ripple</span></h3></div>
+      <div class="stage"><button class="btn primary ripple-btn" data-ripple style="padding:12px 30px">点我，从点击处扩散波纹</button></div>
+      <p class="script"><b>话术</b>：点击按钮时，从点击位置扩散出一个圆形半透明波纹并淡出，持续 0.5 秒。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>按压回弹 <span class="en">Button Press</span></h3></div>
+      <div class="stage"><button class="btn press-btn" style="padding:12px 30px">按住我不松手试试</button></div>
+      <p class="script"><b>话术</b>：按钮按下时缩小到 95%，松开弹回原大小，过渡 0.15 秒。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>提交中转圈 <span class="en">Loading Button</span></h3></div>
+      <div class="stage"><button class="btn primary" id="loadBtn" style="padding:12px 24px">提交订单</button></div>
+      <p class="script"><b>话术</b>：点击提交后，按钮文字变为「提交中…」并显示转圈图标，期间禁止重复点击，成功或失败后恢复原样。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>选中态切换 <span class="en">Selected State</span></h3></div>
+      <div class="stage" style="gap:8px;flex-wrap:wrap">
+        <span class="chip sel">全部</span><span class="chip">进行中</span><span class="chip">已完成</span><span class="chip">已归档</span>
+      </div>
+      <p class="script"><b>话术</b>：点击选项后，选中项变为浅主题色底加主题色文字，其余保持灰底，切换有 0.2 秒过渡。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>点赞弹跳 <span class="en">Like Burst</span></h3></div>
+      <div class="stage"><span class="like" id="likeBtn">♥</span></div>
+      <p class="script"><b>话术</b>：点击点赞图标时，爱心放大到 1.3 倍再弹回，同时散出 6 个小圆点后消失，图标变为实心主题色。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 弹层浮层 ============ -->
+<section class="chap" id="ch5">
+  <div class="chap-head"><span class="no">05</span><h2>弹层与浮层</h2></div>
+  <p class="chap-desc">覆盖在页面之上的临时层。关键词是遮罩、出现方向和关闭方式。</p>
+  <div class="grid">
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>模态框 <span class="en">Modal</span></h3></div>
+      <div class="stage tall" data-modal>
+        <button class="btn" data-modal-open>弹出模态框</button>
+        <div class="overlay" data-overlay>
+          <div class="modal-box">
+            <button class="modal-x" data-modal-close>✕</button>
+            <h4>确认操作</h4><p>背后有 50% 黑色遮罩，我从 95% 大小放大淡入。</p>
+            <div class="btn-row"><button class="btn" data-modal-close>取消</button><button class="btn primary" data-modal-close>好的</button></div>
+          </div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：屏幕中央弹出圆角白色弹窗，背后加 50% 黑色遮罩，弹窗从 95% 大小放大淡入，点遮罩或右上角关闭按钮收起。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>确认弹窗 <span class="en">Confirm Dialog</span></h3></div>
+      <div class="stage tall" data-modal>
+        <button class="btn" data-modal-open style="border-color:var(--danger);color:var(--danger)">删除这条数据</button>
+        <div class="overlay" data-overlay>
+          <div class="modal-box">
+            <h4>确认删除？</h4><p>删除后无法恢复，请谨慎操作。</p>
+            <div class="btn-row"><button class="btn" data-modal-close>取消</button><button class="btn danger" data-del>删除</button></div>
+          </div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：点击删除时弹出确认框，标题「确认删除？」，右侧红色「删除」按钮、左侧灰色「取消」按钮，点取消或遮罩关闭。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>侧边抽屉 <span class="en">Drawer</span></h3></div>
+      <div class="stage tall" data-modal>
+        <button class="btn" data-modal-open>从左滑出抽屉</button>
+        <div class="overlay" data-overlay></div>
+        <div class="drawer-panel">
+          <b style="font-size:13.5px">菜单</b>
+          <a href="#ch5" data-modal-close>首页</a><a href="#ch5" data-modal-close>收藏</a><a href="#ch5" data-modal-close>设置</a>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：点击菜单按钮后，面板从左侧滑入，宽 200 像素，带遮罩，点遮罩滑出关闭，过渡 0.3 秒。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>底部抽屉 <span class="en">Bottom Sheet</span></h3></div>
+      <div class="stage tall" data-modal>
+        <button class="btn" data-modal-open>从底部滑出面板</button>
+        <div class="overlay" data-overlay></div>
+        <div class="sheet-panel" data-sheet>
+          <div class="sheet-handle"></div>
+          <b style="font-size:13.5px">分享到</b>
+          <p style="font-size:12px;color:var(--muted);margin-top:6px">顶部圆角面板 · 占屏高约 62% · 拖我下方的把手或点遮罩关闭</p>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：点击后从底部滑出一个顶部圆角的面板，背后有半透明遮罩，向下拖拽或点遮罩关闭。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>轻提示 <span class="en">Toast</span></h3></div>
+      <div class="stage"><button class="btn" data-toast="保存成功">触发一条 Toast</button></div>
+      <p class="script"><b>话术</b>：操作成功后，屏幕顶部居中滑入一条深色提示条显示「保存成功」，停留 2 秒后自动淡出消失。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>下拉菜单 <span class="en">Dropdown</span></h3></div>
+      <div class="stage tall">
+        <div class="dropdown-wrap" data-dropdown>
+          <button class="btn" data-dd-btn>头像菜单 ▾</button>
+          <div class="dropdown-menu" data-dd-menu>
+            <button data-toast="已复制个人主页链接">个人主页</button>
+            <button data-toast="已进入设置（演示）">设置</button>
+            <button data-toast="已退出登录（演示）">退出登录</button>
+          </div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：点击按钮后在其下方展开选项菜单，菜单向下淡入展开，点击页面其他任意位置收起。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 展开收起 ============ -->
+<section class="chap" id="ch6">
+  <div class="chap-head"><span class="no">06</span><h2>展开与收起</h2></div>
+  <p class="chap-desc">在有限空间里收纳内容的手段，核心是高度的平滑过渡。</p>
+  <div class="grid">
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>手风琴 <span class="en">Accordion</span></h3></div>
+      <div class="stage" style="display:block">
+        <div class="acc" data-acc-exclusive>
+          <div class="acc-item open">
+            <button class="acc-head">什么是 Vibe Coding？<span class="chev">▾</span></button>
+            <div class="acc-body"><p>不写代码、用自然语言指挥 AI 把页面做出来的开发方式。说术语，是让它一次听懂的关键。</p></div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-head">展开一项时其他项收起？<span class="chev">▾</span></button>
+            <div class="acc-body"><p>对，这就是手风琴和普通折叠面板的区别：互斥。注意右侧箭头旋转了 180 度。</p></div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-head">高度是怎么过渡的？<span class="chev">▾</span></button>
+            <div class="acc-body"><p>从 0 高度平滑展开到内容实际高度，0.3 秒，先快后慢。</p></div>
+          </div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：FAQ 列表点击问题展开答案，答案区域从 0 高度平滑展开，同时收起其他已展开项，箭头旋转 180 度。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>折叠面板 <span class="en">Collapse</span></h3></div>
+      <div class="stage" style="display:block">
+        <div class="acc" data-acc-multi>
+          <div class="acc-item">
+            <button class="acc-head">分组一（可多开）<span class="chev">▾</span></button>
+            <div class="acc-body"><p>折叠面板不互斥：几个分组可以同时展开，常用于侧边栏菜单和表单分组。</p></div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-head">分组二（也可同时开）<span class="chev">▾</span></button>
+            <div class="acc-body"><p>试着把两组同时展开——这就是它和手风琴的区别。</p></div>
+          </div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：点击分组标题展开或收起该组内容，高度变化有 0.3 秒过渡，多个分组可同时展开。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>展开更多 <span class="en">Read More</span></h3></div>
+      <div class="stage" style="display:block;align-items:stretch">
+        <div class="readmore" data-readmore>
+          <p>长内容先截断，是信息流里最常用的收纳手段。正文超过 5 行时截断并在底部显示「展开全文」，点击后平滑展开全部内容，按钮变为「收起」。截断的行数、展开的速度都可以写进给 AI 的话术里：展开 0.35 秒、先快后慢、按钮文字随状态切换。</p>
+        </div>
+        <button class="btn" data-rm-btn>展开全文</button>
+      </div>
+      <p class="script"><b>话术</b>：正文超过 5 行时截断并显示「展开全文」，点击后平滑展开全部内容，按钮变为「收起」。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 导航切换 ============ -->
+<section class="chap" id="ch7">
+  <div class="chap-head"><span class="no">07</span><h2>导航与切换</h2></div>
+  <p class="chap-desc">帮用户在多个内容块之间移动的结构型组件。</p>
+  <div class="grid">
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>标签页 <span class="en">Tabs</span></h3></div>
+      <div class="stage" style="display:block">
+        <div class="tabs" data-tabs>
+          <div class="tab-bar">
+            <button class="on">作品</button><button>收藏</button><button>关于</button>
+            <div class="tab-ind"></div>
+          </div>
+          <div class="tab-panels">
+            <div class="tab-pane on">指示条平滑滑动到新标签，内容淡入——注意它不是瞬移。</div>
+            <div class="tab-pane">第二页内容：切换有 0.25 秒过渡，指示条跟随标签移动。</div>
+            <div class="tab-pane">第三页内容：常用于个人中心、分类内容。</div>
+          </div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：点击标签切换下方内容，选中标签下方有主题色指示条，切换时指示条平滑滑动到新标签，内容淡入。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>分段控制器 <span class="en">Segmented Control</span></h3></div>
+      <div class="stage">
+        <div class="seg" data-seg>
+          <div class="thumb"></div>
+          <button class="on">月付</button><button>年付</button><button>永久</button>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：胶囊状分段控件，选中项有滑块背景，切换时滑块平滑滑动过去，过渡 0.25 秒。</p>
+    </div>
+    <div class="card wide" data-reveal>
+      <div class="card-head"><h3>轮播图 <span class="en">Carousel</span></h3></div>
+      <div class="stage">
+        <div class="carousel" data-carousel>
+          <div class="car-track">
+            <div class="car-slide" style="background:linear-gradient(120deg,#0f766e,#0ea5e9)"><b>第 1 张</b><span>每 4 秒自动切换，悬停暂停</span></div>
+            <div class="car-slide" style="background:linear-gradient(120deg,#4338ca,#7c3aed)"><b>第 2 张</b><span>支持箭头和指示点</span></div>
+            <div class="car-slide" style="background:linear-gradient(120deg,#be185d,#f43f5e)"><b>第 3 张</b><span>循环播放</span></div>
+          </div>
+          <div class="car-nav">
+            <button class="car-arrow" data-car-prev>←</button>
+            <div class="car-dots"></div>
+            <button class="car-arrow" data-car-next>→</button>
+          </div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：顶部横幅每 4 秒自动切换一张，支持左右箭头切换，底部指示点高亮当前张，循环播放。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 拖拽滑动 ============ -->
+<section class="chap" id="ch8">
+  <div class="chap-head"><span class="no">08</span><h2>拖拽与滑动</h2></div>
+  <p class="chap-desc">需要按住或滑动的手势类交互。触屏也可以玩：排序可直接拖，左滑条目用手指划。</p>
+  <div class="grid">
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>滑块 <span class="en">Slider</span></h3></div>
+      <div class="stage" style="display:block;padding-top:26px">
+        <div class="range-wrap" style="padding-top:30px">
+          <div class="bubble" data-range-bubble>50</div>
+          <input type="range" min="0" max="100" value="50" data-range>
+        </div>
+        <p class="note" style="margin-top:10px">拖动圆点：上方跟随数值气泡，已选轨道填充主题色</p>
+      </div>
+      <p class="script"><b>话术</b>：滑块可拖动圆点调节数值，拖动时圆点上方显示当前数值气泡，轨道已选部分填充主题色。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>拖拽排序 <span class="en">Drag to Reorder</span></h3></div>
+      <div class="stage" style="display:block">
+        <ul class="drag-list" data-draglist>
+          <li draggable="true"><span class="grip">⠿</span>第一条：按住拖动</li>
+          <li draggable="true"><span class="grip">⠿</span>第二条：其他项平滑让位</li>
+          <li draggable="true"><span class="grip">⠿</span>第三条：松手落位</li>
+        </ul>
+      </div>
+      <p class="script"><b>话术</b>：列表项左侧有拖拽手柄，按住后可上下拖动排序，拖动中其他项平滑让位，松手后落位并保存新顺序。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>左滑操作 <span class="en">Swipe Actions</span></h3></div>
+      <div class="stage" style="display:block">
+        <div class="swipe-item" data-swipe>
+          <div class="swipe-actions"><button class="arc">归档</button><button class="del">删除</button></div>
+          <div class="swipe-face">← 把我往左划</div>
+        </div>
+        <div class="swipe-item" data-swipe>
+          <div class="swipe-actions"><button class="arc">归档</button><button class="del">删除</button></div>
+          <div class="swipe-face">露出按钮后点别处自动滑回</div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：列表项向左滑动露出红色的「删除」和灰色的「归档」按钮，点击其他位置自动滑回。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 09 表单交互 ============ -->
+<section class="chap" id="ch9">
+  <div class="chap-head"><span class="no">09</span><h2>表单交互</h2></div>
+  <p class="chap-desc">输入框、校验、选择器的细节，直接决定表单的填写成功率。</p>
+  <div class="grid">
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>浮动标签 <span class="en">Floating Label</span></h3></div>
+      <div class="stage">
+        <div class="float-field">
+          <input type="text" placeholder=" " id="flInput" autocomplete="off">
+          <label for="flInput">你的名字</label>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：输入框未填写时标签显示在框内，聚焦或有内容时标签上浮到边框上并缩小、变主题色。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>聚焦高亮 <span class="en">Focus Highlight</span></h3><span class="self">所有输入框都在演</span></div>
+      <div class="stage"><input type="text" placeholder="点我，边框变色并外发光" style="max-width:250px"></div>
+      <p class="script"><b>话术</b>：输入框聚焦时边框变为主题色并带浅色外发光，失焦后恢复灰色边框。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>实时校验 <span class="en">Inline Validation</span></h3></div>
+      <div class="stage">
+        <div class="valid-wrap" data-valid>
+          <input type="email" placeholder="输入邮箱试试实时校验" autocomplete="off">
+          <span class="ck">✓</span>
+          <div class="valid-msg"></div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：输入邮箱时实时校验格式，错误时边框变红、下方显示红色提示文字，正确时右侧显示绿色对勾。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>密码可见切换 <span class="en">Password Toggle</span></h3></div>
+      <div class="stage">
+        <div class="pwd-wrap">
+          <input type="password" value="vibecoding2026" data-pwd>
+          <button data-pwd-btn title="切换明文/密文">👁</button>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：密码框右侧有眼睛图标，点击切换明文和密文显示，图标同步在睁眼和闭眼之间切换。</p>
+    </div>
+    <div class="card wide" data-reveal>
+      <div class="card-head"><h3>搜索建议 <span class="en">Autocomplete</span></h3></div>
+      <div class="stage">
+        <div class="ac-wrap" data-ac>
+          <input type="text" placeholder="输入「动」「滚」「弹」任一字…" autocomplete="off" data-ac-input>
+          <div class="ac-list" data-ac-list></div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：搜索框输入时下拉展示匹配的建议列表，键盘上下键可选中、回车填入，点击外部收起。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 数据与进度 ============ -->
+<section class="chap" id="ch10">
+  <div class="chap-head"><span class="no">10</span><h2>数据与进度展示</h2></div>
+  <p class="chap-desc">把「进行到哪一步、完成了多少」可视化的组件。</p>
+  <div class="grid">
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>进度条 <span class="en">Progress Bar</span></h3></div>
+      <div class="stage" style="display:block">
+        <div class="bar-wrap" data-bar>
+          <div class="bar"><div class="fill"></div></div>
+          <div class="bar-meta"><span>上传中…</span><b data-bar-pct>0%</b></div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：进度条为圆角胶囊样式，已完成部分填充主题色并带平滑增长动画，右侧显示百分比数字。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>环形进度 <span class="en">Ring Progress</span></h3></div>
+      <div class="stage" style="flex-direction:column;gap:12px">
+        <button class="replay" data-ring-btn>重播</button>
+        <div class="ring-wrap" data-ring>
+          <svg width="110" height="110">
+            <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#2dd4bf"/><stop offset="1" stop-color="#60a5fa"/>
+            </linearGradient></defs>
+            <circle class="ring-bg" cx="55" cy="55" r="45"/>
+            <circle class="ring-fg" cx="55" cy="55" r="45"/>
+          </svg>
+          <div class="ring-num" data-ring-num>0%</div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：圆环从顶部顺时针增长显示完成率，中心显示大号百分比数字，增长带过渡动画。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>步骤条 <span class="en">Steps</span></h3></div>
+      <div class="stage" style="flex-direction:column;gap:18px">
+        <div class="steps" data-steps>
+          <div class="step now"><div class="dot2">1</div><div class="lbl">填写信息</div></div>
+          <div class="step"><div class="dot2">2</div><div class="lbl">确认订单</div></div>
+          <div class="step"><div class="dot2">3</div><div class="lbl">支付完成</div></div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" data-step-next>下一步</button>
+          <button class="btn" data-step-reset>重置</button>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：顶部步骤条显示「填写信息 → 确认订单 → 支付完成」，已完成步骤打勾，当前步高亮，未到步骤灰色。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>时间轴 <span class="en">Timeline</span></h3></div>
+      <div class="stage" style="display:block">
+        <div class="tl">
+          <div class="tl-item"><b>2026 · 交互展厅上线</b><span>你现在就在这里</span></div>
+          <div class="tl-item"><b>2026 · 术语手册成稿</b><span>五步描述公式 + 70 词条</span></div>
+          <div class="tl-item"><b>1995 · CSS 诞生</b><span>网页第一次有了「样式」</span></div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：左侧竖线串联各节点，每个节点有圆点、时间和说明文字，进入视口时逐条淡入。</p>
+    </div>
+    <div class="card wide" data-reveal>
+      <div class="card-head"><h3>跑马灯 <span class="en">Marquee</span></h3></div>
+      <div class="stage">
+        <div class="marquee"><div class="mq-track">
+          <span class="mq-item"><i></i>CSS</span><span class="mq-item"><i></i>Ease-Out</span><span class="mq-item"><i></i>Stagger</span><span class="mq-item"><i></i>Parallax</span><span class="mq-item"><i></i>Glassmorphism</span><span class="mq-item"><i></i>Marquee</span>
+          <span class="mq-item"><i></i>CSS</span><span class="mq-item"><i></i>Ease-Out</span><span class="mq-item"><i></i>Stagger</span><span class="mq-item"><i></i>Parallax</span><span class="mq-item"><i></i>Glassmorphism</span><span class="mq-item"><i></i>Marquee</span>
+        </div></div>
+        <p class="note" style="margin-top:8px">匀速不停顿 · 首尾衔接无断层 · 鼠标悬停暂停</p>
+      </div>
+      <p class="script"><b>话术</b>：内容从左向右无缝循环滚动，匀速不停顿，首尾衔接无断层，鼠标悬停时暂停。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 视觉特效 ============ -->
+<section class="chap" id="ch11">
+  <div class="chap-head"><span class="no">11</span><h2>高级视觉特效</h2></div>
+  <p class="chap-desc">提升「高级感」的装饰性效果。一页最多用一两个，多了会喧宾夺主。</p>
+  <div class="grid">
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>毛玻璃 <span class="en">Glassmorphism</span></h3></div>
+      <div class="stage" style="padding:0">
+        <div class="glass-stage">
+          <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+          <div class="glass-card"><b>磨砂玻璃卡片</b><p>白色 10% 透明度 + backdrop blur 12px + 1px 半透明描边</p></div>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：卡片背景为白色 10% 透明度并加背景模糊（约 12 像素），带 1 像素半透明描边。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>聚光灯悬停 <span class="en">Spotlight Hover</span></h3></div>
+      <div class="stage" style="padding:0"><div class="spot-card" data-spot><span>把鼠标移进来，光斑跟着走</span></div></div>
+      <p class="script"><b>话术</b>：卡片悬停时，鼠标位置出现柔和的径向渐变光斑，照亮卡片内部和描边，移开淡出。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>卡片翻转 <span class="en">Card Flip</span></h3></div>
+      <div class="stage">
+        <div class="flip-stage"><div class="flip-inner">
+          <div class="flip-face flip-front"><b>正面</b><span style="font-size:11.5px;color:var(--muted)">悬停翻面（0.6 秒）</span></div>
+          <div class="flip-face flip-back"><b>背面</b><span>绕垂直轴 3D 翻转，带透视感</span></div>
+        </div></div>
+      </div>
+      <p class="script"><b>话术</b>：悬停卡片时绕垂直轴 3D 翻转到背面显示详情，移开翻回正面，翻转 0.6 秒带透视感。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>粒子背景 <span class="en">Particles</span></h3></div>
+      <div class="stage" style="padding:0"><canvas id="particleCanvas"></canvas></div>
+      <p class="script"><b>话术</b>：背景有缓慢漂浮的发光粒子，粒子靠近时自动连线，鼠标移动会轻轻推开粒子，密度适中不影响阅读。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>波浪背景 <span class="en">Wave Background</span></h3></div>
+      <div class="stage" style="padding:0">
+        <div class="wave-stage">
+          <svg class="w1" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,60 C150,110 350,10 600,60 C850,110 1050,10 1200,60 L1200,120 L0,120 Z" fill="rgba(45,212,191,.30)"/></svg>
+          <svg class="w2" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,70 C200,20 400,110 600,70 C800,30 1000,110 1200,70 L1200,120 L0,120 Z" fill="rgba(96,165,250,.35)"/></svg>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：区域底部有两层半透明波浪缓慢左右错速流动，营造起伏感，颜色取主题色的浅色。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>渐变文字 <span class="en">Gradient Text</span></h3><span class="self">首屏标题也在演</span></div>
+      <div class="stage"><div style="font-size:26px;font-weight:800" class="hero h1"><span class="grad">关键词渐变填充</span></div></div>
+      <p class="script"><b>话术</b>：大标题中的关键词使用从主题色到蓝色的渐变文字填充，其余文字保持深色。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12 主题与转场 ============ -->
+<section class="chap" id="ch12">
+  <div class="chap-head"><span class="no">12</span><h2>页面转场与主题</h2></div>
+  <p class="chap-desc">内容块之间、浅色与深色之间的整体切换。</p>
+  <div class="grid">
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>暗黑模式 <span class="en">Dark Mode</span></h3><span class="self">右上角按钮就是它</span></div>
+      <div class="stage"><div style="text-align:center;font-size:12.5px;color:var(--muted)">点右上角的 ☀ / ☾ 按钮：<br>全页所有颜色平滑过渡 0.3 秒，不是瞬间跳变</div></div>
+      <p class="script"><b>话术</b>：右上角有太阳/月亮图标切换深色模式，切换时所有颜色平滑过渡 0.3 秒，刷新后记住上次选择。</p>
+    </div>
+    <div class="card" data-reveal>
+      <div class="card-head"><h3>页面淡入转场 <span class="en">Page Transition</span></h3></div>
+      <div class="stage tall pt-stage" data-pt>
+        <div class="page-a">
+          <div style="font-size:13px;color:var(--muted)">第一页</div>
+          <button class="btn primary" data-pt-go>切换到下一页</button>
+        </div>
+        <div class="page-b">
+          <div style="font-size:13px;color:var(--muted)">第二页：旧内容淡出、新内容从下方淡入上浮</div>
+          <button class="btn" data-pt-back>返回</button>
+        </div>
+      </div>
+      <p class="script"><b>话术</b>：切换页面时旧内容淡出、新内容从下方淡入上浮，总时长 0.4 秒，避免瞬间跳变。</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<button id="backTop" title="回到顶部">↑</button>
+
+<footer>
+  <div class="waves">
+    <svg viewBox="0 0 1200 120" preserveAspectRatio="none" width="100%" height="100%">
+      <path d="M0,60 C150,110 350,10 600,60 C850,110 1050,10 1200,60 L1200,120 L0,120 Z" fill="rgba(45,212,191,.12)"/>
+    </svg>
+  </div>
+  <p><b>前端交互效果展厅</b> · VibeCoding 话术手册配套演示</p>
+  <p style="margin-top:6px;opacity:.75">每一张卡片都可以玩 · 触屏设备部分悬停效果请用点击等效触发</p>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var $=function(s,c){return (c||document).querySelector(s)};
+var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+var reduced=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- 暗黑模式（第 12 章） ---------- */
+var themeBtn=$("#themeBtn");
+function setTheme(t){document.documentElement.setAttribute("data-theme",t);
+  themeBtn.textContent=t==="dark"?"☀":"☾";
+  try{localStorage.setItem("fx-demo-theme",t)}catch(e){}}
+try{var saved=localStorage.getItem("fx-demo-theme");if(saved)setTheme(saved)}catch(e){}
+themeBtn.addEventListener("click",function(){
+  setTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark")});
+
+/* ---------- 滚动进度条 + 吸顶导航 + 回到顶部（第 2 章·本体） ---------- */
+var progressBar=$("#progressBar"),nav=$("#topNav"),backTop=$("#backTop");
+function onScroll(){
+  var st=window.scrollY||document.documentElement.scrollTop;
+  var h=document.documentElement.scrollHeight-window.innerHeight;
+  progressBar.style.width=(h>0?(st/h*100):0)+"%";
+  nav.classList.toggle("scrolled",st>10);
+  backTop.classList.toggle("show",st>window.innerHeight);
+}
+window.addEventListener("scroll",onScroll,{passive:true});onScroll();
+backTop.addEventListener("click",function(){window.scrollTo({top:0,behavior:reduced?"auto":"smooth"})});
+
+/* ---------- 滚动显现（第 2 章·本体）：只播一次 ---------- */
+var io=new IntersectionObserver(function(es){
+  es.forEach(function(en){
+    if(!en.isIntersecting)return;
+    en.target.classList.add("in");
+    /* 进度条 / 时间轴 联动触发 */
+    var bar=en.target.querySelector("[data-bar]");
+    if(bar&&!bar.dataset.done)runBar(bar);
+    var tl=en.target.querySelector(".tl");
+    if(tl&&!tl.dataset.done)runTimeline(tl);
+    io.unobserve(en.target);
+  });
+},{threshold:.18});
+$$("[data-reveal]").forEach(function(el){io.observe(el)});
+
+/* ---------- Toast（第 5 章） ---------- */
+var toastHost=$("#toastHost");
+function showToast(msg){
+  var t=document.createElement("div");t.className="toast";t.textContent=msg;
+  toastHost.appendChild(t);
+  setTimeout(function(){t.classList.add("out")},2000);
+  setTimeout(function(){t.remove()},2400);
+}
+document.addEventListener("click",function(e){
+  var el=e.target.closest("[data-toast]");
+  if(el)showToast(el.getAttribute("data-toast"));
+});
+
+/* ---------- 入场演示（第 1 章） ---------- */
+function replay(el,cls){
+  el.classList.remove("play");void el.offsetWidth;el.classList.add("play");
+}
+$$("[data-fx]").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    var kind=btn.getAttribute("data-fx"),stage=btn.parentElement;
+    if(kind==="fade"){var f=$("[data-fade]",stage);f.classList.remove("play");void f.offsetWidth;f.classList.add("play")}
+    if(kind==="up"){var u=$("[data-up]",stage);u.classList.remove("play");void u.offsetWidth;u.classList.add("play")}
+    if(kind==="stagger"){
+      var row=$("[data-stagger]",stage);
+      row.classList.remove("play");
+      $$(".tile",row).forEach(function(t,i){t.style.transitionDelay=(i*0.08)+"s"});
+      void row.offsetWidth;row.classList.add("play");
+    }
+  });
+});
+/* 初始播一次 */
+window.addEventListener("load",function(){
+  var f=$("[data-fade]");if(f)f.classList.add("play");
+  var u=$("[data-up]");if(u)u.classList.add("play");
+});
+/* 骨架屏 */
+$$("[data-skel]").forEach(function(stage){
+  var btn=$("[data-skel-btn]",stage),busy=false;
+  btn.addEventListener("click",function(){
+    if(busy)return;busy=true;
+    stage.classList.add("loaded");
+    btn.textContent="数据已到达";
+    setTimeout(function(){
+      stage.classList.remove("loaded");
+      btn.textContent="再模拟一次";
+      setTimeout(function(){btn.textContent="模拟数据到达";busy=false},600);
+    },1800);
+  });
+});
+/* 打字机（卡片 + 首屏） */
+function typewrite(el,text,speed,done){
+  el.textContent="";var i=0;
+  (function tick(){if(i<=text.length){el.textContent=text.slice(0,i);i++;setTimeout(tick,speed)}else if(done)done()})();
+}
+var heroType=$("#typeTarget");
+setTimeout(function(){typewrite(heroType,"对 AI 说行话，它才能一次写对——下面 40+ 个效果全都可以上手玩",reduced?0:80)},400);
+$$("[data-typewriter]").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    var t=$("[data-type-text]",btn.parentElement);
+    typewrite(t,t.getAttribute("data-type-text"),reduced?0:80);
+  });
+});
+/* 数字滚动 */
+function countUp(el){
+  var target=parseInt(el.getAttribute("data-target"),10);
+  if(reduced){el.textContent=target.toLocaleString();return}
+  var t0=null,dur=2000;
+  function step(ts){
+    if(!t0)t0=ts;var p=Math.min((ts-t0)/dur,1);
+    var e=1-Math.pow(1-p,3); /* easeOutCubic：末尾减速 */
+    el.textContent=Math.round(target*e).toLocaleString();
+    if(p<1)requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+$$("[data-count]").forEach(function(btn){
+  btn.addEventListener("click",function(){countUp($("[data-count-num]",btn.parentElement))});
+});
+
+/* ---------- 视差（第 2 章） ---------- */
+$$("[data-parallax]").forEach(function(box){
+  var bg=$(".parallax-bg",box);
+  box.addEventListener("scroll",function(){
+    bg.style.transform="translateY("+(box.scrollTop*0.5)+"px)";
+  },{passive:true});
+});
+
+/* ---------- 磁铁按钮 + 3D 倾斜 + 聚光灯 + 光标跟随（第 3/11 章） ---------- */
+var magnet=$("#magnetBtn"),magnetStage=magnet.parentElement;
+magnetStage.addEventListener("mousemove",function(e){
+  if(reduced)return;
+  var r=magnet.getBoundingClientRect();
+  var dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);
+  var d=Math.hypot(dx,dy),max=8;
+  if(d<90){var k=Math.max(0,1-d/90);magnet.style.transform="translate("+(dx*k*0.3)+"px,"+(dy*k*0.3)+"px)"}
+  else magnet.style.transform="";
+});
+magnetStage.addEventListener("mouseleave",function(){magnet.style.transform=""});
+var tilt=$("#tiltCard");
+tilt.addEventListener("mousemove",function(e){
+  if(reduced)return;
+  var r=tilt.getBoundingClientRect();
+  var px=(e.clientX-r.left)/r.width-.5,py=(e.clientY-r.top)/r.height-.5;
+  tilt.classList.add("hot");
+  tilt.style.transform="rotateX("+(-py*16)+"deg) rotateY("+(px*16)+"deg)";
+});
+tilt.addEventListener("mouseleave",function(){tilt.classList.remove("hot");tilt.style.transform=""});
+$$("[data-spot]").forEach(function(card){
+  card.addEventListener("mousemove",function(e){
+    var r=card.getBoundingClientRect();
+    card.style.setProperty("--mx",(e.clientX-r.left)+"px");
+    card.style.setProperty("--my",(e.clientY-r.top)+"px");
+  });
+});
+(function(){
+  var stage=$("#cursorStage"),dot=$("#cursorDot");
+  if(!stage)return;
+  var tx=0,ty=0,cx=0,cy=0,inside=false;
+  stage.addEventListener("mousemove",function(e){
+    var r=stage.getBoundingClientRect();
+    tx=e.clientX-r.left;ty=e.clientY-r.top;inside=true;dot.style.opacity=1;
+    dot.style.width=dot.style.height=(e.target.closest("[data-clickable]")?"46px":"26px");
+  });
+  stage.addEventListener("mouseleave",function(){inside=false;dot.style.opacity=0});
+  (function loop(){
+    cx+=(tx-cx)*0.14;cy+=(ty-cy)*0.14;
+    dot.style.left=cx+"px";dot.style.top=cy+"px";
+    requestAnimationFrame(loop);
+  })();
+})();
+
+/* ---------- 点击反馈（第 4 章） ---------- */
+document.addEventListener("click",function(e){
+  var btn=e.target.closest("[data-ripple]");
+  if(!btn)return;
+  var r=btn.getBoundingClientRect(),s=Math.max(r.width,r.height);
+  var rip=document.createElement("span");rip.className="rip";
+  rip.style.width=rip.style.height=s+"px";
+  rip.style.left=(e.clientX-r.left-s/2)+"px";
+  rip.style.top=(e.clientY-r.top-s/2)+"px";
+  btn.appendChild(rip);setTimeout(function(){rip.remove()},520);
+});
+(function(){
+  var btn=$("#loadBtn");if(!btn)return;
+  btn.addEventListener("click",function(){
+    if(btn.disabled)return;
+    btn.disabled=true;btn.innerHTML='<span class="spin"></span>提交中…';
+    setTimeout(function(){
+      btn.innerHTML="✓ 已提交";
+      setTimeout(function(){btn.disabled=false;btn.textContent="提交订单"},1200);
+    },1500);
+  });
+})();
+(function(){
+  var like=$("#likeBtn");if(!like)return;
+  like.addEventListener("click",function(){
+    like.classList.toggle("on");
+    like.classList.remove("pop");void like.offsetWidth;like.classList.add("pop");
+    for(var i=0;i<6;i++){
+      var s=document.createElement("span");s.className="spark";
+      var ang=(Math.PI*2/6)*i+Math.random()*.5,dist=26+Math.random()*14;
+      s.style.setProperty("--sx",Math.cos(ang)*dist+"px");
+      s.style.setProperty("--sy",Math.sin(ang)*dist+"px");
+      like.appendChild(s);setTimeout(function(sp){return function(){sp.remove()}}(s),650);
+    }
+  });
+})();
+
+/* ---------- 弹层系统（第 5 章） ---------- */
+function openOverlay(card){card.classList.add("ov-open");$("[data-overlay]",card).classList.add("open")}
+function closeOverlay(card){var ov=$("[data-overlay]",card);if(ov)ov.classList.remove("open")}
+$$("[data-modal]").forEach(function(card){
+  var ov=$("[data-overlay]",card);
+  $$("[data-modal-open]",card).forEach(function(b){b.addEventListener("click",function(){ov.classList.add("open")})});
+  ov.addEventListener("click",function(e){
+    if(e.target===ov)ov.classList.remove("open");
+    var sheet=$("[data-sheet]",card);
+    if(sheet&&e.target===ov)sheet.style.transform="";
+  });
+  $$("[data-modal-close]",card).forEach(function(b){
+    b.addEventListener("click",function(){ov.classList.remove("open")});
+  });
+  $$("[data-del]",card).forEach(function(b){
+    b.addEventListener("click",function(){ov.classList.remove("open");showToast("已删除（演示）")});
+  });
+  var sheet=$("[data-sheet]",card);
+  if(sheet){
+    var startY=null,dy=0;
+    sheet.addEventListener("pointerdown",function(e){startY=e.clientY;sheet.style.transition="none";sheet.setPointerCapture(e.pointerId)});
+    sheet.addEventListener("pointermove",function(e){
+      if(startY===null)return;dy=e.clientY-startY;
+      if(dy>0)sheet.style.transform="translateY("+dy+"px)";
+    });
+    function release(){
+      if(startY===null)return;
+      sheet.style.transition="";sheet.style.transform="";
+      if(dy>70)ov.classList.remove("open");
+      startY=null;dy=0;
+    }
+    sheet.addEventListener("pointerup",release);
+    sheet.addEventListener("pointercancel",release);
+  }
+});
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape")$$("[data-overlay].open").forEach(function(ov){ov.classList.remove("open")});
+});
+/* 下拉菜单 */
+$$("[data-dropdown]").forEach(function(wrap){
+  var btn=$("[data-dd-btn]",wrap),menu=$("[data-dd-menu]",wrap);
+  btn.addEventListener("click",function(e){e.stopPropagation();menu.classList.toggle("open")});
+  document.addEventListener("click",function(e){
+    if(!wrap.contains(e.target))menu.classList.remove("open");
+  });
+});
+
+/* ---------- 展开收起（第 6 章） ---------- */
+function bindAcc(root,exclusive){
+  $$(".acc-item",root).forEach(function(item){
+    var head=$(".acc-head",item),body=$(".acc-body",item);
+    if(item.classList.contains("open"))body.style.maxHeight=body.scrollHeight+"px";
+    head.addEventListener("click",function(){
+      var isOpen=item.classList.contains("open");
+      if(exclusive){
+        $$(".acc-item.open",root).forEach(function(o){
+          o.classList.remove("open");$(".acc-body",o).style.maxHeight="0px";
+        });
+      }
+      if(isOpen){item.classList.remove("open");body.style.maxHeight="0px"}
+      else{item.classList.add("open");body.style.maxHeight=body.scrollHeight+"px"}
+    });
+  });
+}
+bindAcc($("[data-acc-exclusive]"),true);
+bindAcc($("[data-acc-multi]"),false);
+(function(){
+  var rm=$("[data-readmore]");if(!rm)return;
+  var btn=$("[data-rm-btn]",rm.parentElement);
+  btn.addEventListener("click",function(){
+    var open=rm.classList.toggle("open");
+    btn.textContent=open?"收起":"展开全文";
+  });
+})();
+
+/* ---------- 导航切换（第 7 章） ---------- */
+$$("[data-tabs]").forEach(function(tabs){
+  var btns=$$(".tab-bar button",tabs),panes=$$(".tab-pane",tabs),ind=$(".tab-ind",tabs);
+  function go(i){
+    btns.forEach(function(b,j){b.classList.toggle("on",i===j)});
+    panes.forEach(function(p,j){p.classList.toggle("on",i===j)});
+    ind.style.left=btns[i].offsetLeft+"px";
+    ind.style.width=btns[i].offsetWidth+"px";
+  }
+  btns.forEach(function(b,i){b.addEventListener("click",function(){go(i)})});
+  window.addEventListener("load",function(){go(0)});
+  window.addEventListener("resize",function(){
+    var i=btns.findIndex(function(b){return b.classList.contains("on")});
+    if(i>-1)go(i);
+  });
+});
+$$("[data-seg]").forEach(function(seg){
+  var btns=$$("button",seg),thumb=$(".thumb",seg);
+  function go(i){
+    btns.forEach(function(b,j){b.classList.toggle("on",i===j)});
+    thumb.style.left=btns[i].offsetLeft+"px";
+    thumb.style.width=btns[i].offsetWidth+"px";
+  }
+  btns.forEach(function(b,i){b.addEventListener("click",function(){go(i)})});
+  window.addEventListener("load",function(){go(0)});
+});
+(function(){
+  var car=$("[data-carousel]");if(!car)return;
+  var track=$(".car-track",car),slides=$$(".car-slide",car),dots=$(".car-dots",car);
+  var idx=0,timer=null;
+  slides.forEach(function(_,i){
+    var d=document.createElement("i");if(i===0)d.classList.add("on");
+    d.addEventListener("click",function(){go(i);restart()});dots.appendChild(d);
+  });
+  function go(i){
+    idx=(i+slides.length)%slides.length;
+    track.style.transform="translateX("+(-idx*100)+"%)";
+    $$("i",dots).forEach(function(d,j){d.classList.toggle("on",j===idx)});
+  }
+  function restart(){clearInterval(timer);timer=setInterval(function(){go(idx+1)},4000)}
+  $("[data-car-prev]",car).addEventListener("click",function(){go(idx-1);restart()});
+  $("[data-car-next]",car).addEventListener("click",function(){go(idx+1);restart()});
+  car.addEventListener("mouseenter",function(){clearInterval(timer)});
+  car.addEventListener("mouseleave",restart);
+  restart();
+})();
+
+/* ---------- 拖拽滑动（第 8 章） ---------- */
+(function(){
+  var wrap=$("[data-range]");if(!wrap)return;
+  var bubble=$("[data-range-bubble]",wrap.parentElement);
+  function update(){
+    var v=wrap.value;
+    wrap.style.setProperty("--p",v+"%");
+    bubble.textContent=v;
+    bubble.style.left="calc("+ (wrap.offsetWidth? (v/100*(wrap.offsetWidth-18)+9) : v*2.5) +"px)";
+  }
+  wrap.addEventListener("input",update);
+  window.addEventListener("resize",update);
+  window.addEventListener("load",update);update();
+})();
+(function(){
+  var list=$("[data-draglist]");if(!list)return;
+  var dragged=null;
+  $$("li",list).forEach(function(li){
+    li.addEventListener("dragstart",function(){dragged=li;setTimeout(function(){li.classList.add("dragging")},0)});
+    li.addEventListener("dragend",function(){li.classList.remove("dragging");dragged=null;showToast("新顺序已保存（演示）")});
+    li.addEventListener("dragover",function(e){
+      e.preventDefault();
+      if(!dragged||dragged===li)return;
+      var r=li.getBoundingClientRect();
+      var after=(e.clientY-r.top)/r.height>0.5;
+      list.insertBefore(dragged,after?li.nextSibling:li);
+    });
+  });
+})();
+$$("[data-swipe]").forEach(function(item){
+  var face=$(".swipe-face",item),startX=null,dx=0;
+  face.addEventListener("pointerdown",function(e){
+    startX=e.clientX;face.style.transition="none";face.setPointerCapture(e.pointerId);
+  });
+  face.addEventListener("pointermove",function(e){
+    if(startX===null)return;
+    dx=e.clientX-startX;
+    var base=item.classList.contains("open")?-96:0;
+    var v=Math.min(0,Math.max(-110,base+dx));
+    face.style.transform="translateX("+v+"px)";
+  });
+  function release(){
+    if(startX===null)return;
+    face.style.transition="";
+    var shouldOpen=(item.classList.contains("open")?dx>-10:dx<-40);
+    item.classList.toggle("open",shouldOpen);
+    face.style.transform="";
+    startX=null;dx=0;
+  }
+  face.addEventListener("pointerup",release);
+  face.addEventListener("pointercancel",release);
+  document.addEventListener("click",function(e){
+    if(!item.contains(e.target)&&item.classList.contains("open")){
+      item.classList.remove("open");face.style.transform="";
+    }
+  });
+  $$(".swipe-actions button",item).forEach(function(b){
+    b.addEventListener("click",function(){
+      showToast(b.textContent+"（演示）");
+      item.classList.remove("open");face.style.transform="";
+    });
+  });
+});
+
+/* ---------- 表单（第 9 章） ---------- */
+(function(){
+  var wrap=$("[data-valid]");if(!wrap)return;
+  var input=$("input",wrap),msg=$(".valid-msg",wrap);
+  input.addEventListener("input",function(){
+    var v=input.value.trim();
+    wrap.classList.remove("err","ok");
+    if(!v){msg.textContent="";return}
+    if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){wrap.classList.add("ok");msg.textContent="";msg.style.color=""}
+    else{wrap.classList.add("err");msg.textContent="邮箱格式不对，检查一下 @ 和域名";msg.style.color="var(--danger)"}
+  });
+})();
+(function(){
+  var btn=$("[data-pwd-btn]"),input=$("[data-pwd]");
+  if(!btn)return;
+  btn.addEventListener("click",function(){
+    var show=input.type==="password";
+    input.type=show?"text":"password";
+    btn.textContent=show?"🙈":"👁";
+  });
+})();
+(function(){
+  var wrap=$("[data-ac]");if(!wrap)return;
+  var input=$("[data-ac-input]",wrap),list=$("[data-ac-list]",wrap);
+  var pool=["滚动显现 Scroll Reveal","滚动进度条 Scroll Progress","滚动捕捉 Scroll Snap",
+    "弹跳 Like Burst","弹层 Overlay","弹性缓动 Spring","毛玻璃 Glassmorphism"];
+  var hl=-1;
+  function render(kw){
+    list.innerHTML="";hl=-1;
+    var hits=pool.filter(function(x){return x.toLowerCase().indexOf(kw.toLowerCase())>-1});
+    if(!hits.length){list.classList.remove("open");return}
+    hits.forEach(function(h){
+      var d=document.createElement("div");d.textContent=h;
+      d.addEventListener("pointerdown",function(e){e.preventDefault();input.value=h;list.classList.remove("open")});
+      list.appendChild(d);
+    });
+    list.classList.add("open");
+  }
+  input.addEventListener("input",function(){render(input.value.trim())});
+  input.addEventListener("keydown",function(e){
+    var items=$$("div",list);if(!items.length)return;
+    if(e.key==="ArrowDown"||e.key==="ArrowUp"){
+      e.preventDefault();
+      hl=(hl+(e.key==="ArrowDown"?1:-1)+items.length)%items.length;
+      items.forEach(function(d,i){d.classList.toggle("hl",i===hl)});
+    }else if(e.key==="Enter"&&hl>-1){input.value=items[hl].textContent;list.classList.remove("open")}
+  });
+  document.addEventListener("click",function(e){if(!wrap.contains(e.target))list.classList.remove("open")});
+})();
+
+/* ---------- 数据与进度（第 10 章） ---------- */
+function runBar(wrap){
+  wrap.dataset.done="1";
+  var fill=$(".fill",wrap),pct=$("[data-bar-pct]",wrap),target=68;
+  requestAnimationFrame(function(){fill.style.width=target+"%"});
+  var t0=null;
+  function step(ts){
+    if(!t0)t0=ts;var p=Math.min((ts-t0)/1200,1);
+    pct.textContent=Math.round(target*(1-Math.pow(1-p,3)))+"%";
+    if(p<1)requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+function runTimeline(tl){
+  tl.dataset.done="1";
+  $$(".tl-item",tl).forEach(function(item,i){
+    item.style.opacity="0";item.style.transform="translateX(-12px)";
+    item.style.transition="opacity .4s ease "+(i*0.15)+"s,transform .4s ease "+(i*0.15)+"s";
+    requestAnimationFrame(function(){requestAnimationFrame(function(){
+      item.style.opacity="1";item.style.transform="";
+    })});
+  });
+}
+(function(){
+  var ring=$("[data-ring]");if(!ring)return;
+  var fg=$(".ring-fg",ring),num=$("[data-ring-num]",ring),btn=$("[data-ring-btn]",ring.parentElement);
+  var C=283,target=.76;
+  function go(){
+    fg.style.strokeDashoffset=C;
+    void fg.getBoundingClientRect();
+    fg.style.strokeDashoffset=C*(1-target);
+    var t0=null;
+    function step(ts){
+      if(!t0)t0=ts;var p=Math.min((ts-t0)/1200,1);
+      num.textContent=Math.round(target*100*(1-Math.pow(1-p,3)))+"%";
+      if(p<1)requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  btn.addEventListener("click",go);
+  new IntersectionObserver(function(es,ob){
+    es.forEach(function(en){if(en.isIntersecting){go();ob.disconnect()}});
+  },{threshold:.4}).observe(ring);
+})();
+(function(){
+  var steps=$("[data-steps]");if(!steps)return;
+  var items=$$(".step",steps),cur=0;
+  function render(){
+    items.forEach(function(s,i){
+      s.classList.toggle("done",i<cur);
+      s.classList.toggle("now",i===cur);
+      $(".dot2",s).textContent=i<cur?"✓":(i+1);
+    });
+  }
+  $("[data-step-next]",steps.parentElement).addEventListener("click",function(){
+    if(cur<items.length){cur++;render()}
+    if(cur===items.length)showToast("流程完成（演示）");
+  });
+  $("[data-step-reset]",steps.parentElement).addEventListener("click",function(){cur=0;render()});
+})();
+
+/* ---------- 粒子背景（第 11 章） ---------- */
+(function(){
+  var cv=$("#particleCanvas");if(!cv)return;
+  var ctx=cv.getContext("2d"),ps=[],mouse={x:-999,y:-999},running=false;
+  function resize(){
+    var r=cv.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
+    cv.width=r.width*dpr;cv.height=r.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  function init(){
+    resize();ps=[];
+    var n=Math.min(30,Math.floor(cv.getBoundingClientRect().width/14));
+    for(var i=0;i<n;i++)ps.push({
+      x:Math.random()*cv.getBoundingClientRect().width,
+      y:Math.random()*cv.getBoundingClientRect().height,
+      vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,
+      r:1+Math.random()*1.6
+    });
+  }
+  function tick(){
+    if(!running)return;
+    var W=cv.getBoundingClientRect().width,H=cv.getBoundingClientRect().height;
+    ctx.clearRect(0,0,W,H);
+    var accent=getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+    ps.forEach(function(p){
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>W)p.vx*=-1;
+      if(p.y<0||p.y>H)p.vy*=-1;
+      var dx=p.x-mouse.x,dy=p.y-mouse.y,d=Math.hypot(dx,dy);
+      if(d<80&&d>0){p.x+=dx/d*1.4;p.y+=dy/d*1.4}
+    });
+    for(var i=0;i<ps.length;i++){
+      for(var j=i+1;j<ps.length;j++){
+        var a=ps[i],b=ps[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+        if(d<70){
+          ctx.globalAlpha=(1-d/70)*.5;
+          ctx.strokeStyle=accent;ctx.lineWidth=1;
+          ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+        }
+      }
+      ctx.globalAlpha=.85;ctx.fillStyle=accent;
+      ctx.beginPath();ctx.arc(ps[i].x,ps[i].y,ps[i].r,0,7);ctx.fill();
+    }
+    ctx.globalAlpha=1;
+    requestAnimationFrame(tick);
+  }
+  cv.addEventListener("mousemove",function(e){
+    var r=cv.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;
+  });
+  cv.addEventListener("mouseleave",function(){mouse.x=mouse.y=-999});
+  new IntersectionObserver(function(es){
+    var vis=es[0].isIntersecting;
+    if(vis&&!running){running=true;tick()}else if(!vis)running=false;
+  },{threshold:.1}).observe(cv);
+  window.addEventListener("resize",function(){init()});
+  window.addEventListener("load",init);init();
+})();
+
+/* ---------- 页面转场（第 12 章） ---------- */
+(function(){
+  var pt=$("[data-pt]");if(!pt)return;
+  $("[data-pt-go]",pt).addEventListener("click",function(){pt.classList.add("go")});
+  $("[data-pt-back]",pt).addEventListener("click",function(){pt.classList.remove("go")});
+})();
+})();
+</script>
+</body>
+</html>

@@ -91,7 +91,7 @@ header.nav.scrolled{
   100%{transform:translate(-3%,2%) rotate(-1.5deg)}
 }
 .hero h1{position:relative;font-size:clamp(26px,4.6vw,44px);line-height:1.25}
-.hero h1 .grad{
+.grad{
   background:linear-gradient(100deg,var(--accent),var(--accent2) 55%,#a78bfa);
   background-size:200% 100%;
   -webkit-background-clip:text;background-clip:text;color:transparent;
@@ -320,6 +320,9 @@ input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(45,212,191,.15)
   opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:20;
 }
 .overlay.open{opacity:1;pointer-events:auto}
+.stage.ov-open .overlay{opacity:1;pointer-events:auto}
+.stage.ov-open .drawer-panel{transform:none}
+.stage.ov-open .sheet-panel{transform:none}
 .modal-box{
   width:min(320px,86%);background:var(--card);border:1px solid var(--line);
   border-radius:14px;padding:20px;box-shadow:var(--shadow);
@@ -528,11 +531,11 @@ input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(45,212,191,.15)
 .marquee{width:100%;overflow:hidden;position:relative;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
           mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
-.mq-track{display:flex;gap:34px;width:max-content;animation:mq 14s linear infinite;padding:4px 0}
+.mq-track{display:flex;width:max-content;animation:mq 14s linear infinite;padding:4px 0}
 .marquee:hover .mq-track{animation-play-state:paused}
 @keyframes mq{to{transform:translateX(-50%)}}
 .mq-item{font-weight:700;font-size:15px;color:var(--muted);opacity:.75;white-space:nowrap;
-  display:flex;align-items:center;gap:8px}
+  display:flex;align-items:center;gap:8px;margin-right:34px}
 .mq-item i{width:8px;height:8px;border-radius:2px;background:var(--accent);opacity:.6}
 
 /* ========== 高级特效 ========== */
@@ -1244,7 +1247,7 @@ footer .waves{position:absolute;left:0;right:0;bottom:0;height:56px;opacity:.5;p
     </div>
     <div class="card" data-reveal>
       <div class="card-head"><h3>渐变文字 <span class="en">Gradient Text</span></h3><span class="self">首屏标题也在演</span></div>
-      <div class="stage"><div style="font-size:26px;font-weight:800" class="hero h1"><span class="grad">关键词渐变填充</span></div></div>
+      <div class="stage"><div style="font-size:26px;font-weight:800"><span class="grad">关键词渐变填充</span></div></div>
       <p class="script"><b>话术</b>：大标题中的关键词使用从主题色到蓝色的渐变文字填充，其余文字保持深色。</p>
     </div>
   </div>
@@ -1367,6 +1370,13 @@ $$("[data-fx]").forEach(function(btn){
 window.addEventListener("load",function(){
   var f=$("[data-fade]");if(f)f.classList.add("play");
   var u=$("[data-up]");if(u)u.classList.add("play");
+  var row=$("[data-stagger]");
+  if(row){
+    $$(".tile",row).forEach(function(t,i){t.style.transitionDelay=(i*0.08)+"s"});
+    setTimeout(function(){row.classList.add("play")},400);
+  }
+  var cn=$("[data-count-num]");
+  if(cn)countUp(cn);
 });
 /* 骨架屏 */
 $$("[data-skel]").forEach(function(stage){
@@ -1502,21 +1512,22 @@ document.addEventListener("click",function(e){
 })();
 
 /* ---------- 弹层系统（第 5 章） ---------- */
-function openOverlay(card){card.classList.add("ov-open");$("[data-overlay]",card).classList.add("open")}
-function closeOverlay(card){var ov=$("[data-overlay]",card);if(ov)ov.classList.remove("open")}
+function closeOv(card){
+  card.classList.remove("ov-open");
+  var ov=$("[data-overlay]",card);
+  if(ov)ov.classList.remove("open");
+}
 $$("[data-modal]").forEach(function(card){
   var ov=$("[data-overlay]",card);
-  $$("[data-modal-open]",card).forEach(function(b){b.addEventListener("click",function(){ov.classList.add("open")})});
+  $$("[data-modal-open]",card).forEach(function(b){b.addEventListener("click",function(){ov.classList.add("open");card.classList.add("ov-open")})});
   ov.addEventListener("click",function(e){
-    if(e.target===ov)ov.classList.remove("open");
-    var sheet=$("[data-sheet]",card);
-    if(sheet&&e.target===ov)sheet.style.transform="";
+    if(e.target===ov){closeOv(card);var sheet=$("[data-sheet]",card);if(sheet)sheet.style.transform=""}
   });
   $$("[data-modal-close]",card).forEach(function(b){
-    b.addEventListener("click",function(){ov.classList.remove("open")});
+    b.addEventListener("click",function(){closeOv(card)});
   });
   $$("[data-del]",card).forEach(function(b){
-    b.addEventListener("click",function(){ov.classList.remove("open");showToast("已删除（演示）")});
+    b.addEventListener("click",function(){closeOv(card);showToast("已删除（演示）")});
   });
   var sheet=$("[data-sheet]",card);
   if(sheet){
@@ -1529,7 +1540,7 @@ $$("[data-modal]").forEach(function(card){
     function release(){
       if(startY===null)return;
       sheet.style.transition="";sheet.style.transform="";
-      if(dy>70)ov.classList.remove("open");
+      if(dy>70)closeOv(card);
       startY=null;dy=0;
     }
     sheet.addEventListener("pointerup",release);
@@ -1537,12 +1548,13 @@ $$("[data-modal]").forEach(function(card){
   }
 });
 document.addEventListener("keydown",function(e){
-  if(e.key==="Escape")$$("[data-overlay].open").forEach(function(ov){ov.classList.remove("open")});
+  if(e.key==="Escape")$$("[data-modal]").forEach(closeOv);
 });
 /* 下拉菜单 */
 $$("[data-dropdown]").forEach(function(wrap){
   var btn=$("[data-dd-btn]",wrap),menu=$("[data-dd-menu]",wrap);
   btn.addEventListener("click",function(e){e.stopPropagation();menu.classList.toggle("open")});
+  $$("button",menu).forEach(function(mi){mi.addEventListener("click",function(){menu.classList.remove("open")})});
   document.addEventListener("click",function(e){
     if(!wrap.contains(e.target))menu.classList.remove("open");
   });

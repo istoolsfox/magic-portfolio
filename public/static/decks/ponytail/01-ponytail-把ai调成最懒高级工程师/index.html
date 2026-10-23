@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讲解 · Ponytail：把 AI 调成「最懒高级工程师」模式（173k star 实录）</title>
+<link rel="stylesheet" href="../../_app/deck.css">
+<style>:root{--accent:#46668c;--accent-soft:#46668c22}</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<main id="deck"></main>
+<footer id="hud">
+  <div id="progress"><i></i></div>
+  <div id="hud-row">
+    <button id="btn-back" title="返回原文 (Esc)">‹ 返回</button>
+    <div class="hud-nav">
+      <button id="btn-prev" title="上一页 (←)">◀</button>
+      <span id="counter">1 / 1</span>
+      <button id="btn-next" title="下一页 (→)">▶</button>
+    </div>
+    <div class="hud-nav">
+      <button id="btn-overview" title="概览 (O)">☰</button>
+      <button id="btn-full" title="全屏 (F)">⛶</button>
+    </div>
+  </div>
+</footer>
+<div id="overview" hidden></div>
+<script type="application/json" id="deck-data">{"slides": [{"type": "cover", "title": "Ponytail：把 AI 调成「最懒高级工程师」模式（173k star 实录）", "category": "Ponytail", "meta": "约 3 分钟 · 1485 字 · 8 节"}, {"type": "toc", "items": ["一、先看一个熟悉的场景", "二、结论先行", "三、六个技能各管什么", "四、它背后的三条「懒」纪律", "五、官方数据很漂亮，但注意是自测", "六、怎么装（三条路）", "七、和「AI 编程大神路径」的关系", "八、总结与行动清单"], "targets": [2, 4, 6, 8, 9, 11, 13, 14], "more": 0}, {"type": "points", "kicker": "01", "title": "一、先看一个熟悉的场景", "points": ["你让 AI「加个小功能」，它给你搭了一套抽象层、三个配置类和一个没人用的插件接口——500 行干完了 50 行的活。", "事后你问它为什么这么写，它说「为了未来扩展性」。", "而那个未来从来没来。代码库就是这么被 AI 一点点喂胖的：每个文件都「合理」，合起来没人敢动。", "这不是提示词写得好不好运气问题，是模型的默认天性：训练数据里的「优秀代码」多是库和框架——它们天然倾向搭结构。"]}, {"type": "points", "kicker": "01", "title": "一、先看一个熟悉的场景（续）", "points": ["要对抗这个天性，最有效的办法不是反复劝，而是给它一个现成的人格：一个见过所有过度工程现场、凌晨三点被告警叫醒过的老工程…", "Ponytail 干的就是这件事。"]}, {"type": "points", "kicker": "02", "title": "二、结论先行", "points": ["Ponytail 是一组开源提示词技能（MIT 协议），一句话定位：让 AI 像最懒的资深工程师一样思考——最好的代码…", "几个硬数据（2026-10-23 查证）", "GitHub 173.6k star，还在活跃更新（最近提交 10-18）", "适配 20 个 agent 平台：Claude Code、Codex、Cursor、Kimi、OpenClaw、Win…"]}, {"type": "points", "kicker": "02", "title": "二、结论先行（续）", "points": ["有 npm 包、官方 benchmark、简体中文 README", "核心形态极轻：就是几个 SKILL.md 提示词文件，拷进技能目录即用"]}, {"type": "table", "kicker": "03", "title": "", "headers": ["技能", "干什么", "一句话记忆"], "rows": [["ponytail", "主模式：lite / full / ultra / off 四档", "把整场会话切成「懒人模式」"], ["ponytail-review", "只针对过度工程的代码评审（看 diff）", "只猎复杂度，不管对错"], ["ponytail-audit", "全仓库过度工程审计，输出删/简/换清单", "「这个仓库能删什么」"], ["ponytail-debt", "把 ponytail: 注释收割成债务台账", "懒可以，烂尾不行"], ["ponytail-gain", "展示实测收益记分板", "省了多少代码/钱/时间"], ["ponytail-help", "全部模式与命令的速查卡", "忘了就喊它"]]}, {"type": "points", "kicker": "03", "title": "三、六个技能各管什么", "points": ["设计上最妙的是 ponytail-debt：懒人模式必然留下「故意走 shortcuts」的痕迹，它在代码里留 pon…"]}, {"type": "points", "kicker": "04", "title": "四、它背后的三条「懒」纪律", "points": ["阶梯原则（The Ladder）：能用标准库就不自己写，能用平台原生能力就不引第三方依赖，能一行就不写五十行。每…", "诚实收尾（新版加入）：每次回复末尾必须用一两行交代——我跳过了什么、没查什么、有什么你必须知道的风险。这条是新版…", "懒而不烂尾：shortcut 全部走 ponytail: 标记 + 台账收割，省下的复杂度有账可查，欠的债能被追…"]}, {"type": "points", "kicker": "05", "title": "五、官方数据很漂亮，但注意是自测", "points": ["README 的 v5 头图写着：代码量 -53%、耗时 -41%、成本 -26%、token -45%", "带测试的高风险逻辑占比从 68% 提升到 98%。", "测法是同 agent 开关对比：39 个任务、含一个真实 FastAPI + React 仓库、5 轮取中位数。", "怎么看这组数：方法（同 agent A/B、真实仓库、多轮）是认真的，但毕竟是官方自测、任务集自己挑的，当参考值别当承…"]}, {"type": "points", "kicker": "05", "title": "五、官方数据很漂亮，但注意是自测（续）", "points": ["它真正可靠的证据其实是另一个：173k star 是几十万开发者用脚投的票，而提示词技能没有任何锁死效应——不好用早就…"]}, {"type": "table", "kicker": "06", "title": "", "headers": ["路线", "适合谁", "做法"], "rows": [["官方插件", "Claude Code / Codex 用户", "/plugin install ponytail@ponytail（带 hooks 联动，需 PATH 里有 node）"], ["拷技能文件（推荐）", "ZCode 及一切支持 skills 的 agent", "把 6 个 skills/*/SKILL.md 拷进 ~/.agents/skills/，即刻生效"], ["AGENTS.md 兜底", "不支持技能的 agent", "把仓库的 AGENTS.md 拷进项目根目录"]]}, {"type": "points", "kicker": "06", "title": "六、怎么装（三条路）", "points": ["两条经验", "拷文件式安装吃不到 hooks 联动（那是 Claude Code/Codex 插件体系的东西），但技能本体全部生效—…", "升级方式就是重新拷一遍 SKILL.md，没有锁死效应。装之前记一下当天日期，之后瞄一眼仓库推送就知道该不该更。"]}, {"type": "points", "kicker": "07", "title": "七、和「AI 编程大神路径」的关系", "points": ["如果你读过本站那套《AI 编程大神路径手册》，会发现 Ponytail 是「约束定义力」的现成提示词化：你不用每次手写…", "两者正好互补", "Ponytail 管「少写」：压住模型的过度工程天性", "验收清单管「敢收」：交付前逐条核对，配合它新加的诚实收尾，一懒一严刚好闭环"]}, {"type": "table", "kicker": "08", "title": "", "headers": ["一句话记忆", "内容"], "rows": [["它是什么", "一组把 AI 调成「最懒高级工程师」的开源提示词技能"], ["核心纪律", "标准库优先 · 诚实收尾 · 短板入台账"], ["最好的入手方式", "拷 6 个 SKILL.md，lite 档起步，写正经代码时开 full"], ["成本", "零运行时依赖，升级 = 重拷文件"]]}, {"type": "points", "kicker": "08", "title": "八、总结与行动清单", "points": ["行动清单", "装：拷技能文件（或官方插件），对下一个编码任务喊一声「ponytail」。", "立规矩：留着诚实收尾那两行，交付前顺手核对。", "定期跑一次 ponytail-audit，把旧项目的肥肉清一遍。"]}, {"type": "points", "kicker": "08", "title": "八、总结与行动清单（续）", "points": ["懒留下的坑让 ponytail-debt 记账，月底看一眼台账。", "附注：数据截至 2026-10-23，仓库 github.com/DietrichGebert/ponytail（MI…", "本文基于 main 分支与本地安装实测写成。"]}, {"type": "quote", "text": "金句：最好的代码是你永远不用写的代码——而 AI 需要有人允许它不写。"}, {"type": "close", "title": "Ponytail：把 AI 调成「最懒高级工程师」模式（173k star 实录）", "takeaways": ["一、先看一个熟悉的场景", "二、结论先行", "三、六个技能各管什么"]}], "accent": "#46668c", "title": "Ponytail：把 AI 调成「最懒高级工程师」模式（173k star 实录）", "seed": 7462, "home": "../../../../", "article": "../../../../ponytail/01-ponytail-把ai调成最懒高级工程师.html"}</script>
+<script src="../../_app/deck.js"></script>
+</body>
+</html>

@@ -73,6 +73,9 @@ function createImage({ alt, src, ...props }: MediaProps & { src: string }) {
       sizes="(max-width: 960px) 100vw, 960px"
       alt={alt}
       src={src}
+      // 外链图绕过 next/image 优化器：next.config 未配 remotePatterns，外链一律 500（2026-10-29 修复，
+      // 此前 AI-Evals 等文章的热链图全部不渲染）；本站 /static/ 走原优化路径不受影响
+      unoptimized={/^https?:\/\//.test(src) ? true : undefined}
       {...props}
     />
   );

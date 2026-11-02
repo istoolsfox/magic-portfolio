@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讲解 · 四款游戏、每款亲手不到 4 小时：Simon Willison 宣布 vibe 游戏开发到了拐点</title>
+<link rel="stylesheet" href="../../_app/deck.css">
+<style>:root{--accent:#46668c;--accent-soft:#46668c22}</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<main id="deck"></main>
+<footer id="hud">
+  <div id="progress"><i></i></div>
+  <div id="hud-row">
+    <button id="btn-back" title="返回原文 (Esc)">‹ 返回</button>
+    <div class="hud-nav">
+      <button id="btn-prev" title="上一页 (←)">◀</button>
+      <span id="counter">1 / 1</span>
+      <button id="btn-next" title="下一页 (→)">▶</button>
+    </div>
+    <div class="hud-nav">
+      <button id="btn-overview" title="概览 (O)">☰</button>
+      <button id="btn-full" title="全屏 (F)">⛶</button>
+    </div>
+  </div>
+</footer>
+<div id="overview" hidden></div>
+<script type="application/json" id="deck-data">{"slides": [{"type": "cover", "title": "四款游戏、每款亲手不到 4 小时：Simon Willison 宣布 vibe 游戏开发到了拐点", "category": "VibeCoding手册", "meta": "约 5 分钟 · 2111 字 · 8 节"}, {"type": "toc", "items": ["一、先说结论：2026 年 10 月，游戏开发…", "二、四款游戏逐个看：从 30 秒 demo 到…", "三、他的工作流，拆成可抄的五步", "四、争议：一句话冒犯了四次", "五、对我们普通人的启示：瓶颈搬家了", "六、总结表", "七、行动清单", "来源与延伸阅读"], "targets": [2, 4, 10, 12, 14, 15, 16, 18], "more": 0}, {"type": "points", "kicker": "01", "title": "一、先说结论：2026 年 10 月，游戏开发过了拐点", "points": ["Simon 在 2025 年 11 月写过一篇判断：Opus 4.5 和 GPT-5.1 让编码智能体跨过临界点，成为…", "一年后的现在，他认为第二个拐点出现了，这次是 vibe 游戏开发。", "所谓 vibe coding，就是不读代码、只看效果的编程方式——你像带实习生一样下需求，代码长什么样完全不查，只验收…", "这个玩法过去做网页、做脚本够用，但 Simon 一直认为它做不了游戏，因为游戏有个玄学指标：好玩。"]}, {"type": "points", "kicker": "01", "title": "一、先说结论：2026 年 10 月，游戏开发过了拐点（续）", "points": ["转折点是 Claude Opus 5.5 在三件事上同时进步：3D 建模、音乐生成、游戏设计。", "让他服气的是一个瞬间：他对着一个不好玩的游戏说了一句 \"Make it a LOT more fun\"（把它改得好玩得…", "他在伯克利的 Foo Camp 聚会上遇到好几个人有同样的体验，于是写下这篇文章。"]}, {"type": "points", "kicker": "02", "title": "二、四款游戏逐个看：从 30 秒 demo 到开源联机 RTS", "points": ["四款全部是 HTML + JavaScript，浏览器直接玩，手机也行。", "四款里他投入最深的一款也没超过 4 小时——剩下的大量时间是 Claude Code 自己在跑。", "灵感来自他开车经过 Skyline 大道看树。", "玩法是个「找不同」：屏幕上两棵算法生成的树，找出差异点，收集完成的树进「标本馆」。"]}, {"type": "points", "kicker": "02", "title": "二、四款游戏逐个看：从 30 秒 demo 到开源联机 RTS（续）", "points": ["他只用普通的 claude.ai 聊天对话框，一遍就做成了，全程没有返工。", "治愈系小游戏，链接在文末。", "这是一款斜角俯视的奇幻 RPG（就是暗黑破坏神那种视角）。", "他的做法值得抄：先让模型做一个引擎 demo（一个村庄、一个同伴 NPC、进屋后墙壁自动变透明），跑通之后一步步提需求…"]}, {"type": "points", "kicker": "02", "title": "二、四款游戏逐个看：从 30 秒 demo 到开源联机 RTS（续）", "points": ["这款的教训最实在：剧情 bug 要靠反复试玩才能暴露。", "比如 NPC 因为剧情走去了别的地方，你的任务就永远交不了。", "最终版通关约 15 分钟，他说自己被结局感动了——而他的全部创意输入只有一句「奇幻村庄 + 山洞里睡巨魔」。", "他还用同样的提示词在 ChatGPT（GPT-6 Pro）上做了对照实验：产出的 Lantern Hollow 画面更…"]}, {"type": "points", "kicker": "02", "title": "二、四款游戏逐个看：从 30 秒 demo 到开源联机 RTS（续）", "points": ["即时战略游戏（RTS，就是红警、帝国时代那种边造兵边打仗的玩法）。", "初版是 2025 年 7 月旧模型写的，能玩但平庸", "Opus 5.5 靠两句提示完成蜕变：\"Make it a LOT more fun\" 和 \"Port this ga…", "现在的完成度高得吓人：2 到 4 人联机（联机用的 WebSocket 中继服务器也是 vibe 出来的，你可以把它理…"]}, {"type": "points", "kicker": "02", "title": "二、四款游戏逐个看：从 30 秒 demo 到开源联机 RTS（续）", "points": ["最骚的是AI 互相对战模式：游戏每推进 5 秒暂停，把局面喂给大模型，让模型下指令——上图的 agent-v-agen…", "这款已按 Apache 2.0 协议开源，第二天就有人 fork 出蒸汽朋克版《Panache》，换了全套美术、音乐和…", "被家门口的半月湾南瓜节启发，他想做一款不像任何现有游戏的原创作品：种巨型南瓜、赶在十月人流高峰卖钱、参加称重比赛。", "所有角色是素食动物，镇长是一只鹈鹕。"]}, {"type": "points", "kicker": "02", "title": "二、四款游戏逐个看：从 30 秒 demo 到开源联机 RTS（续）", "points": ["这次他换了打法：先跟模型开头脑风暴会，产出一份 SPEC.md（规格说明书，类比装修前先出的图纸），再让模型照着烧掉几…", "他还专门要求模型 \"surprise and delight the user frequently\"（频繁地给用户惊…", "他自己的评价很冷静：机制设计得太复杂了（玩家得计算南瓜成熟时间对准十月的周末），不如 Battle Drones 好玩…"]}, {"type": "points", "kicker": "03", "title": "三、他的工作流，拆成可抄的五步", "points": ["起步用聊天界面就行。", "不用搭任何环境，claude.ai 或 chatgpt.com 对话框直接开工。", "起始提示词模板：Build a mobile-friendly three.js game where...（做一个手…", "指定 three.js。模型对它熟到能直接「说」出全彩 3D 模型，不需要配图像生成模型。"]}, {"type": "points", "kicker": "03", "title": "三、他的工作流，拆成可抄的五步（续）", "points": ["过了概念验证阶段再换重型工具：切到 Claude Code 或 Codex 这类智能体去迭代。", "玩法不爽就念咒语：\"Make it a LOT more fun\"——Simon 验证过的万能迭代指令。", "大改前先要 SPEC：像 Pumpkin Farmer 那样先头脑风暴出规格文档，再让模型放手干。", "一句话总结这个流程：聊天界面负责「从 0 到 1」，智能体负责「从 1 到 100」。"]}, {"type": "points", "kicker": "04", "title": "四、争议：一句话冒犯了四次", "points": ["Simon 自己把话说得很直白，原文是：\"If you are offended by AI-generated ar…", "）", "游戏社区确实是抵触重灾区，游戏媒体（IGN）就报道过 Steam 新品节被玩家抱怨 AI 内容泛滥成 \"slop\"（工…", "Simon 的态度是玩家会分裂成拒绝和欢迎两派，他自己站后一派。"]}, {"type": "points", "kicker": "04", "title": "四、争议：一句话冒犯了四次（续）", "points": ["另外他不把 vibe 游戏投传统 game jam（限定时间做游戏的比赛，类比 48 小时黑客马拉松）——用他的说法，…", "他预计会出现 vibe 游戏开发者自己的展示渠道。"]}, {"type": "points", "kicker": "05", "title": "五、对我们普通人的启示：瓶颈搬家了", "points": ["这篇最有价值的不是「AI 能做游戏了」，而是这句判断：做出好玩的游戏已经简单得惊人，真正的挑战变成了构思那些「没有 A…", "翻译一下：执行不再稀缺，点子和品味成了新瓶颈。", "过去你有一个游戏点子，要么花三年学引擎，要么花几万块外包，绝大多数点子就这么死了。", "现在点子到可玩原型之间只隔几句提示词，于是「想出一个值得做的点子」和「反复试玩把它调好玩」成了仅剩的体力活——Simo…"]}, {"type": "table", "kicker": "06", "title": "", "headers": ["游戏", "类型", "亮点", "教训"], "rows": [["Tree Appreciator", "找不同 · 治愈", "聊天界面一次成型零迭代", "简单玩法最适合起步"], ["Emberwick", "奇幻 RPG", "「先引擎后加料」流程跑通", "剧情 bug 全靠反复试玩"], ["Battle Drones", "RTS 联机", "两句咒语脱胎换骨，已开源", "旧 demo 也能救活"], ["Pumpkin Farmer", "模拟经营", "SPEC 先行 + 惊喜指令", "机制别贪复杂"]]}, {"type": "points", "kicker": "07", "title": "七、行动清单", "points": ["想试水的：打开 claude.ai，把 Build a mobile-friendly three.js game w…", "做出来不好玩的：先别改设定，念 \"Make it a LOT more fun\"，试两轮再说", "想认真做的：概念验证过后立刻切 Claude Code / Codex，大功能前先让它出 SPEC", "做完的：丢 GitHub Pages 或 Cloudflare Pages，免费上线，发给朋友收反馈"]}, {"type": "points", "kicker": "07", "title": "七、行动清单（续）", "points": ["金句收尾——Simon 说 vibe coding 游戏是完美应用场景，因为风险极低，「个人游戏项目的 bug 能造成…", "」然后他承认，做语音多人模式时把老婆折腾得头疼不已。"]}, {"type": "points", "kicker": "08", "title": "来源与延伸阅读", "points": ["原文：Vibe game development — simonwillison.net，2026-10-28（本文所…", "在线试玩：Tree Appreciator · Emberwick · Battle Drones · Pumpkin…", "Battle Drones 已开源（Apache 2.0）；蒸汽朋克 fork Panache", "Pumpkin Farmer 的 SPEC.md 原文"]}, {"type": "points", "kicker": "08", "title": "来源与延伸阅读（续）", "points": ["配图版权归 Simon Willison 所有，自托管转载仅作评论解说用途"]}, {"type": "close", "title": "四款游戏、每款亲手不到 4 小时：Simon Willison 宣布 vibe 游戏开发到了拐点", "takeaways": ["一、先说结论：2026 年 10 月，游戏开发过了拐点", "二、四款游戏逐个看：从 30 秒 demo 到开源联机 RTS", "三、他的工作流，拆成可抄的五步"]}], "accent": "#46668c", "title": "四款游戏、每款亲手不到 4 小时：Simon Willison 宣布 vibe 游戏开发到了拐点", "seed": 8567, "home": "../../../../", "article": "../../../../vibecoding手册/2026-10-28-vibe游戏开发-simonwillison精读.html"}</script>
+<script src="../../_app/deck.js"></script>
+</body>
+</html>

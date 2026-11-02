@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讲解 · index</title>
+<link rel="stylesheet" href="../../../_app/deck.css">
+<style>:root{--accent:#2f6db3;--accent-soft:#2f6db322}</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<main id="deck"></main>
+<footer id="hud">
+  <div id="progress"><i></i></div>
+  <div id="hud-row">
+    <button id="btn-back" title="返回原文 (Esc)">‹ 返回</button>
+    <div class="hud-nav">
+      <button id="btn-prev" title="上一页 (←)">◀</button>
+      <span id="counter">1 / 1</span>
+      <button id="btn-next" title="下一页 (→)">▶</button>
+    </div>
+    <div class="hud-nav">
+      <button id="btn-overview" title="概览 (O)">☰</button>
+      <button id="btn-full" title="全屏 (F)">⛶</button>
+    </div>
+  </div>
+</footer>
+<div id="overview" hidden></div>
+<script type="application/json" id="deck-data">{"slides": [{"type": "cover", "title": "index", "category": "知识库", "meta": "约 1 分钟 · 416 字 · 5 节"}, {"type": "toc", "items": ["这门类是什么", "数据来源与授权", "本门类页面", "与其他门类的衔接", "维护纪律"], "targets": [2, 3, 4, 5, 6], "more": 0}, {"type": "points", "kicker": "01", "title": "这门类是什么", "points": ["决策的预制件库。", "它不教知识（领域知识只能一门门学，不迁移），它收的是跨行业通用的判断套路——机会成本、幸存者偏差、约束理论、古德哈特定…", "用途见 心智模型总纲。"]}, {"type": "points", "kicker": "02", "title": "数据来源与授权", "points": ["上游：向阳乔木（Vista）开源项目 mental-models，在线版 mm.qiaomu.ai，MIT Licen…", "本地快照：_raw/mental-models/（data JSON 全量 + LICENSE，2026-10-23 …", "出处分级：上游自带三档标注（一手核实 / 可靠二手 / 草稿示意），继承其口径。"]}, {"type": "table", "kicker": "03", "title": "", "headers": ["页面", "type", "内容"], "rows": [["乔木思维模型Wiki", "source", "上游项目来源页：规模、结构、授权"], ["心智模型总纲", "synthesis", "怎么用：三种真实用法 + 精选清单 + 避坑"], ["心智模型手册-7学科114模型.md", "手册", "114 条全文改编版（已上博客，本门类主菜）"]]}, {"type": "points", "kicker": "04", "title": "与其他门类的衔接", "points": ["识人技术：心理学科的 21 条（锚定、归因错误、达克效应）就是识人的底层件。", "注意力市场研究：经济+心理条目（稀缺、社会认同、互惠）是传播侧的零件。", "ai-coding-governance：古德哈特定律（指标被玩坏）与\"规范变门禁\"命题直接相关。"]}, {"type": "points", "kicker": "05", "title": "维护纪律", "points": ["_raw/ 只读，上游更新时重新快照（记 log）。", "已接入博客导出白名单（_raw 已加 exclude，不会误发布）。"]}, {"type": "close", "title": "index", "takeaways": ["这门类是什么", "数据来源与授权", "本门类页面"]}], "accent": "#2f6db3", "title": "index", "seed": 6773, "home": "../../../../../", "article": "../../../../../知识库/心智模型/index/index.html"}</script>
+<script src="../../../_app/deck.js"></script>
+</body>
+</html>

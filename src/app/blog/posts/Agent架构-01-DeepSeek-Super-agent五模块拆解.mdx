@@ -7,6 +7,8 @@ tag: "Agent 架构"
 knowledgeHub: true
 ---
 
+> ▶ 本文配有互动讲解动画：[点此观看](/static/decks/agent%E6%9E%B6%E6%9E%84/01-deepseek-super-agent%E4%BA%94%E6%A8%A1%E5%9D%97%E6%8B%86%E8%A7%A3/index.html)
+
 # 让 Agent 持续在线、同时干多件事：DeepSeek Super-agent 五模块拆解
 
 > 你手上同时有三件事：一个 PR 等评审意见，一个 bug 要复现，一封邮件要回。每件事开一个 Agent 会话，你在三个窗口之间切换，还得记住哪个窗口里说过什么。Agent 做单个任务已经很强，可你能同时盯住的会话就那么几个。DeepSeek Harness 团队观察到的数字是 3 到 5 个。瓶颈从模型能力挪到了人的注意力。他们在 2026 年 10 月 31 日发了一篇架构文章，讲怎么把 Agent 从"一个会话做一件事"改成"一个 Agent 持续在线，同时推进多件事，彼此不干扰"。本文把这篇文章拆开讲清楚。全文不用比喻，只讲机制。

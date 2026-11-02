@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讲解 · Agent 架构：DeepSeek Super-agent 设计精读</title>
+<link rel="stylesheet" href="../../_app/deck.css">
+<style>:root{--accent:#46668c;--accent-soft:#46668c22}</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<main id="deck"></main>
+<footer id="hud">
+  <div id="progress"><i></i></div>
+  <div id="hud-row">
+    <button id="btn-back" title="返回原文 (Esc)">‹ 返回</button>
+    <div class="hud-nav">
+      <button id="btn-prev" title="上一页 (←)">◀</button>
+      <span id="counter">1 / 1</span>
+      <button id="btn-next" title="下一页 (→)">▶</button>
+    </div>
+    <div class="hud-nav">
+      <button id="btn-overview" title="概览 (O)">☰</button>
+      <button id="btn-full" title="全屏 (F)">⛶</button>
+    </div>
+  </div>
+</footer>
+<div id="overview" hidden></div>
+<script type="application/json" id="deck-data">{"slides": [{"type": "cover", "title": "Agent 架构：DeepSeek Super-agent 设计精读", "category": "Agent架构", "meta": "约 1 分钟 · 766 字 · 5 节"}, {"type": "toc", "items": ["来源", "文件", "核实记录（2026-10-31）", "对照自家项目（本地备注，不进博客）", "维护约定"], "targets": [2, 3, 4, 6, 8], "more": 0}, {"type": "points", "kicker": "01", "title": "来源", "points": ["《Super-agent 设计探索：迈向更自主的 Agent 系统》，DeepSeek Harness 团队（系统实现…", "配套原型：https://github.com/deepseek-ai/dsh-superagent-prototyp…", "README 自述\"研究原型、非正式产品、不等于内部版本、文章部分设计未实现\"）", "文中引用的 Anthropic 文章：https://www.anthropic.com/engineering/ma…"]}, {"type": "points", "kicker": "02", "title": "文件", "points": ["DeepSeek-Super-agent五模块拆解.md —— 科普版精读（掰开揉碎结构，全文不用比喻，用户本篇…", "原文存档-2026-10-31.txt —— 原文纯文本存档，只用于核对数字和引文，不发布（同步脚本只搬 .md）", "images/01-15 —— 原文 15 张配图本地存档", "已自托管到 magic-portfolio/public/static/super-agent/（文…"]}, {"type": "points", "kicker": "03", "title": "核实记录（2026-10-31）", "points": ["原型\"已实现 / 未实现\"对照表（精读第十节）是克隆仓库后核对 docs/001-domain.md、docs/007…", "关键证据：仓库全文 grep daemon|BYOM|cloud|spill|speculat|watchdog 零命中", "observe 接受模式与 100 words 限制有代码与提示词实物", "批处理在 Thread 级 Eval 串行合并"]}, {"type": "points", "kicker": "03", "title": "核实记录（2026-10-31）（续）", "points": ["\"每小时检查\"在 docs/006-deployment.md", "实验数字全部以原文第 7 节与结果表图（images/13.png）为准", "原文正文只写了部分数字，p50/p95 与 token 四行全数据来自表图", "微信抓取：jina / WebFetch 均被\"环境异常\"验证页拦截，直连 curl 带桌面 Safari UA 可过…"]}, {"type": "table", "kicker": "04", "title": "", "headers": ["文章模块", "omniscient-agent 现状", "差距"], "rows": [["两级过滤（程序层 / 语义层）", "backend/chat/decider.py 的 reply_now / listening / nudge 是语义层", "缺程序层白名单 Fast Path"], ["事件驱动 + 主动", "backend/proactive.py + awareness.py（作息/位置/关系阶段）", "事件源还是定时器，没接真实 IM/邮件 Trigger 流"], ["双层架构", "单 Session 对话", "没有 Router / Worker 分层；多话题并行靠会话抽屉手动切"], ["多信道规范", "humanize.py 拆气泡 / 思考延迟", "没有\"IM ≤100 词、默认沉默\"这类硬规则"], ["计算/状态/环境分离", "PostgreSQL 存会话状态（conversations.py）；deploy/termux 想把全栈塞进手机", "方向相反：文章是 Loop 上云、环境留端侧 daemon；手机方案是全在端侧"], ["Watchdog", "无", "无"], ["接受模式 observe", "无", "主动关怀直接发，没有\"只记录不发\"的试运行档"]]}, {"type": "points", "kicker": "04", "title": "对照自家项目（本地备注，不进博客）", "points": ["omniscient-agent 就是这篇文章说的\"个人助手\"形态，可以逐模块对照", "最值得先抄的三样（成本低）：程序层白名单、IM 硬字数上限 + 默认沉默、主动行为先走 observe 模式记录一段时…"]}, {"type": "points", "kicker": "05", "title": "维护约定", "points": ["数字以原文为准，文中已标\"原文自述、合成负载、无第三方复现\"；不得补入原文没有的数据", "原型实现状态随仓库更新会变，再引用前重新 git clone --depth 1 核对，不要沿用本次结论", "后续同主题文章（Anthropic Managed Agents 原文精读、OpenHarness 设计笔记等）在此目…", "发布链路：knowledge-hub/scripts/synccontent.py（ENTRIES 已加本目录 → A…"]}, {"type": "close", "title": "Agent 架构：DeepSeek Super-agent 设计精读", "takeaways": ["来源", "文件", "核实记录（2026-10-31）"]}], "accent": "#46668c", "title": "Agent 架构：DeepSeek Super-agent 设计精读", "seed": 7391, "home": "../../../../", "article": "../../../../agent架构/index/index.html"}</script>
+<script src="../../_app/deck.js"></script>
+</body>
+</html>

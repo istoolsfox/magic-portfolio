@@ -7,8 +7,19 @@ const withMDX = mdx({
   options: { remarkPlugins: ["remark-gfm"] },
 });
 
+// STATIC_EXPORT=1：GitHub Pages 静态导出模式（trailingSlash 兼容 GH Pages 目录结构）。
+// 动态 API（/api/*、/feed.xml）不参与导出，由 CF Worker 网关回源 ECS 提供。
+const STATIC_EXPORT = process.env.STATIC_EXPORT === "1";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  ...(STATIC_EXPORT
+    ? {
+        output: "export",
+        trailingSlash: true,
+        images: { unoptimized: true },
+      }
+    : {}),
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   transpilePackages: ["next-mdx-remote"],
   poweredByHeader: false,

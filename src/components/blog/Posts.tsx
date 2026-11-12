@@ -36,8 +36,9 @@ export function Posts({
     <>
       {displayedBlogs.length > 0 && (
         <Grid columns={columns} s={{ columns: 1 }} fillWidth marginBottom="40" gap="16">
-          {displayedBlogs.map((post) => (
-            <Post key={post.slug} post={post} thumbnail={thumbnail} direction={direction} />
+          {/* Post 是客户端组件，props 会整体序列化进 RSC 载荷——必须剥掉全文 content，否则列表页体积=全站文章总字数（曾达 7.3MB） */}
+          {displayedBlogs.map(({ content, ...meta }) => (
+            <Post key={meta.slug} post={meta} thumbnail={thumbnail} direction={direction} />
           ))}
         </Grid>
       )}

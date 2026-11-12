@@ -14,3 +14,43 @@
 [data-theme] h2 {
   overflow-wrap: anywhere;
 }
+
+/* 文章内 GFM 表格样式：修复 107 篇带表格文章渲染成无框纯文本的问题（2026-11-12） */
+article table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.92em;
+  line-height: 1.65;
+}
+article thead {
+  background: #eef2f6;
+}
+article th,
+article td {
+  border: 1px solid #ccd4dc;
+  padding: 0.55rem 0.8rem;
+  text-align: left;
+  vertical-align: top;
+}
+article th {
+  font-weight: 600;
+  color: #1a2636;
+  white-space: nowrap;
+}
+article tbody tr:nth-child(even) td {
+  background: #f7fafc;
+}
+[data-theme="dark"] article thead {
+  background: #1e2a3a;
+}
+[data-theme="dark"] article th {
+  color: #dbe4ee;
+}
+[data-theme="dark"] article th,
+[data-theme="dark"] article td {
+  border-color: #34435a;
+}
+[data-theme="dark"] article tbody tr:nth-child(even) td {
+  background: #182233;
+}

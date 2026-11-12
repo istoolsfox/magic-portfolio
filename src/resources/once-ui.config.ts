@@ -19,7 +19,7 @@ const baseURL: string = "https://toolsfox.top";
 const routes: RoutesConfig = {
   "/": true,
   "/about": true,
-  "/work": true,
+  "/work": false,  // 项目页不再展示（代码保留，见 /work 路由）——2026-11-12 用户要求
   "/blog": true,
   "/ideas": true,
   "/chat": true,

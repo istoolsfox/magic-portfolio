@@ -83,7 +83,7 @@ knowledgeHub: true
 合成数据**不能替代真实数据，但好过没有**。方法：
 
 1. **定义维度**——预判产品可能失败的轴：租赁助手例 = 任务（约看房/问价格/问宠物政策）× 租客类型（首次租房者/搬家的家庭/学生）× 请求类型（清晰/含糊/超范围）；
-2. **逐场景单独调用**——agent 把维度值组合成场景（每维取一值），**每个场景单独一次模型调用**，强制结构化输出单字段 `user_query`，存 `synthetic_queries.jsonl`（prompt 原文在原文存档 §Pro tip）；
+2. **逐场景单独调用**——agent 把维度值组合成场景（每维取一值），**每个场景单独一次模型调用**，强制结构化输出单字段 `user_query`，存 `synthetic_queries.jsonl`（prompt 原文在原文存档 Pro tip）；
 3. **为什么逐个调用**：一次性让模型批量生成会导致**同质化**，这是作者实测经验；
 4. **事后处理**：人工过一遍，删掉不真实的；发现维度没覆盖的场景就补维度重新生成。
 5. 示例输出：`{ "user_query": "We have two dogs and may be moving next month. Would that work?" }`
@@ -146,11 +146,11 @@ npx skills add https://github.com/ai-evals-course/evals-skills
 
 ## 7. 可执行清单（从零到优先级清单，约 30 分钟）
 
-1. ☐ 有 traces 吗？没有 → 把 §4.1 埋点 prompt 丢给 coding agent；
-2. ☐ 没上线 → §4.2 维度法生成 synthetic_queries.jsonl，人工删不真实的；
+1. ☐ 有 traces 吗？没有 → 把 第4.1节 埋点 prompt 丢给 coding agent；
+2. ☐ 没上线 → 第4.2节 维度法生成 synthetic_queries.jsonl，人工删不真实的；
 3. ☐ `npx skills add https://github.com/ai-evals-course/evals-skills`，让 agent 走 evals-start → error-discovery；
 4. ☐ 检查自动生成的审查界面：输出是否按用户视角渲染？关键元数据可过滤吗？不满意就聊着改；
-5. ☐ **人工先注 10 条**（遵守 §5.3 四规则），再放 agent 提建议；
+5. ☐ **人工先注 10 条**（遵守 第5.3节 四规则），再放 agent 提建议；
 6. ☐ 逐条 accept/reject agent 建议，用分歧修正它，数轮迭代；
 7. ☐ 注到 ~100 条或学习平台期；
 8. ☐ 让 agent 聚类注释 → failure modes + 计数 → 排出产品优先级清单。

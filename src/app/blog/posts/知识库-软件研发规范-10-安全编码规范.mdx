@@ -11,7 +11,7 @@ knowledgeHub: true
 
 # 10 安全编码规范
 
-> 关联文档：[06-API设计规范](/blog/%E7%9F%A5%E8%AF%86%E5%BA%93-%E8%BD%AF%E4%BB%B6%E7%A0%94%E5%8F%91%E8%A7%84%E8%8C%83-06-API%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83) §8、[07-数据库设计与SQL规范](/blog/%E7%9F%A5%E8%AF%86%E5%BA%93-%E8%BD%AF%E4%BB%B6%E7%A0%94%E5%8F%91%E8%A7%84%E8%8C%83-07-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E4%B8%8ESQL%E8%A7%84%E8%8C%83) §9、[13-可观测性与运维规范](/blog/%E7%9F%A5%E8%AF%86%E5%BA%93-%E8%BD%AF%E4%BB%B6%E7%A0%94%E5%8F%91%E8%A7%84%E8%8C%83-13-%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7%E4%B8%8E%E8%BF%90%E7%BB%B4%E8%A7%84%E8%8C%83)
+> 关联文档：[06-API设计规范](/blog/%E7%9F%A5%E8%AF%86%E5%BA%93-%E8%BD%AF%E4%BB%B6%E7%A0%94%E5%8F%91%E8%A7%84%E8%8C%83-06-API%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83) 第8节、[07-数据库设计与SQL规范](/blog/%E7%9F%A5%E8%AF%86%E5%BA%93-%E8%BD%AF%E4%BB%B6%E7%A0%94%E5%8F%91%E8%A7%84%E8%8C%83-07-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E4%B8%8ESQL%E8%A7%84%E8%8C%83) 第9节、[13-可观测性与运维规范](/blog/%E7%9F%A5%E8%AF%86%E5%BA%93-%E8%BD%AF%E4%BB%B6%E7%A0%94%E5%8F%91%E8%A7%84%E8%8C%83-13-%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7%E4%B8%8E%E8%BF%90%E7%BB%B4%E8%A7%84%E8%8C%83)
 > 关联软考集：[09-信息安全工程规范](/blog/%E7%9F%A5%E8%AF%86%E5%BA%93-%E8%BD%AF%E8%80%83-%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E8%A7%84%E8%8C%83-09-%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E5%B7%A5%E7%A8%8B%E8%A7%84%E8%8C%83)（等保/安全管理体系）
 > 原则：安全左移——设计期威胁建模，编码期守基线，上线前过检查单（附录 A）。
 
@@ -39,7 +39,7 @@ knowledgeHub: true
 
 | 注入 | 防线 |
 |------|------|
-| SQL 注入 | **一律参数化查询/ORM**（见 07 §6）；动态表名/排序字段用白名单映射，不拼接 |
+| SQL 注入 | **一律参数化查询/ORM**（见 07 第6节）；动态表名/排序字段用白名单映射，不拼接 |
 | 命令注入 | 不拼 shell；必须调用时用参数数组形式（`subprocess.run([...], shell=False)`）+ 输入白名单 |
 | SSRF | 用户提供的 URL 一律校验：只允许 http(s)、禁内网段/环回/云元数据地址（169.254.169.254）、解析后的 IP 再验一次（防 DNS rebinding） |
 
@@ -72,7 +72,7 @@ knowledgeHub: true
 
 ## 8. 依赖与供应链
 
-- 新依赖三问（同 02 §5）+ 额外一问：这个包足够主流吗（下载量/维护者）？冷门包是供应链投毒高发区；
+- 新依赖三问（同 02 第5节）+ 额外一问：这个包足够主流吗（下载量/维护者）？冷门包是供应链投毒高发区；
 - 锁文件（lockfile）入库，CI 跑漏洞扫描（pip-audit/npm audit/govulnconfig），高危（Critical/High）当日处理；
 - 不用已停止维护的依赖大版本；升级走常规 PR 流程（有测试兜底）。
 
@@ -81,7 +81,7 @@ knowledgeHub: true
 - CSRF：写操作校验 CSRF token 或依赖 SameSite+Bearer（纯 token header 方案天然免疫）；
 - 安全响应头：`Content-Security-Policy`、`X-Content-Type-Options: nosniff`、`X-Frame-Options`/`frame-ancestors`、`Referrer-Policy`；
 - 错误页不泄露版本/堆栈；目录列表关闭；
-- 限流（见 04 §6）+ 验证码应对自动化滥用。
+- 限流（见 04 第6节）+ 验证码应对自动化滥用。
 
 ## 10. 安全事件响应约定
 

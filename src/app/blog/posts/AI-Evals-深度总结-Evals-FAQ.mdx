@@ -12,7 +12,7 @@ knowledgeHub: true
 # 深度总结：LLM Evals: Everything You Need to Know（Evals FAQ）
 
 > 总结对象：[原文存档](/blog/AI-Evals-%E5%8E%9F%E6%96%87-Evals-FAQ-hamel.dev)（hamel.dev，Hamel Husain，2026 存档）
-> 姊妹篇：Lenny's Newsletter《Advanced evals》深度总结见本目录。本文是**同一方法论的完整免费版**（40+ 问答），与 Lenny 文章互为补充；两文的差异点见 §13。
+> 姊妹篇：Lenny's Newsletter《Advanced evals》深度总结见本目录。本文是**同一方法论的完整免费版**（40+ 问答），与 Lenny 文章互为补充；两文的差异点见 第13节。
 > 7 个嵌入视频的内容级总结见 [视频总结-7个嵌入视频.md](/blog/AI-Evals-%E8%A7%86%E9%A2%91%E6%80%BB%E7%BB%93-7%E4%B8%AA%E5%B5%8C%E5%85%A5%E8%A7%86%E9%A2%91)。
 
 ---
@@ -43,7 +43,7 @@ knowledgeHub: true
 
 ## 4. 方法论核心：Error Analysis 四步法（借用定性研究方法）
 
-1. **Creating a Dataset**：收集代表性 traces；没有数据就先合成（见 §8）。
+1. **Creating a Dataset**：收集代表性 traces；没有数据就先合成（见 第8节）。
 2. **Open Coding（开放编码）**：人工审查者写开放式笔记——像"写日记"。**先自己注满 30 条，再让 agent 提建议**（太早介入会带偏你的判断）；起步只注第一个失败（上游错误引发下游问题）；必须由领域专家做。
 3. **Axial Coding（主轴编码）**：把开放笔记归类成 **failure taxonomy（失败分类法）**并计数——作者称这是最重要的一步；可用 LLM 辅助。
 4. **Iterative Refinement**：agent 聚类选多样化样本→你审建议（accept/reject）→迭代到 **theoretical saturation（理论饱和：新审查不再产生新失败模式）**。~100 条多样化 traces 是这个人机循环的护栏值。
@@ -125,7 +125,7 @@ knowledgeHub: true
 | 覆盖 | 只有 Step 1-3 | 加了 LLM judge 验证、工具选型、生产化、领域应用 |
 | 数字口径 | 100 条目标 | 100 条起步 + 每 failure mode 100-200 标注 + train/dev/test 切分 |
 
-结论：**FAQ 是方法论的完整参考书**；Lenny 文是它的"快速上手卡"。两篇对照读，Lenny 付费墙后的 Step 3 内容在 FAQ §5-§6 里基本都有免费对应。
+结论：**FAQ 是方法论的完整参考书**；Lenny 文是它的"快速上手卡"。两篇对照读，Lenny 付费墙后的 Step 3 内容在 FAQ 第5节-第6节 里基本都有免费对应。
 
 ## 14. 金句摘录
 
